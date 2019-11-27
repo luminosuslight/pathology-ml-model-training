@@ -1,0 +1,42 @@
+<RCC>
+    <qresource prefix="/microscopy">
+        <file>ui/default_shader.vert</file>
+        <file>ui/grayscale16_tissue_shader_alpha_blended.frag</file>
+        <file>ui/grayscale16_tissue_shader.frag</file>
+        <file>ui/noise_shader.frag</file>
+        <file>blocks/ArtificialTrainingDataBlock.qml</file>
+        <file>blocks/NucleiDataBlock.qml</file>
+        <file>blocks/NucleiPlotBlock.qml</file>
+        <file>blocks/TissueViewerBlock.qml</file>
+        <file>blocks/TissueChannelBlock.qml</file>
+        <file>blocks/NucleiVisualizationBlock.qml</file>
+        <file>blocks/TrainingDataBlock.qml</file>
+        <file>ui/rgb8_tissue_shader_alpha_blended.frag</file>
+        <file>ui/rgb8_tissue_shader.frag</file>
+        <file>blocks/actions/ClusteringBlock.qml</file>
+        <file>blocks/actions/CsvExportBlock.qml</file>
+        <file>blocks/actions/DimensionalityReductionBlock.qml</file>
+        <file>blocks/ai/AutoAiSegmentationBlock.qml</file>
+        <file>blocks/ai/CellAreaAverageBlock.qml</file>
+        <file>blocks/ai/CellRendererBlock.qml</file>
+        <file>blocks/ai/CnnInferenceBlock.qml</file>
+        <file>blocks/ai/CnnModelBlock.qml</file>
+        <file>blocks/ai/CnnTrainingBlock.qml</file>
+        <file>blocks/ai/MarkerBasedRegionGrowBlock.qml</file>
+        <file>blocks/ai/RandomCellGeneratorBlock.qml</file>
+        <file>blocks/ai/TrainingDataBlock.qml</file>
+        <file>blocks/ai/TrainingDataPreprocessingBlock.qml</file>
+        <file>blocks/basic/CellDatabaseBlock.qml</file>
+        <file>blocks/basic/CellFeatureVisualizationBlock.qml</file>
+        <file>blocks/basic/TissueImageBlock.qml</file>
+        <file>blocks/basic/TissueViewBlock.qml</file>
+        <file>blocks/selection/AreaSelectionFreeformBlock.qml</file>
+        <file>blocks/selection/FeatureSelectionBlock.qml</file>
+        <file>blocks/selection/IndividualSelectionBlock.qml</file>
+        <file>blocks/selection/PlotSelectionBlock.qml</file>
+        <file>blocks/ai/FindCentersBlock.qml</file>
+        <file>blocks/ai/CellDatabaseComparison.qml</file>
+        <file>blocks/basic/CellVisualizationBlock.qml</file>
+        <file>blocks/selection/AreaSelectionRectangularBlock.qml</file>
+    </qresource>
+</RCC>

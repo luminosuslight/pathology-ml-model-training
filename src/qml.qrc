@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ui/main.qml</file>
+        <file>ui/app/BlockListCategory.qml</file>
+        <file>ui/app/BlockListDrawerContent.qml</file>
+        <file>ui/app/BlockListEntry.qml</file>
+        <file>ui/app/BlockSettingsDrawerContent.qml</file>
+        <file>ui/app/CombinationEntry.qml</file>
+        <file>ui/app/DrawerContent.qml</file>
+        <file>ui/app/DrawerTabButton.qml</file>
+        <file>ui/app/ExportProjectDialog.qml</file>
+        <file>ui/app/ImportProjectDialog.qml</file>
+        <file>ui/app/ProjectsDrawerContent.qml</file>
+        <file>ui/app/SettingsDrawerContent.qml</file>
+        <file>ui/app/WorkspacePlane.qml</file>
+        <file>ui/app/WorkspacePlaneTouchController.qml</file>
+        <file>ui/settings/AboutSection.qml</file>
+        <file>ui/settings/GuiSettings.qml</file>
+        <file>ui/settings/SettingsCategory.qml</file>
+        <file>ui/settings/WebsocketSettings.qml</file>
+        <file>ui/app/TissueView.qml</file>
+        <file>ui/app/TissueViewLoader.qml</file>
+        <file>ui/app/TissueViewTouchController.qml</file>
+    </qresource>
+</RCC>
