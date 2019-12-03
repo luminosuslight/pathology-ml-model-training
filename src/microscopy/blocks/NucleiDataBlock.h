@@ -38,7 +38,7 @@ public:
 
     explicit NucleiDataBlock(CoreController* controller, QString uid);
 
-    void getAdditionalState(QJsonObject &) const override;
+    void getAdditionalState(QCborMap &) const override;
 
 signals:
     void positionsChanged();

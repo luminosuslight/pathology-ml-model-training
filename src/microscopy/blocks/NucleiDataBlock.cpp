@@ -57,7 +57,7 @@ NucleiDataBlock::NucleiDataBlock(CoreController* controller, QString uid)
     });
 }
 
-void NucleiDataBlock::getAdditionalState(QJsonObject &) const {
+void NucleiDataBlock::getAdditionalState(QCborMap &) const {
     // this is called whenever the state should be persisted,
     // in this case we write to a separate file:
     if (m_filePath.getValue() == "") return;

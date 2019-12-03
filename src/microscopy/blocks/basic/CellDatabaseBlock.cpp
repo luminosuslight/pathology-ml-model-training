@@ -68,32 +68,32 @@ CellDatabaseBlock::CellDatabaseBlock(CoreController* controller, QString uid)
     m_outputNode->dataWasModifiedByBlock();
 }
 
-void CellDatabaseBlock::getAdditionalState(QJsonObject& state) const {
-    // 0.04s 40ms
-    // 13k nuclei -> 2.2MB
+void CellDatabaseBlock::getAdditionalState(QCborMap& state) const {
+    // from 40ms with JSON to 7ms with CBOR
+    // for 12k nuclei from 2.2MB with JSON to 1.4MB with CBOR
     for (int i=0; i < m_features->size(); ++i) {
-        state[m_features->at(i)] = serialize(vectorToBytes(m_data.at(i)));
+        state[m_features->at(i)] = vectorToBytes(m_data.at(i));
     }
-    QJsonArray shapes;
+    QCborArray shapes;
     for (auto& shape: m_shapes) {
-        shapes.append(serialize(arrayToBytes(shape)));
+        shapes.append(arrayToBytes(shape));
     }
-    state["shapes"] = shapes;
+    state["shapes"_q] = shapes;
 }
 
-void CellDatabaseBlock::setAdditionalState(const QJsonObject& state) {
+void CellDatabaseBlock::setAdditionalState(const QCborMap& state) {
     // 0.026s 26ms
     auto begin = HighResTime::now();
     m_data.clear();
     m_data.resize(m_features->size());
     for (int i=0; i < m_features->size(); ++i) {
-        m_data[i] = bytesToVector<double>(deserialize<QByteArray>(state[m_features->at(i)].toString()));
+        m_data[i] = bytesToVector<double>(state[m_features->at(i)].toByteArray());
     }
     auto shapesArr = state["shapes"].toArray();
     m_shapes.clear();
-    m_shapes.reserve(shapesArr.size());
+    m_shapes.reserve(int(shapesArr.size()));
     for (auto ref: shapesArr) {
-        m_shapes.append(bytesToArray<float, CellDatabaseConstants::RADII_COUNT>(deserialize<QByteArray>(ref.toString())));
+        m_shapes.append(bytesToArray<float, CellDatabaseConstants::RADII_COUNT>(ref.toByteArray()));
     }
     qDebug() << "CellDatabaseBlock::setAdditionalState" << HighResTime::getElapsedSecAndUpdate(begin);
     m_count = m_data.at(CellDatabaseConstants::X_POS).size();

@@ -34,8 +34,8 @@ public:
 
     explicit CellDatabaseBlock(CoreController* controller, QString uid);
 
-    void getAdditionalState(QJsonObject& state) const override;
-    virtual void setAdditionalState(const QJsonObject& state) override;
+    void getAdditionalState(QCborMap& state) const override;
+    virtual void setAdditionalState(const QCborMap& state) override;
 
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
