@@ -77,7 +77,11 @@ void CellVisualizationBlock::updateCells() {
         m_yPositions[i] = y;
     }
     emit positionsChanged();
-    // the indexes may have changed and the old ones are invalid now:
+    updateCellVisibility();
+}
+
+void CellVisualizationBlock::invalidateIndexes() {
+    // the indexes changed and the old ones are invalid now:
     m_visibleCells.clear();
     updateCellVisibility();
 }
@@ -98,7 +102,11 @@ void CellVisualizationBlock::updateCellVisibility() {
     }
     // the db is only required for the largely visible cells, update it here:
     if (db != m_lastDb) {
+        if (m_lastDb) {
+            disconnect(m_lastDb);
+        }
         m_lastDb = db;
+        connect(db, &CellDatabaseBlock::indexesReassigned, this, &CellVisualizationBlock::invalidateIndexes);
         emit databaseChanged();
     }
     // this will be evaluated every 50ms while moving the view -> performance critical

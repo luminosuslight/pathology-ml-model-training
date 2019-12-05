@@ -49,6 +49,7 @@ public slots:
     QSListModel* visibleCells() { return &m_visibleCells; }
 
     void updateCells();
+    void invalidateIndexes();
     void updateCellVisibility();
 
     bool isAssignedTo(QString uid) const;
@@ -66,7 +67,7 @@ protected:
     // runtime:
     BoolAttribute m_detailedView;
     QPointer<TissueViewBlock> m_view;
-    CellDatabaseBlock* m_lastDb;
+    QPointer<CellDatabaseBlock> m_lastDb;
     QSListModel m_visibleCells;
 
     QVector<double> m_xPositions;
