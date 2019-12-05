@@ -7,35 +7,48 @@ import "qrc:/core/ui/controls"
 BlockBase {
     id: root
     width: 150*dp
-    height: 3*30*dp
+    height: 3*20*dp + 30*dp
     settingsComponent: settings
 
     StretchColumn {
         anchors.fill: parent
 
-        BlockRow {
+        StretchRow {
+            height: 20*dp
             leftMargin: 5*dp
-            rightMargin: 5*dp
+            rightMargin: 10*dp
             StretchText {
                 text: (block.attr("right").val - block.attr("left").val).toFixed(0) + " x " + (block.attr("bottom").val - block.attr("top").val).toFixed(0) + " px"
                 font.family: "Courier"
-                hAlign: Text.AlignHCenter
+                hAlign: Text.AlignRight
                 color: "#bbb"
+                font.pixelSize: 12*dp
             }
         }
 
-        BlockRow {
+        StretchRow {
+            height: 20*dp
             leftMargin: 5*dp
-            rightMargin: 5*dp
-            Text {
-                text: "Cells:"
-                color: "#bbb"
-            }
+            rightMargin: 10*dp
             StretchText {
-                text: block.attr("cellCount").val
+                text: ((block.attr("right").val - block.attr("left").val) * (block.attr("bottom").val - block.attr("top").val)).toFixed(0) + " px²"
                 font.family: "Courier"
                 hAlign: Text.AlignRight
                 color: "#bbb"
+                font.pixelSize: 12*dp
+            }
+        }
+
+        StretchRow {
+            height: 20*dp
+            leftMargin: 5*dp
+            rightMargin: 10*dp
+            StretchText {
+                text: block.attr("cellCount").val + " Cells"
+                font.family: "Courier"
+                hAlign: Text.AlignRight
+                color: "#bbb"
+                font.pixelSize: 12*dp
             }
         }
 
