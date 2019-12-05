@@ -2,9 +2,12 @@
 
 #include "core/CoreController.h"
 #include "core/manager/BlockList.h"
+#include "core/manager/BlockManager.h"
 #include "core/manager/FileSystemManager.h"
 #include "core/connections/Nodes.h"
+
 #include "microscopy/manager/ViewManager.h"
+#include "microscopy/blocks/basic/TissueViewBlock.h"
 
 #include <QtConcurrent>
 
@@ -25,6 +28,14 @@ TissueImageBlock::TissueImageBlock(CoreController* controller, QString uid)
     , m_loadedFile(this, "loadedFile", "", /*persistent*/ false)
 {
     connect(&m_filePath, &StringAttribute::valueChanged, this, &TissueImageBlock::onFilePathChanged);
+}
+
+void TissueImageBlock::onCreatedByUser() {
+    // this is a new block, assign to first view:
+    const auto views = m_controller->blockManager()->getBlocksByType<TissueViewBlock>();
+    if (!views.isEmpty()) {
+        assignView(views.first()->getUid());
+    }
 }
 
 float TissueImageBlock::pixelValue(int x, int y) const {

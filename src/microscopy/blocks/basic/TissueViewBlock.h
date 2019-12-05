@@ -7,6 +7,7 @@
 
 class TissueImageBlock;
 class CellVisualizationBlock;
+class AreaSelectionRectangularBlock;
 
 
 class TissueViewBlock : public BlockBase {
@@ -15,6 +16,7 @@ class TissueViewBlock : public BlockBase {
 
     Q_PROPERTY(QList<QObject*> channelBlocks READ channelBlocks NOTIFY channelBlocksChanged)
     Q_PROPERTY(QList<QObject*> visualizeBlocks READ visualizeBlocks NOTIFY visualizeBlocksChanged)
+    Q_PROPERTY(QList<QObject*> rectangularAreaBlocks READ rectangularAreaBlocks NOTIFY rectangularAreaBlocksChanged)
 
 public:
 
@@ -42,12 +44,14 @@ public:
 signals:
     void channelBlocksChanged();
     void visualizeBlocksChanged();
+    void rectangularAreaBlocksChanged();
 
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
 
     QList<QObject*> channelBlocks() const;
     QList<QObject*> visualizeBlocks() const;
+    QList<QObject*> rectangularAreaBlocks() const;
 
     ViewArea viewArea() const;
 
@@ -58,6 +62,7 @@ public slots:
 protected slots:
     void updateChannelBlocks();
     void updateVisualizeBlocks();
+    void updateRectangularAreaBlocks();
 
 protected:
     IntegerAttribute m_viewportWidth;
@@ -69,6 +74,7 @@ protected:
     // runtime data:
     QVector<QPointer<TissueImageBlock>> m_channelBlocks;
     QVector<QPointer<CellVisualizationBlock>> m_visualizeBlocks;
+    QVector<QPointer<AreaSelectionRectangularBlock>> m_rectangularAreaBlocks;
     QTimer m_visibilityUpdateTimer;
 };
 

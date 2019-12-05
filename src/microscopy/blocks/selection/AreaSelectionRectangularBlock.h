@@ -25,14 +25,28 @@ public:
 
     explicit AreaSelectionRectangularBlock(CoreController* controller, QString uid);
 
+    void onCreatedByUser() override;
+
 signals:
 
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
 
+    bool isAssignedTo(QString uid) const;
+    void assignView(QString uid);
+    void removeFromView(QString uid);
+
     void update();
 
 protected:
+    RgbAttribute m_color;
+    DoubleAttribute m_left;
+    DoubleAttribute m_top;
+    DoubleAttribute m_right;
+    DoubleAttribute m_bottom;
+    StringListAttribute m_assignedViews;
+
+    IntegerAttribute m_cellCount;
 
 };
 

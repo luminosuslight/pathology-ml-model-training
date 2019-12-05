@@ -3,10 +3,12 @@
 #include "core/CoreController.h"
 #include "core/manager/BlockList.h"
 #include "core/manager/BlockManager.h"
+#include "core/manager/ProjectManager.h"
 #include "core/manager/GuiManager.h"
 #include "microscopy/blocks/basic/TissueImageBlock.h"
 #include "microscopy/blocks/basic/CellVisualizationBlock.h"
 #include "microscopy/blocks/basic/CellDatabaseBlock.h"
+#include "microscopy/blocks/selection/AreaSelectionRectangularBlock.h"
 #include "microscopy/manager/ViewManager.h"
 
 #include <qsyncable/QSDiffRunner>
@@ -29,10 +31,20 @@ TissueViewBlock::TissueViewBlock(CoreController* controller, QString uid)
             this, &TissueViewBlock::updateChannelBlocks);
     connect(m_controller->blockManager(), &BlockManager::blockInstanceCountChanged,
             this, &TissueViewBlock::updateVisualizeBlocks);
+    connect(m_controller->blockManager(), &BlockManager::blockInstanceCountChanged,
+            this, &TissueViewBlock::updateRectangularAreaBlocks);
     connect(m_controller->manager<ViewManager>("viewManager"), &ViewManager::imageAssignmentChanged,
             this, &TissueViewBlock::updateChannelBlocks);
     connect(m_controller->manager<ViewManager>("viewManager"), &ViewManager::visualizeAssignmentChanged,
             this, &TissueViewBlock::updateVisualizeBlocks);
+    connect(m_controller->manager<ViewManager>("viewManager"), &ViewManager::areaAssignmentChanged,
+            this, &TissueViewBlock::updateRectangularAreaBlocks);
+
+    connect(m_controller->projectManager(), &ProjectManager::projectLoadingFinished, this, [this]() {
+        updateChannelBlocks();
+        updateVisualizeBlocks();
+        updateRectangularAreaBlocks();
+    });
 
     m_visibilityUpdateTimer.setInterval(60);
     m_visibilityUpdateTimer.setSingleShot(true);
@@ -59,6 +71,14 @@ QList<QObject*> TissueViewBlock::channelBlocks() const {
 QList<QObject*> TissueViewBlock::visualizeBlocks() const {
     QList<QObject*> list;
     for (auto block: m_visualizeBlocks) {
+        list.append(block);
+    }
+    return list;
+}
+
+QList<QObject*> TissueViewBlock::rectangularAreaBlocks() const {
+    QList<QObject*> list;
+    for (auto block: m_rectangularAreaBlocks) {
         list.append(block);
     }
     return list;
@@ -133,4 +153,18 @@ void TissueViewBlock::updateVisualizeBlocks() {
     }
     m_visualizeBlocks = visualizeBlocks;
     emit visualizeBlocksChanged();
+}
+
+void TissueViewBlock::updateRectangularAreaBlocks() {
+    QVector<QPointer<AreaSelectionRectangularBlock>> areaBlocks;
+    for (auto block: m_controller->blockManager()->getBlocksByType<AreaSelectionRectangularBlock>()) {
+        if (!block) continue;
+        if (!block->isAssignedTo(getUid())) continue;
+        areaBlocks.append(block);
+    }
+    if (areaBlocks == m_rectangularAreaBlocks) {
+        return;
+    }
+    m_rectangularAreaBlocks = areaBlocks;
+    emit rectangularAreaBlocksChanged();
 }

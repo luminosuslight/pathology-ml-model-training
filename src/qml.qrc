@@ -21,5 +21,8 @@
         <file>ui/app/TissueView.qml</file>
         <file>ui/app/TissueViewLoader.qml</file>
         <file>ui/app/TissueViewTouchController.qml</file>
+        <file>ui/app/RectangularAreaUi.qml</file>
+        <file>ui/app/CellVisualizationUi.qml</file>
+        <file>ui/app/TissueChannelUi.qml</file>
     </qresource>
 </RCC>

@@ -26,6 +26,8 @@ public:
 
     explicit TissueImageBlock(CoreController* controller, QString uid);
 
+    void onCreatedByUser() override;
+
 signals:
 
 public slots:

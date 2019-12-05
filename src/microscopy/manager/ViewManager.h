@@ -23,6 +23,7 @@ signals:
     void viewsChanged();
     void imageAssignmentChanged();
     void visualizeAssignmentChanged();
+    void areaAssignmentChanged();
 
 public slots:
     const QList<TissueViewBlock*>& views() const;
