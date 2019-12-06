@@ -82,8 +82,6 @@ void CellDatabaseBlock::getAdditionalState(QCborMap& state) const {
 }
 
 void CellDatabaseBlock::setAdditionalState(const QCborMap& state) {
-    // 0.026s 26ms
-    auto begin = HighResTime::now();
     m_data.clear();
     m_data.resize(m_features->size());
     for (int i=0; i < m_features->size(); ++i) {
@@ -95,7 +93,6 @@ void CellDatabaseBlock::setAdditionalState(const QCborMap& state) {
     for (auto ref: shapesArr) {
         m_shapes.append(bytesToArray<float, CellDatabaseConstants::RADII_COUNT>(ref.toByteArray()));
     }
-    qDebug() << "CellDatabaseBlock::setAdditionalState" << HighResTime::getElapsedSecAndUpdate(begin);
     m_count = m_data.at(CellDatabaseConstants::X_POS).size();
     emit positionChanged();
 }
