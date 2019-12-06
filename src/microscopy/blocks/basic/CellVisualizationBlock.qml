@@ -6,7 +6,7 @@ import "qrc:/core/ui/controls"
 
 BlockBase {
     id: root
-    width: 160*dp
+    width: 110*dp
     height: 80*dp
     settingsComponent: settings
 
@@ -16,11 +16,6 @@ BlockBase {
 
         BlockRow {
             Spacer { implicitWidth: -0.5 }
-            AttributeDotColorPicker {
-                width: 30*dp
-                attr: block.attr("outerColor")
-            }
-            Spacer { implicitWidth: -1 }
             AttributeDotSlider {
                 width: 30*dp
                 attr: block.attr("strength")
@@ -37,7 +32,7 @@ BlockBase {
             height: 20*dp
             implicitHeight: 0
             Repeater {
-                model: ["Color", "Strength", "Alpha"]
+                model: ["Strength", "Alpha"]
 
                 StretchText {
                     text: modelData
@@ -52,7 +47,16 @@ BlockBase {
             InputNodeCommand {
                 node: block.node("inputNode")
             }
-            text: "Cell Vis."
+            text: "Vis."
+
+            AttributeDotColorPicker {
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.right: parent.right
+                anchors.rightMargin: 5*dp
+                width: 26*dp
+                height: 26*dp
+                attr: block.attr("outerColor")
+            }
         }
     }
 

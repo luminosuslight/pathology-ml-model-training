@@ -6,7 +6,7 @@ import "qrc:/core/ui/controls"
 
 BlockBase {
     id: root
-    width: 240*dp
+    width: 200*dp
     height: 80*dp
     settingsComponent: settings
 
@@ -31,11 +31,6 @@ BlockBase {
                 attr: block.attr("gamma")
             }
             Spacer { implicitWidth: -1 }
-            AttributeDotColorPicker {
-                width: 30*dp
-                attr: block.attr("color")
-            }
-            Spacer { implicitWidth: -1 }
             AttributeDotSlider {
                 width: 30*dp
                 attr: block.attr("opacity")
@@ -47,7 +42,7 @@ BlockBase {
             height: 20*dp
             implicitHeight: 0
             Repeater {
-                model: ["Black", "White", "Gamma", "Color", "Alpha"]
+                model: ["Black", "White", "Gamma", "Alpha"]
 
                 StretchText {
                     text: modelData
@@ -59,7 +54,16 @@ BlockBase {
         }
 
         DragArea {
-            text: block.filename.slice(0, 30) || "Tissue Image"
+            text: block.filename.slice(0, 20) || "Tissue Image"
+
+            AttributeDotColorPicker {
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 5*dp
+                width: 26*dp
+                height: 26*dp
+                attr: block.attr("color")
+            }
 
             OutputNode {
                 node: block.node("outputNode")
