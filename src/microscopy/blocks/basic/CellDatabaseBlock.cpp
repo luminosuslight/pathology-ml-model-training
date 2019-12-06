@@ -94,7 +94,16 @@ void CellDatabaseBlock::setAdditionalState(const QCborMap& state) {
         m_shapes.append(bytesToArray<float, CellDatabaseConstants::RADII_COUNT>(ref.toByteArray()));
     }
     m_count = m_data.at(CellDatabaseConstants::X_POS).size();
-    emit positionChanged();
+}
+
+void CellDatabaseBlock::clear() {
+    m_count = 0;
+    m_data.clear();
+    m_shapes.clear();
+    m_features->clear();
+    getOrCreateFeatureId("x");
+    getOrCreateFeatureId("y");
+    getOrCreateFeatureId("radius");
 }
 
 void CellDatabaseBlock::importNNResult(QString positionsFilePath, QString maskFilePath) {
@@ -299,6 +308,7 @@ int CellDatabaseBlock::getOrCreateFeatureId(const QString& name) {
     const int newFeatureId = features.size();
     m_data.append(QVector<double>(newFeatureId > 0 ? m_data.at(CellDatabaseConstants::X_POS).size() : 0));
     features.append(name);
+    emit m_features.valueChanged();
     return newFeatureId;
 }
 

@@ -43,6 +43,8 @@ signals:
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
 
+    void clear();
+
     void importNNResult(QString positionsFilePath, QString maskFilePath);
 
     void importCenters(QString positionsFilePath);

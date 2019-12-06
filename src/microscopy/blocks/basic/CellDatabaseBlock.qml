@@ -63,6 +63,7 @@ BlockBase {
                 ButtonBottomLine {
                     width: 60*dp
                     text: "Import Centers + Mask"
+                    allUpperCase: false
                     onClick: positionsImportDialogLoader.active = true
                 }
 
@@ -125,6 +126,7 @@ BlockBase {
                 ButtonBottomLine {
                     width: 60*dp
                     text: "Import Centers"
+                    allUpperCase: false
                     onClick: positionsImportDialogLoader2.active = true
                 }
 
@@ -152,6 +154,15 @@ BlockBase {
                         }
                     }
                 }
+            }
+
+            ButtonBottomLine {
+                width: 60*dp
+                text: "Clear"
+                allUpperCase: false
+                onShortClick: guiManager.showToast("Long click to delete all cells")
+                onLongClick: block.clear()
+                clickDurationEnabled: true
             }
         }
     }  // end Settings Component
