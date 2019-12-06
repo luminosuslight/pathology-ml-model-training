@@ -7,15 +7,28 @@ import "qrc:/core/ui/controls"
 BlockBase {
     id: root
     width: 170*dp
-    height: 6*30*dp
+    height: 7*30*dp
 
     StretchColumn {
         anchors.fill: parent
 
         ButtonBottomLine {
-            text: "Run ▻"
+            text: "Generate ▻"
             allUpperCase: false
             onPress: block.run()
+        }
+
+        BlockRow {
+            leftMargin: 5*dp
+            StretchText {
+                text: "Area:"
+            }
+            AttributeNumericInput {
+                width: 90*dp
+                implicitWidth: 0
+                attr: block.attr("areaSize")
+                suffix: "px"
+            }
         }
 
         BlockRow {
@@ -24,7 +37,7 @@ BlockBase {
                 text: "Count:"
             }
             AttributeNumericInput {
-                width: 50*dp
+                width: 60*dp
                 implicitWidth: 0
                 attr: block.attr("count")
             }
@@ -39,6 +52,7 @@ BlockBase {
                 width: 50*dp
                 implicitWidth: 0
                 attr: block.attr("distance")
+                decimals: 2
             }
         }
 

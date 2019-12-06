@@ -3,6 +3,8 @@
 
 #include "core/block_basics/OneInputBlock.h"
 
+#include <random>
+
 
 class RandomCellGeneratorBlock : public OneInputBlock {
 
@@ -35,8 +37,14 @@ public slots:
 protected:
     QPointer<NodeBase> m_examplesNode;
 
+    IntegerAttribute m_areaSize;
     IntegerAttribute m_count;
     DoubleAttribute m_distance;
+
+    // runtime:
+
+    std::random_device m_rd;
+    mutable std::default_random_engine m_engine;
 
 };
 

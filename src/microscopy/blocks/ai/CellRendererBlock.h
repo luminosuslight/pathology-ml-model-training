@@ -3,6 +3,8 @@
 
 #include "core/block_basics/OneInputBlock.h"
 
+#include <random>
+
 
 class CellRendererBlock : public OneInputBlock {
 
@@ -29,9 +31,17 @@ signals:
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
 
-    void run();
+    double areaSize() const;
+    QVariantList indexes() const;
+    QObject* dbQml() const;
+
+    void addImageBlock(QString filename);
+
+    QVector<float> randomRadii(float ellipseFactor, float variance) const;
 
 protected:
+    std::random_device m_rd;
+    mutable std::default_random_engine m_engine;
 
 };
 
