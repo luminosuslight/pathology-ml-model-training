@@ -28,6 +28,7 @@ TissueImageBlock::TissueImageBlock(CoreController* controller, QString uid)
     , m_loadedFile(this, "loadedFile", "", /*persistent*/ false)
 {
     connect(&m_filePath, &StringAttribute::valueChanged, this, &TissueImageBlock::onFilePathChanged);
+    connect(&m_filePath, &StringAttribute::valueChanged, this, &TissueImageBlock::filenameChanged);
 }
 
 void TissueImageBlock::onCreatedByUser() {

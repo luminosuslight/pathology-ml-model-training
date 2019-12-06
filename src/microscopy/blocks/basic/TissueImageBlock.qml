@@ -59,7 +59,7 @@ BlockBase {
         }
 
         DragArea {
-            text: "Tissue Image"
+            text: block.filename.slice(0, 30) || "Tissue Image"
 
             OutputNode {
                 node: block.node("outputNode")

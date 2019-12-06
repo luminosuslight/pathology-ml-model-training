@@ -4,11 +4,14 @@
 #include "core/block_basics/OneOutputBlock.h"
 
 #include <QImage>
+#include <QFileInfo>
 
 
 class TissueImageBlock : public OneOutputBlock {
 
     Q_OBJECT
+
+    Q_PROPERTY(QString filename READ filename NOTIFY filenameChanged)
 
 public:
 
@@ -29,6 +32,7 @@ public:
     void onCreatedByUser() override;
 
 signals:
+    void filenameChanged();
 
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
@@ -41,6 +45,8 @@ public slots:
     bool isAssignedTo(QString uid) const;
     void assignView(QString uid);
     void removeFromView(QString uid);
+
+    QString filename() const { return QFileInfo(m_filePath.getValue()).fileName(); }
 
 protected slots:
     void onFilePathChanged();
