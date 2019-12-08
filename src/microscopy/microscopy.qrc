@@ -43,5 +43,9 @@
         <file>blocks/ai/CenterRenderer.qml</file>
         <file>blocks/ai/TypeRenderer.qml</file>
         <file>blocks/ai/LamiRenderer.qml</file>
+        <file>blocks/ai/InputDataPreprocessing.qml</file>
+        <file>blocks/ai/TargetDataPreprocessing.qml</file>
+        <file>blocks/ai/input_preprocessing_shader.frag</file>
+        <file>blocks/ai/target_preprocessing_shader.frag</file>
     </qresource>
 </RCC>

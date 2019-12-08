@@ -33,6 +33,8 @@ public slots:
 
     void run();
 
+    void updateSources();
+
 protected:
     QPointer<NodeBase> m_input1Node;
     QPointer<NodeBase> m_input2Node;
@@ -42,6 +44,12 @@ protected:
     QPointer<NodeBase> m_target3Node;
 
     DoubleAttribute m_noise;
+    DoubleAttribute m_brightness;
+
+    // runtime:
+
+    StringListAttribute m_inputSources;
+    StringListAttribute m_targetSources;
 
 };
 
