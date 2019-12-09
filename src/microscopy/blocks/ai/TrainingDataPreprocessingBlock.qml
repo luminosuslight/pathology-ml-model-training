@@ -1,4 +1,5 @@
 import QtQuick 2.12
+import QtQuick.Dialogs 1.2
 import CustomElements 1.0
 import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
@@ -7,7 +8,7 @@ import "qrc:/core/ui/controls"
 BlockBase {
     id: root
     width: 512  // not dp
-    height: 256 + 7*30*dp
+    height: 256 + 7*30*dp + 1*dp
 
     property real xOffset: 0.0
     property real yOffset: 0.0
@@ -15,12 +16,59 @@ BlockBase {
     property real noise: 0.0
     property real brightness: 0.0
 
+    property int alreadyGenerated: 0
+    property int imagesToGenerate: 100
+
+    function startGenerating(filename) {
+        block.createNewDataFile(filename)
+        alreadyGenerated = 0
+        refresh()
+    }
+
+    function refresh() {
+        xOffset = Math.random()
+        yOffset = Math.random()
+        contentRotation = Math.random()
+        noise = Math.random() * 0.6 * block.attr("noise").val
+        brightness = Math.random() * 0.6 * block.attr("brightness").val
+        waitForRenderingTimer.start()
+    }
+
+    Timer {
+        id: waitForRenderingTimer
+        interval: 70
+        repeat: false
+        running:  false
+        onTriggered: captureInput()
+    }
+
+    function captureInput() {
+        inputImageArea.grabToImage(function(result) {
+            block.addInputImage(result.image)
+            captureTarget()
+        });
+    }
+
+    function captureTarget() {
+        targetImageArea.grabToImage(function(result) {
+            block.addTargetImage(result.image)
+            alreadyGenerated = alreadyGenerated + 1
+            if (alreadyGenerated < imagesToGenerate) {
+                refresh()
+            } else {
+                block.writeDataFile()
+                alreadyGenerated = 0
+            }
+        });
+    }
+
     StretchColumn {
         anchors.fill: parent
 
         StretchRow {
             height: 256
             InputDataPreprocessing {
+                id: inputImageArea
                 width: 256 // not dp
                 height: 256 // not dp
                 clip: true
@@ -31,12 +79,22 @@ BlockBase {
                 brightness: root.brightness
             }
             TargetDataPreprocessing {
+                id: targetImageArea
                 width: 256 // not dp
                 height: 256 // not dp
                 clip: true
                 xOffset: root.xOffset
                 yOffset: root.yOffset
                 contentRotation: root.contentRotation
+            }
+        }
+
+        Item {
+            height: 1*dp
+            Rectangle {
+                height: parent.height
+                width: parent.width * (alreadyGenerated / imagesToGenerate)
+                color: "red"
             }
         }
 
@@ -63,7 +121,32 @@ BlockBase {
             ButtonBottomLine {
                 text: "Generate all ▻"
                 allUpperCase: false
-                onPress: block.run()
+                onPress: saveDialog.active = true
+
+                Loader {
+                    id: saveDialog
+                    active: false
+
+                    sourceComponent: FileDialog {
+                        title: "Choose filename for training data:"
+                        folder: shortcuts.documents
+                        selectMultiple: false
+                        selectExisting: false
+                        nameFilters: "CBOR Files (*.cbor)"
+                        onAccepted: {
+                            startGenerating(fileUrl)
+                            saveDialog.active = false
+                        }
+                        onRejected: {
+                            saveDialog.active = false
+                        }
+                        Component.onCompleted: {
+                            // don't set visible to true before component is complete
+                            // because otherwise the dialog will not be configured correctly
+                            visible = true
+                        }
+                    }
+                }
             }
         }
 

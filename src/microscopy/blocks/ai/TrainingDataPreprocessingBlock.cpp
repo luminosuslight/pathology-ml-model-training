@@ -3,6 +3,7 @@
 #include "core/CoreController.h"
 #include "core/manager/BlockList.h"
 #include "core/manager/BlockManager.h"
+#include "core/manager/FileSystemManager.h"
 #include "core/connections/Nodes.h"
 
 #include "microscopy/blocks/ai/TrainingDataBlock.h"
@@ -67,4 +68,33 @@ void TrainingDataPreprocessingBlock::updateSources() {
         m_targetSources->append(path);
     }
     m_targetSources.valueChanged();
+}
+
+void TrainingDataPreprocessingBlock::createNewDataFile(QString filename) {
+    if (!filename.endsWith(".cbor")) {
+        filename.append(".cbor");
+    }
+    m_currentDataFilename = filename;
+    m_currentData = QCborMap();
+    m_currentData["inputImages"_q] = QCborArray();
+    m_currentData["targetImages"_q] = QCborArray();
+}
+
+void TrainingDataPreprocessingBlock::addInputImage(QImage image) {
+    QByteArray pngData;
+    // TODO: convert image to png byte array
+    m_currentData["inputImages"_q].toArray().append(pngData);
+}
+
+void TrainingDataPreprocessingBlock::addTargetImage(QImage image) {
+    QByteArray pngData;
+    // TODO: convert image to png byte array
+    m_currentData["targetImages"_q].toArray().append(pngData);
+}
+
+void TrainingDataPreprocessingBlock::writeDataFile() {
+    QString filename = m_controller->dao()->withoutFilePrefix(m_currentDataFilename);
+    m_controller->dao()->saveLocalFile(filename, m_currentData.toCborValue().toCbor());
+    m_currentDataFilename.clear();
+    m_currentData.clear();
 }

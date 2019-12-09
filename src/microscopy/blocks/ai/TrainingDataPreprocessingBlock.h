@@ -3,6 +3,8 @@
 
 #include "core/block_basics/OneInputBlock.h"
 
+#include <QImage>
+
 
 class TrainingDataPreprocessingBlock : public OneInputBlock {
 
@@ -35,6 +37,13 @@ public slots:
 
     void updateSources();
 
+    void createNewDataFile(QString filename);
+
+    void addInputImage(QImage image);
+    void addTargetImage(QImage image);
+
+    void writeDataFile();
+
 protected:
     QPointer<NodeBase> m_input1Node;
     QPointer<NodeBase> m_input2Node;
@@ -47,9 +56,11 @@ protected:
     DoubleAttribute m_brightness;
 
     // runtime:
-
     StringListAttribute m_inputSources;
     StringListAttribute m_targetSources;
+
+    QString m_currentDataFilename;
+    QCborMap m_currentData;
 
 };
 
