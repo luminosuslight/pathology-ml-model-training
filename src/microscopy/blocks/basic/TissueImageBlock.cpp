@@ -62,17 +62,16 @@ float TissueImageBlock::pixelValue(int x, int y) const {
 }
 
 bool TissueImageBlock::isAssignedTo(QString uid) const {
-    return m_assignedViews.getValue().contains(uid);
+    return m_assignedViews->contains(uid);
 }
 
 void TissueImageBlock::assignView(QString uid) {
-    m_assignedViews.getValue().append(uid);
-    emit m_assignedViews.valueChanged();
+    m_assignedViews.append(uid);
     emit m_controller->manager<ViewManager>("viewManager")->imageAssignmentChanged();
 }
 
 void TissueImageBlock::removeFromView(QString uid) {
-    m_assignedViews.getValue().removeAll(uid);
+    m_assignedViews->removeAll(uid);
     emit m_assignedViews.valueChanged();
     emit m_controller->manager<ViewManager>("viewManager")->imageAssignmentChanged();
 }

@@ -29,8 +29,17 @@ signals:
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
 
-protected:
+    void update();
 
+    bool isSelected(int featureId) const;
+    void selectFeature(int featureId);
+    void deselectFeature(int featureId);
+
+protected:
+    VariantListAttribute m_selectedFeatures;
+
+    // runtime:
+    VariantListAttribute m_availableFeatures;
 };
 
 #endif // FEATURESELECTIONBLOCK_H

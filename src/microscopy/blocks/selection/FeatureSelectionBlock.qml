@@ -23,14 +23,22 @@ BlockBase {
                     height: implicitHeight
                     defaultSize: 30*dp
                     Repeater {
-                        model: ["Center x", "Center y", "Size", "Type", "Roundness", "t-SNE 1", "t-SNE 2"]
+                        model: block.attr("availableFeatures").val
                         StretchRow {
                             implicitHeight: -1
                             CheckBox {
                                 width: 30*dp
+                                active: block.isSelected(modelData.id)
+                                onActiveChanged: {
+                                    if (active) {
+                                        block.selectFeature(modelData.id)
+                                    } else {
+                                        block.deselectFeature(modelData.id)
+                                    }
+                                }
                             }
                             StretchText {
-                                text: modelData
+                                text: modelData.name
                             }
                         }
                     }
