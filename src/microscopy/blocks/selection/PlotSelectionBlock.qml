@@ -6,8 +6,8 @@ import "qrc:/core/ui/controls"
 
 BlockBase {
     id: root
-    width: 400*dp
-    height: 220*dp
+    width: 360*dp
+    height: 300*dp
 
     StretchColumn {
         height: parent.height
@@ -16,21 +16,25 @@ BlockBase {
         Item {
             implicitHeight: -1
 
-            Rectangle {
-                height: parent.height - 8*dp
-                width: 1*dp
-                x: 4*dp
-                y: 4*dp
-                color: Style.primaryActionColor
-            }
+            Points {
+                anchors.fill: parent
+                anchors.leftMargin: 5*dp
+                anchors.bottomMargin: 5*dp
+                xPositions: block.xValues
+                yPositions: block.yValues
 
-            Rectangle {
-                height: 1*dp
-                width: parent.width - 8*dp
-                x: 4*dp
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 4*dp
-                color: Style.primaryActionColor
+                Rectangle {
+                    height: parent.height
+                    width: 1*dp
+                    color: Style.primaryActionColor
+                }
+
+                Rectangle {
+                    height: 1*dp
+                    width: parent.width
+                    anchors.bottom: parent.bottom
+                    color: Style.primaryActionColor
+                }
             }
         }
 
