@@ -62,6 +62,8 @@ public slots:
     double getFeature(int featureId, int cellIndex) const {
         return m_data.at(featureId).at(cellIndex);
     }
+    double featureMin(int featureId) const;
+    double featureMax(int featureId) const;
 
     const CellShape& getShape(int index) const;
     QVector<float> getShapeVector(int index) const;

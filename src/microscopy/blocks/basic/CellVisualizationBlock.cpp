@@ -53,6 +53,7 @@ QObject* CellVisualizationBlock::databaseQml() const {
 }
 
 CellDatabaseBlock* CellVisualizationBlock::database() const {
+    if (!m_inputNode->isConnected()) return nullptr;
     return m_lastDb;
 }
 

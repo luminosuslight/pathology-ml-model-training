@@ -82,7 +82,7 @@ BlockBase {
 
             BlockRow {
                 StretchText {
-                    text: "Use for watershed:"
+                    text: "Interactive Watershed:"
                 }
                 AttributeCheckbox {
                     width: 30*dp

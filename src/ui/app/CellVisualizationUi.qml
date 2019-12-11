@@ -67,8 +67,7 @@ Item {
                         if (touch.modifiers & Qt.ControlModifier) {
                             return
                         }
-                        if (currentMode === TissueView.Mode.AddArea
-                                || currentMode === TissueView.Mode.AddCenter) {
+                        if (currentMode === TissueView.Mode.Add) {
                             visBlock.database.removeCell(idx)
                         } else if (currentMode === TissueView.Mode.Edit) {
                             if (segmentationLoader.selectedIdx === idx) {

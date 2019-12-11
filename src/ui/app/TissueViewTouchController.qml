@@ -1,4 +1,5 @@
 import QtQuick 2.12
+import QtQuick.Window 2.2
 import CustomElements 1.0
 import "qrc:/microscopy/blocks"
 
@@ -6,7 +7,7 @@ CustomTouchArea {
     secondTouchEnabled: false
 
     property Item plane
-    property real minScale: 0.1
+    property real minScale: 0.1 / Screen.devicePixelRatio
     property real maxScale: 5
 
     KineticEffect2D {
@@ -98,16 +99,17 @@ CustomTouchArea {
     MouseArea {
         anchors.fill: parent
         cursorShape: {
-            if (currentMode === TissueViewerBlock.Mode.View)
+            if (currentMode === TissueView.Mode.View) {
                 return Qt.OpenHandCursor
-            else if (currentMode === TissueViewerBlock.Mode.AddCenter || currentMode === TissueViewerBlock.Mode.AddArea)
+            } else if (currentMode === TissueView.Mode.Add) {
                 return Qt.CrossCursor
-            else
+            } else {
                 return Qt.ArrowCursor
+            }
         }
         onPressed: mouse.accepted = false
         onWheel: {
-            const wheelDelta = wheel.pixelDelta.y ? wheel.pixelDelta.y : wheel.angleDelta.y
+            const wheelDelta = wheel.pixelDelta.y ? wheel.pixelDelta.y * Screen.devicePixelRatio : wheel.angleDelta.y
             let oldScale =  view.attr("scale").val
             let newScale = Math.min(Math.max(minScale, oldScale + (wheelDelta / 3000) * oldScale), maxScale)
             let diff = newScale / oldScale;

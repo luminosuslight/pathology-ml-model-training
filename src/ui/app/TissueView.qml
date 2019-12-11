@@ -12,8 +12,7 @@ Item {
 
     enum Mode {
         View,
-        AddArea,
-        AddCenter,
+        Add,
         Edit
     }
 
@@ -28,18 +27,36 @@ Item {
 
             onTouchDown: {
                 if (currentMode === TissueView.Mode.View
+                        || currentMode === TissueView.Mode.Edit
                         || touch.modifiers & Qt.ControlModifier) {
                     touch.accepted = false
+                } else if (currentMode === TissueView.Mode.Add) {
+                    touch.accepted = true
+                    const imageX = (-view.attr("contentX").val + touch.itemX) / view.attr("scale").val
+                    const imageY = (-view.attr("contentY").val + touch.itemY) / view.attr("scale").val
+                    newNuclei.x = imageX
+                    newNuclei.y = imageY
+                    newNuclei.width = 1
+                    newNuclei.visible = true
                 }
             }
-
-            onClick: {
-                if (currentMode === TissueView.Mode.AddArea) {
-                    // TODO
-                } else if (currentMode === TissueView.Mode.AddCenter) {
-                    let realX = (-view.attr("contentX").val + touch.itemX) / view.attr("scale").val
-                    let realY = (-view.attr("contentY").val + touch.itemY) / view.attr("scale").val
-                    view.addCenter(realX, realY)
+            onTouchMove: {
+                if (currentMode === TissueView.Mode.Add) {
+                    const imageRadius = Math.sqrt(Math.pow(touch.itemX - touch.itemOriginX, 2) + Math.pow(touch.itemY - touch.itemOriginY, 2)) / view.attr("scale").val
+                    newNuclei.width = imageRadius
+                    newNucleiCircle.radii = view.getShapeEstimationAtRadius(newNuclei.x, newNuclei.y, imageRadius)
+                }
+            }
+            onTouchUp: {
+                const imageX = (-view.attr("contentX").val + touch.itemX) / view.attr("scale").val
+                const imageY = (-view.attr("contentY").val + touch.itemY) / view.attr("scale").val
+                if (currentMode === TissueView.Mode.Add) {
+                    if (touch.isAtOrigin()) {
+                        view.addCenter(imageX, imageY)
+                    } else {
+                        view.addCell(newNuclei.x, newNuclei.y, newNuclei.width, newNucleiCircle.radii)
+                    }
+                    newNuclei.visible = false
                 }
             }
         }
@@ -75,6 +92,30 @@ Item {
             }
         }
 
+        Item {
+            id: newNuclei
+            visible: false
+            Rectangle {
+                anchors.horizontalCenter: parent.left
+                anchors.verticalCenter: parent.top
+                width: parent.width * 2
+                height: width
+                radius: width / 2
+                color: Qt.hsva(0, 0, 1, 0.1)
+                border.width: 1*dp
+                border.color: Qt.hsva(0, 0, 1, 0.3)
+            }
+            IrregularCircle {
+                id: newNucleiCircle
+                anchors.horizontalCenter: parent.left
+                anchors.verticalCenter: parent.top
+                width: parent.width * 2
+                height: width
+                outerColor: "red"
+                innerColor: "transparent"
+                opacity: 0.4
+            }
+        }
     }  // workspace
 
     Repeater {
@@ -98,15 +139,9 @@ Item {
                 allUpperCase: false
             }
             ButtonSideLine {
-                text: "+Area"
-                marked: currentMode === TissueView.Mode.AddArea
-                onPress: currentMode = TissueView.Mode.AddArea
-                allUpperCase: false
-            }
-            ButtonSideLine {
-                text: "+Center"
-                marked: currentMode === TissueView.Mode.AddCenter
-                onPress: currentMode = TissueView.Mode.AddCenter
+                text: "Add"
+                marked: currentMode === TissueView.Mode.Add
+                onPress: currentMode = TissueView.Mode.Add
                 allUpperCase: false
             }
             ButtonSideLine {

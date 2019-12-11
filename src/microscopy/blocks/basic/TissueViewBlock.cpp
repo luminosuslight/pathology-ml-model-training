@@ -5,6 +5,7 @@
 #include "core/manager/BlockManager.h"
 #include "core/manager/ProjectManager.h"
 #include "core/manager/GuiManager.h"
+#include "core/helpers/utils.h"
 #include "microscopy/blocks/basic/TissueImageBlock.h"
 #include "microscopy/blocks/basic/CellVisualizationBlock.h"
 #include "microscopy/blocks/basic/CellDatabaseBlock.h"
@@ -100,13 +101,196 @@ void TissueViewBlock::updateCellVisibility() {
 }
 
 void TissueViewBlock::addCenter(double x, double y) {
-    if (m_visualizeBlocks.isEmpty()) {
-        m_controller->guiManager()->showToast("Please assign at least one visualize block.");
+    const auto dbs = getDbs();
+    if (dbs.isEmpty()) {
+        m_controller->guiManager()->showToast("Please assign at least one connected visualize block.");
     }
-    for (auto visBlock: m_visualizeBlocks) {
-        auto db = visBlock->database();
-        db->addCenter(x, y);
+    const bool watershedChannelAvailable = std::any_of(m_channelBlocks.begin(), m_channelBlocks.end(),
+                                                       [](TissueImageBlock* ch){ return ch->isNucleiChannel(); });
+    if (watershedChannelAvailable) {
+        addCenterAndGuessArea(int(x), int(y));
+    } else {
+        for (auto db: dbs) {
+            db->addCenter(x, y);
+        }
     }
+}
+
+void TissueViewBlock::addCenterAndGuessArea(int x, int y) {
+    const auto dbs = getDbs();
+    for (auto db: dbs) {
+        // get min and max nucleus size for a good estimation:
+        int minNucleusSize = int(db->featureMin(CellDatabaseConstants::RADIUS) * 1.2);
+        int maxNucleusSize = int(db->featureMax(CellDatabaseConstants::RADIUS) * 0.7);
+
+        if (maxNucleusSize <= 0) {
+            qWarning() << "No nucleus yet, using default values.";
+            minNucleusSize = 8;
+            maxNucleusSize = 40;
+        }
+        if (maxNucleusSize <= minNucleusSize) {
+            maxNucleusSize = minNucleusSize + 1;
+        }
+
+        // QVector of { { radii, score }, size } elements
+        QVector<QPair<QPair<CellShape, float>, int>> candidates;
+        for (int size = minNucleusSize; size <= maxNucleusSize; ++size) {
+            candidates.append({getShapeEstimationAndScore(x, y, size), size});
+        }
+        const auto it = std::min_element(candidates.begin(), candidates.end(), [](auto lhs, auto rhs){
+            return lhs.first.second < rhs.first.second;
+        });
+        if (it != candidates.end()) {
+            if ((*it).first.second == 0.0f) continue;
+            const int idx = db->addCenter(x, y);
+            db->setFeature(CellDatabaseConstants::RADIUS, idx, (*it).second);
+            db->setShape(idx, (*it).first.first);
+            db->dataWasModified();
+            emit db->indexesReassigned();
+        }
+    }
+}
+
+void TissueViewBlock::addCell(double x, double y, double radius, const QVector<float>& shape) {
+    if (std::none_of(shape.begin(), shape.end(), [](float v){ return v > 0.0f; })) {
+        return;
+    }
+    const auto dbs = getDbs();
+    if (dbs.isEmpty()) {
+        m_controller->guiManager()->showToast("Please assign at least one connected visualize block.");
+    }
+    for (auto db: dbs) {
+        const int idx = db->addCenter(x, y);
+        db->setFeature(CellDatabaseConstants::RADIUS, idx, radius);
+        CellShape cellShape;
+        std::copy_n(shape.begin(), cellShape.size(), cellShape.begin());
+        db->setShape(idx, cellShape);
+        db->dataWasModified();
+        emit db->indexesReassigned();
+    }
+}
+
+QVector<float> TissueViewBlock::getShapeEstimationAtRadius(int x, int y, int radius) const {
+    const bool watershedChannelAvailable = std::any_of(m_channelBlocks.begin(), m_channelBlocks.end(),
+                                                       [](TissueImageBlock* ch){ return ch->isNucleiChannel(); });
+    if (!watershedChannelAvailable) {
+        if (radius == 10) {
+            m_controller->guiManager()->showToast("Please enable 'Interactive Watershed' for at least one channel.");
+        }
+        return {};
+    }
+    const auto result = getShapeEstimationAndScore(x, y, radius);
+    if (result.second == 0.0f) return {};
+    const auto& shape = result.first;
+    return QVector<float>::fromStdVector(std::vector<float>(shape.begin(), shape.end()));
+}
+
+QPair<CellShape, float> TissueViewBlock::getShapeEstimationAndScore(int x, int y, int radius) const {
+    if (radius < 2) return {};
+
+    QVector<float> pixelValues(radius);
+    QVector<float> changes(radius);
+    CellShape radii;
+    float minValuesSum = 0.0;
+    const int radiiCount = CellDatabaseConstants::RADII_COUNT;
+
+    QVector<TissueImageBlock*> nucleiChannel;
+    for (auto channel: m_channelBlocks) {
+        if (channel->isNucleiChannel()) {
+            nucleiChannel.append(channel);
+        }
+    }
+    if (nucleiChannel.isEmpty()) {
+        m_controller->guiManager()->showToast("Please enable at least one image channel to use for segmentation.");
+        return {radii, 0};
+    }
+
+    // we want to find the min values of the <radiiCount> lines
+    // from the center of the circular selection to its outline:
+    for (std::size_t radiusIndex = 0; radiusIndex < radiiCount; ++radiusIndex) {
+        const float radiusAngle = 2 * float(M_PI) * (float(radiusIndex) / radiiCount);
+        // sample pixels in this direction:
+        for (int d = 0; d < radius; ++d) {
+            const int dx = int((d+2) * std::sin(radiusAngle));
+            const int dy = int((d+2) * std::cos(radiusAngle));
+            pixelValues[d] = 0;
+            // sum up the pixel values at this point of each channel
+            // showing nuclei information:
+            for (auto channel: nucleiChannel) {
+                pixelValues[d] += channel->pixelValue(x + dx, y + dy);
+            }
+        }
+
+        // apply smoothing / low pass filter:
+        for (int d = 0; d < (radius - 1); ++d) {
+            pixelValues[d] = 0.5f * pixelValues[d] + 0.5f * pixelValues[d + 1];
+        }
+
+        // calculate first derivate aka changes between pixels:
+        for (int d = (radius - 1); d > 0; --d) {
+            changes[d] = pixelValues[d] - pixelValues[d - 1];
+        }
+
+        // aggregate changes between up to 5 pixel:
+        for (int d = (radius - 1); d >= 4; --d) {
+            changes[d] = changes[d] + changes[d - 1] + changes[d - 2]
+                     + changes[d - 3] + changes[d - 4];
+        }
+
+        // make changes in the center smaller to prefer changes at the border:
+        for (int d = (radius - 1); d > 0; --d) {
+            changes[d] = changes[d] * std::pow(d / float(radius - 1), 1.8f);
+        }
+
+        // add changes (negative when decreasing) to pixel values
+        // to decrease pixel values on a negative gradient
+        // this way even if the pixel values are in an area all the same
+        // the ones where the values before where falling will be lower
+        for (int d = 0; d < radius; ++d) {
+            float pos = float(d / float(radius - 1));
+            // in addition, we increase the values near the center
+            // to prefer the values at the border:
+            float midRise = std::max((1 - pos) * 1.5f, 1.0f);
+            pixelValues[d] = pixelValues[d] * midRise + changes[d] * 2;
+        }
+
+        auto minElementIt = std::min_element(pixelValues.begin(), pixelValues.end());
+        minValuesSum += *minElementIt;
+        long minElementIndex = minElementIt - pixelValues.begin();
+        if (minElementIndex <= 1) {
+            radii[radiusIndex] = 1.0f;
+        } else {
+            radii[radiusIndex] = float(minElementIndex) / radius;
+        }
+    }
+
+    const float maxRadius = *std::max_element(radii.begin(), radii.end());
+    if (maxRadius <= 0) {
+        return {};
+    }
+
+    // remove outliers
+    const float maxDiff = 0.6f;
+    const float median = almostMedian(radii);
+    for (std::size_t i = 0; i < radiiCount; ++i) {
+        const float before = radii[std::size_t(intMod(int(i) - 1, radiiCount))];
+        const float here = radii[i];
+        const float after = radii[std::size_t(intMod(int(i) + 1, radiiCount))];
+        const float diffBefore = std::abs(before - here) / maxRadius;
+        const float diffAfter = std::abs(here - after) / maxRadius;
+        // we define outliers as points that differ much from their pre- and successor:
+        if (diffBefore > maxDiff && diffAfter > maxDiff) {
+            // replace with average of neighbours:
+            radii[i] = (before + after) / 2.0f;
+        } else if (diffBefore > maxDiff) {
+            // take the one closer to median:
+            radii[i] = std::abs(before - median) < std::abs(here - median) ? before : here;
+        } else if (diffAfter > maxDiff) {
+            radii[i] = std::abs(after - median) < std::abs(here - median) ? after : here;
+        }
+    }
+
+    return {radii, minValuesSum};
 }
 
 void TissueViewBlock::updateChannelBlocks() {
@@ -167,4 +351,14 @@ void TissueViewBlock::updateRectangularAreaBlocks() {
     }
     m_rectangularAreaBlocks = areaBlocks;
     emit rectangularAreaBlocksChanged();
+}
+
+QSet<CellDatabaseBlock*> TissueViewBlock::getDbs() const {
+    QSet<CellDatabaseBlock*> dbs;
+    for (const auto& visBlock: m_visualizeBlocks) {
+        const auto db = visBlock->database();
+        if (!db) continue;
+        dbs.insert(db);
+    }
+    return dbs;
 }

@@ -320,6 +320,24 @@ void CellDatabaseBlock::setFeature(int featureId, int cellIndex, double value) {
     featureVector[cellIndex] = value;
 }
 
+double CellDatabaseBlock::featureMin(int featureId) const {
+    if (m_data.size() <= featureId) {
+        qDebug() << "Feature ID is not available:" << featureId;
+        return 0.0;
+    }
+    const auto& feature = m_data.at(featureId);
+    return *std::min_element(feature.begin(), feature.end());
+}
+
+double CellDatabaseBlock::featureMax(int featureId) const {
+    if (m_data.size() <= featureId) {
+        qDebug() << "Feature ID is not available:" << featureId;
+        return 0.0;
+    }
+    const auto& feature = m_data.at(featureId);
+    return *std::max_element(feature.begin(), feature.end());
+}
+
 const CellShape& CellDatabaseBlock::getShape(int index) const {
     return m_shapes.at(index);
 }

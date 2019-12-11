@@ -3,6 +3,8 @@
 
 #include "core/block_basics/BlockBase.h"
 
+#include "microscopy/blocks/basic/CellDatabaseBlock.h"
+
 #include <qsyncable/QSListModel>
 
 class TissueImageBlock;
@@ -58,11 +60,18 @@ public slots:
     void updateCellVisibility();
 
     void addCenter(double x, double y);
+    void addCell(double x, double y, double radius, const QVector<float>& shape);
+
+    QVector<float> getShapeEstimationAtRadius(int x, int y, int radius) const;
+    QPair<CellShape, float> getShapeEstimationAndScore(int x, int y, int radius) const;
 
 protected slots:
     void updateChannelBlocks();
     void updateVisualizeBlocks();
     void updateRectangularAreaBlocks();
+
+    QSet<CellDatabaseBlock*> getDbs() const;
+    void addCenterAndGuessArea(int x, int y);
 
 protected:
     IntegerAttribute m_viewportWidth;
