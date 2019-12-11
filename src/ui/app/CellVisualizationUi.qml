@@ -35,20 +35,20 @@ Item {
             model: visBlock.visibleCells()
 
             IrregularCircleOutline {
-                // idx comes from the model
+                // idx and colorIndex comes from the model
                 width: visBlock.database.getFeature(2, idx) * 2
                 height: width
                 x: visBlock.database.getFeature(0, idx) - width / 2
                 y: visBlock.database.getFeature(1, idx) - width / 2
                 radii: visBlock.database.getShapeVector(idx)
-                color: segmentationLoader.selectedIdx === idx ? "red" : visBlock.attr("outerColor").qcolor
+                color: visBlock.isSelected(idx) ? "red" : visBlock.attr("outerColor").qcolor
                 lineWidth: Math.max(1, visBlock.attr("strength").val * 4) * dp
 
                 Rectangle {
                     width: Math.max(1, visBlock.attr("strength").val * 4) * dp
                     height: width
                     anchors.centerIn: parent
-                    color: visBlock.attr("outerColor").qcolor
+                    color: visBlock.isSelected(idx) ? "red" : visBlock.attr("outerColor").qcolor
                     visible: visBlock.database.getFeature(2, idx) < 1.0
                 }
 
@@ -69,11 +69,11 @@ Item {
                         }
                         if (currentMode === TissueView.Mode.Add) {
                             visBlock.database.removeCell(idx)
-                        } else if (currentMode === TissueView.Mode.Edit) {
-                            if (segmentationLoader.selectedIdx === idx) {
-                                segmentationLoader.selectedIdx = -1
+                        } else if (currentMode === TissueView.Mode.Select) {
+                            if (visBlock.isSelected(idx)) {
+                                visBlock.deselectCell(idx)
                             } else {
-                                segmentationLoader.selectedIdx = idx
+                                visBlock.selectCell(idx)
                             }
                         }
                     }

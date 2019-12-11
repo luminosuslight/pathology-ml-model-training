@@ -13,7 +13,7 @@ Item {
     enum Mode {
         View,
         Add,
-        Edit
+        Select
     }
 
     property int currentMode: TissueView.Mode.View
@@ -27,7 +27,6 @@ Item {
 
             onTouchDown: {
                 if (currentMode === TissueView.Mode.View
-                        || currentMode === TissueView.Mode.Edit
                         || touch.modifiers & Qt.ControlModifier) {
                     touch.accepted = false
                 } else if (currentMode === TissueView.Mode.Add) {
@@ -145,9 +144,9 @@ Item {
                 allUpperCase: false
             }
             ButtonSideLine {
-                text: "Edit"
-                marked: currentMode === TissueView.Mode.Edit
-                onPress: currentMode = TissueView.Mode.Edit
+                text: "Select"
+                marked: currentMode === TissueView.Mode.Select
+                onPress: currentMode = TissueView.Mode.Select
                 allUpperCase: false
             }
         }

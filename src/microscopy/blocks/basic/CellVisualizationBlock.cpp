@@ -20,11 +20,13 @@ CellVisualizationBlock::CellVisualizationBlock(CoreController* controller, QStri
     , m_strength(this, "strength", 0.5)
     , m_opacity(this, "opacity", 0.7)
     , m_assignedView(this, "assignedView")
+    , m_selectedCells(this, "selectedCells")
     , m_detailedView(this, "detailedView", false, /*persistent*/ false)
     , m_lastDb(nullptr)
 {
     // prevent QML engine from taking ownership and deleting this object:
     m_visibleCells.setParent(this);
+    m_visibleCells.setRoleNames({"idx", "colorIndex"});
 
     connect(m_controller->projectManager(), &ProjectManager::projectLoadingFinished, this, [this]() {
         m_view = m_controller->blockManager()->getBlockByUid<TissueViewBlock>(m_assignedView);
@@ -121,7 +123,8 @@ void CellVisualizationBlock::updateCellVisibility() {
         if (x + radius >= area.left && x - radius <= area.right) {
             const double y = m_yPositions[i];
             if (y + radius >= area.top && y - radius <= area.bottom) {
-                visible.append(QVariantMap({{"idx", QVariant(idx)}}));
+                visible.append(QVariantMap({{"idx", QVariant(idx)},
+                                           {"colorIndex", 0}}));
                 if (visible.size() > 1024) {
                     // early exit, there are too many cells visible
                     // don't change list for fade out animation
@@ -137,4 +140,24 @@ void CellVisualizationBlock::updateCellVisibility() {
     QList<QSPatch> patches = runner.compare(m_visibleCells.storage(), visible);
     runner.patch(&m_visibleCells, patches);
     m_detailedView = true;
+}
+
+bool CellVisualizationBlock::isSelected(int index) const {
+    qDebug() << "is selected" << index << m_selectedCells->contains(index);
+    return m_selectedCells->contains(index);
+}
+
+void CellVisualizationBlock::selectCell(int index) {
+    qDebug() << "select" << index;
+    if (m_selectedCells->contains(index)) return;
+    m_selectedCells.append(index);
+    m_visibleCells.clear();
+    updateCellVisibility();
+}
+
+void CellVisualizationBlock::deselectCell(int index) {
+    qDebug() << "deselect" << index;
+    m_selectedCells.removeOne(index);
+    m_visibleCells.clear();
+    updateCellVisibility();
 }

@@ -52,6 +52,10 @@ public slots:
     void invalidateIndexes();
     void updateCellVisibility();
 
+    bool isSelected(int index) const;
+    void selectCell(int index);
+    void deselectCell(int index);
+
     bool isAssignedTo(QString uid) const;
 
     QVector<double> xPositions() const { return m_xPositions; }
@@ -63,6 +67,7 @@ protected:
     DoubleAttribute m_strength;
     DoubleAttribute m_opacity;
     StringAttribute m_assignedView;
+    VariantListAttribute m_selectedCells;
 
     // runtime:
     BoolAttribute m_detailedView;
