@@ -42,6 +42,12 @@ CellVisualizationBlock::CellVisualizationBlock(CoreController* controller, QStri
     });
     connect(m_inputNode, &NodeBase::dataChanged,
             this, &CellVisualizationBlock::updateCells);
+
+    connect(&m_selectedCells, &VariantListAttribute::valueChanged, this, [this]() {
+        updateSelectedCells();
+        m_visibleCells.clear();
+        updateCellVisibility();
+    });
 }
 
 void CellVisualizationBlock::onCreatedByUser() {
@@ -99,6 +105,10 @@ QVector<int> CellVisualizationBlock::cellIds() const {
     return m_inputNode->constData().ids();
 }
 
+void CellVisualizationBlock::clearSelection() {
+    m_selectedCells.clear();
+}
+
 void CellVisualizationBlock::updateCellVisibility() {
     CellDatabaseBlock* db = m_inputNode->constData().referenceObject<CellDatabaseBlock>();
     if (!m_inputNode->isConnected() || !db || !m_view) {
@@ -111,7 +121,8 @@ void CellVisualizationBlock::updateCellVisibility() {
             disconnect(m_lastDb);
         }
         m_lastDb = db;
-        connect(db, &CellDatabaseBlock::indexesReassigned, this, &CellVisualizationBlock::invalidateIndexes);
+        updateSelectedCells();
+        connect(db, &CellDatabaseBlock::existingDataChanged, this, &CellVisualizationBlock::invalidateIndexes);
         emit databaseChanged();
     }
     // this will be evaluated every 50ms while moving the view -> performance critical
@@ -151,21 +162,17 @@ bool CellVisualizationBlock::isSelected(int index) const {
 void CellVisualizationBlock::selectCell(int index) {
     if (m_selectedCells->contains(index)) return;
     m_selectedCells.append(index);
-    m_visibleCells.clear();
-    updateCellVisibility();
-    updateSelectedCells();
 }
 
 void CellVisualizationBlock::deselectCell(int index) {
     m_selectedCells.removeOne(index);
-    m_visibleCells.clear();
-    updateCellVisibility();
-    updateSelectedCells();
 }
 
 void CellVisualizationBlock::updateSelectedCells() {
+    qDebug() << "update selected cells";
     QVector<int> ids;
     for (auto ref: m_selectedCells.getValue()) {
+        qDebug() << ref.toInt();
         ids.append(ref.toInt());
     }
     m_selectionNode->data().setReferenceObject(m_inputNode->constData().referenceObject<CellDatabaseBlock>());

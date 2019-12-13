@@ -63,6 +63,8 @@ public slots:
     QVector<double> yPositions() const { return m_yPositions; }
     QVector<int> cellIds() const;
 
+    void clearSelection();
+
 protected slots:
     void updateSelectedCells();
 

@@ -14,6 +14,7 @@ HEADERS += \
     $$PWD/blocks/actions/ClusteringBlock.h \
     $$PWD/blocks/actions/CsvExportBlock.h \
     $$PWD/blocks/actions/DimensionalityReductionBlock.h \
+    $$PWD/blocks/actions/FeatureSetterBlock.h \
     $$PWD/blocks/ai/AutoAiSegmentationBlock.h \
     $$PWD/blocks/ai/CellAreaAverageBlock.h \
     $$PWD/blocks/ai/CellDatabaseComparison.h \
@@ -49,6 +50,7 @@ SOURCES += \
     $$PWD/blocks/actions/ClusteringBlock.cpp \
     $$PWD/blocks/actions/CsvExportBlock.cpp \
     $$PWD/blocks/actions/DimensionalityReductionBlock.cpp \
+    $$PWD/blocks/actions/FeatureSetterBlock.cpp \
     $$PWD/blocks/ai/AutoAiSegmentationBlock.cpp \
     $$PWD/blocks/ai/CellAreaAverageBlock.cpp \
     $$PWD/blocks/ai/CellDatabaseComparison.cpp \

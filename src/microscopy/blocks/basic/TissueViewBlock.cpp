@@ -146,7 +146,7 @@ void TissueViewBlock::addCenterAndGuessArea(int x, int y) {
             db->setFeature(CellDatabaseConstants::RADIUS, idx, (*it).second);
             db->setShape(idx, (*it).first.first);
             db->dataWasModified();
-            emit db->indexesReassigned();
+            emit db->existingDataChanged();
         }
     }
 }
@@ -166,7 +166,7 @@ void TissueViewBlock::addCell(double x, double y, double radius, const QVector<f
         std::copy_n(shape.begin(), cellShape.size(), cellShape.begin());
         db->setShape(idx, cellShape);
         db->dataWasModified();
-        emit db->indexesReassigned();
+        emit db->existingDataChanged();
     }
 }
 

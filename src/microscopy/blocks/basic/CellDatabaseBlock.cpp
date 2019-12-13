@@ -297,7 +297,7 @@ void CellDatabaseBlock::removeCell(int index) {
         m_shapes.remove(index);
     }
     m_count = m_data[CellDatabaseConstants::X_POS].size();
-    emit indexesReassigned();
+    emit existingDataChanged();
 }
 
 int CellDatabaseBlock::getOrCreateFeatureId(const QString& name) {

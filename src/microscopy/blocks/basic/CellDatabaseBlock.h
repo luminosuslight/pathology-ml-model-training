@@ -38,7 +38,7 @@ public:
     virtual void setAdditionalState(const QCborMap& state) override;
 
 signals:
-    void indexesReassigned();
+    void existingDataChanged();
 
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }

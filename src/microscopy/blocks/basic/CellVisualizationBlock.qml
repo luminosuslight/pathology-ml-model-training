@@ -73,11 +73,18 @@ BlockBase {
             rightMargin: 15*dp
             defaultSize: 30*dp
 
+            ButtonBottomLine {
+                text: "Clear Selection"
+                allUpperCase: false
+                onPress: block.clearSelection()
+            }
+
             Repeater {
                 model: viewManager.views
                 BlockRow {
                     ButtonSideLine {
                         text: "View " + (index + 1)
+                        allUpperCase: false
                         marked: block.attr("assignedView").val === modelData.getUid()
                         onPress: block.attr("assignedView").val = modelData.getUid()
                     }
