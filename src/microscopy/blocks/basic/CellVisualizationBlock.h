@@ -25,7 +25,8 @@ public:
         static BlockInfo info;
         info.typeName = "Cell Visualization";
         info.category << "Microscopy" << "Basic";
-        info.helpText = "";
+        info.helpText = "Shows cells in the selected view.\n\n"
+                        "Output the selected cells.";
         info.qmlFile = "qrc:/microscopy/blocks/basic/CellVisualizationBlock.qml";
         info.orderHint = 1000 + 100 + 4;
         info.complete<CellVisualizationBlock>();
@@ -62,7 +63,14 @@ public slots:
     QVector<double> yPositions() const { return m_yPositions; }
     QVector<int> cellIds() const;
 
+protected slots:
+    void updateSelectedCells();
+
 protected:
+
+
+    QPointer<NodeBase> m_selectionNode;
+
     HsvAttribute m_outerColor;
     DoubleAttribute m_strength;
     DoubleAttribute m_opacity;

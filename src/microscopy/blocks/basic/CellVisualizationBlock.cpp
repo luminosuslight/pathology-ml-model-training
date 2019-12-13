@@ -24,6 +24,8 @@ CellVisualizationBlock::CellVisualizationBlock(CoreController* controller, QStri
     , m_detailedView(this, "detailedView", false, /*persistent*/ false)
     , m_lastDb(nullptr)
 {
+    m_selectionNode = createOutputNode("selection");
+
     // prevent QML engine from taking ownership and deleting this object:
     m_visibleCells.setParent(this);
     m_visibleCells.setRoleNames({"idx", "colorIndex"});
@@ -143,21 +145,30 @@ void CellVisualizationBlock::updateCellVisibility() {
 }
 
 bool CellVisualizationBlock::isSelected(int index) const {
-    qDebug() << "is selected" << index << m_selectedCells->contains(index);
     return m_selectedCells->contains(index);
 }
 
 void CellVisualizationBlock::selectCell(int index) {
-    qDebug() << "select" << index;
     if (m_selectedCells->contains(index)) return;
     m_selectedCells.append(index);
     m_visibleCells.clear();
     updateCellVisibility();
+    updateSelectedCells();
 }
 
 void CellVisualizationBlock::deselectCell(int index) {
-    qDebug() << "deselect" << index;
     m_selectedCells.removeOne(index);
     m_visibleCells.clear();
     updateCellVisibility();
+    updateSelectedCells();
+}
+
+void CellVisualizationBlock::updateSelectedCells() {
+    QVector<int> ids;
+    for (auto ref: m_selectedCells.getValue()) {
+        ids.append(ref.toInt());
+    }
+    m_selectionNode->data().setReferenceObject(m_inputNode->constData().referenceObject<CellDatabaseBlock>());
+    m_selectionNode->data().setIds(ids);
+    m_selectionNode->dataWasModifiedByBlock();
 }

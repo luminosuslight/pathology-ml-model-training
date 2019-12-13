@@ -47,15 +47,19 @@ BlockBase {
             InputNodeCommand {
                 node: block.node("inputNode")
             }
-            text: "Vis."
+            text: "Vis  "
 
             AttributeDotColorPicker {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
-                anchors.rightMargin: 5*dp
+                anchors.rightMargin: 15*dp
                 width: 26*dp
                 height: 26*dp
                 attr: block.attr("outerColor")
+            }
+            OutputNodeCommand {
+                node: block.node("selection")
+                suggestions: ["Feature Setter"]
             }
         }
     }
