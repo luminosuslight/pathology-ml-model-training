@@ -169,10 +169,8 @@ void CellVisualizationBlock::deselectCell(int index) {
 }
 
 void CellVisualizationBlock::updateSelectedCells() {
-    qDebug() << "update selected cells";
     QVector<int> ids;
     for (auto ref: m_selectedCells.getValue()) {
-        qDebug() << ref.toInt();
         ids.append(ref.toInt());
     }
     m_selectionNode->data().setReferenceObject(m_inputNode->constData().referenceObject<CellDatabaseBlock>());
