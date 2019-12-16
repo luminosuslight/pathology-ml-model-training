@@ -42,7 +42,7 @@ template<typename T>
 QVector<T> bytesToVector(const QByteArray& data) {
     const auto buffer = reinterpret_cast<const T*>(data.constData());
     const std::size_t count = std::size_t(data.size()) / sizeof(T);
-    return QVector<T>::fromStdVector(std::vector<T>(buffer, buffer + count));
+    return QVector<T>(buffer, buffer + count);
 }
 
 CellDatabaseBlock::CellDatabaseBlock(CoreController* controller, QString uid)

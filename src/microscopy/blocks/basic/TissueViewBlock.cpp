@@ -182,7 +182,7 @@ QVector<float> TissueViewBlock::getShapeEstimationAtRadius(int x, int y, int rad
     const auto result = getShapeEstimationAndScore(x, y, radius);
     if (result.second == 0.0f) return {};
     const auto& shape = result.first;
-    return QVector<float>::fromStdVector(std::vector<float>(shape.begin(), shape.end()));
+    return QVector<float>(shape.begin(), shape.end());
 }
 
 QPair<CellShape, float> TissueViewBlock::getShapeEstimationAndScore(int x, int y, int radius) const {
