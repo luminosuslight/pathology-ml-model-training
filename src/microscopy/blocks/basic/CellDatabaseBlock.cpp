@@ -342,9 +342,9 @@ const CellShape& CellDatabaseBlock::getShape(int index) const {
     return m_shapes.at(index);
 }
 
-QVector<float> CellDatabaseBlock::getShapeVector(int index) const {
+QVector<double> CellDatabaseBlock::getShapeVector(int index) const {
     const auto& shape = m_shapes.at(index);
-    return QVector<float>::fromStdVector(std::vector<float>(shape.begin(), shape.end()));
+    return QVector<double>(shape.begin(), shape.end());
 }
 
 void CellDatabaseBlock::dataWasModified() {

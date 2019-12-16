@@ -66,7 +66,7 @@ public slots:
     double featureMax(int featureId) const;
 
     const CellShape& getShape(int index) const;
-    QVector<float> getShapeVector(int index) const;
+    QVector<double> getShapeVector(int index) const;
 
     int getCount() const { return m_count; }
 

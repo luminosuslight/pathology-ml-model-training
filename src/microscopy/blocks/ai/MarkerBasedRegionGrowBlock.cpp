@@ -135,6 +135,7 @@ int MarkerBasedRegionGrowBlock::regionGrowStep(int watershedStep, const QVector<
     }
 
     db->dataWasModified();
+    emit db->existingDataChanged();
     qDebug() << watershedStep << cellsChanged;
     return cellsChanged;
 }
