@@ -9,7 +9,7 @@
 
 class TissueImageBlock;
 class CellVisualizationBlock;
-class AreaSelectionRectangularBlock;
+class RectangularAreaBlock;
 
 
 class DataViewBlock : public BlockBase {
@@ -92,7 +92,7 @@ protected:
     // runtime data:
     QVector<QPointer<TissueImageBlock>> m_channelBlocks;
     QVector<QPointer<CellVisualizationBlock>> m_visualizeBlocks;
-    QVector<QPointer<AreaSelectionRectangularBlock>> m_rectangularAreaBlocks;
+    QVector<QPointer<RectangularAreaBlock>> m_rectangularAreaBlocks;
     QTimer m_visibilityUpdateTimer;
 };
 

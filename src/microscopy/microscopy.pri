@@ -33,8 +33,8 @@ HEADERS += \
     $$PWD/blocks/basic/DataViewBlock.h \
     $$PWD/blocks/basic/TissueImageBlock.h \
     $$PWD/blocks/selection/AreaSelectionFreeformBlock.h \
-    $$PWD/blocks/selection/AreaSelectionRectangularBlock.h \
     $$PWD/blocks/selection/FeatureSelectionBlock.h \
+    $$PWD/blocks/selection/RectangularAreaBlock.h \
     $$PWD/manager/ViewManager.h
 
 SOURCES += \
@@ -67,8 +67,8 @@ SOURCES += \
     $$PWD/blocks/basic/DataViewBlock.cpp \
     $$PWD/blocks/basic/TissueImageBlock.cpp \
     $$PWD/blocks/selection/AreaSelectionFreeformBlock.cpp \
-    $$PWD/blocks/selection/AreaSelectionRectangularBlock.cpp \
     $$PWD/blocks/selection/FeatureSelectionBlock.cpp \
+    $$PWD/blocks/selection/RectangularAreaBlock.cpp \
     $$PWD/manager/ViewManager.cpp
 
 RESOURCES += \

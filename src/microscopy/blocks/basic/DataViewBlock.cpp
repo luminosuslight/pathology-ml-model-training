@@ -9,7 +9,7 @@
 #include "microscopy/blocks/basic/TissueImageBlock.h"
 #include "microscopy/blocks/basic/CellVisualizationBlock.h"
 #include "microscopy/blocks/basic/CellDatabaseBlock.h"
-#include "microscopy/blocks/selection/AreaSelectionRectangularBlock.h"
+#include "microscopy/blocks/selection/RectangularAreaBlock.h"
 #include "microscopy/manager/ViewManager.h"
 
 #include <qsyncable/QSDiffRunner>
@@ -367,8 +367,8 @@ void DataViewBlock::updateVisualizeBlocks() {
 }
 
 void DataViewBlock::updateRectangularAreaBlocks() {
-    QVector<QPointer<AreaSelectionRectangularBlock>> areaBlocks;
-    for (auto block: m_controller->blockManager()->getBlocksByType<AreaSelectionRectangularBlock>()) {
+    QVector<QPointer<RectangularAreaBlock>> areaBlocks;
+    for (auto block: m_controller->blockManager()->getBlocksByType<RectangularAreaBlock>()) {
         if (!block) continue;
         if (!block->isAssignedTo(getUid())) continue;
         areaBlocks.append(block);

@@ -35,7 +35,7 @@
         <file>blocks/ai/FindCentersBlock.qml</file>
         <file>blocks/ai/CellDatabaseComparison.qml</file>
         <file>blocks/basic/CellVisualizationBlock.qml</file>
-        <file>blocks/selection/AreaSelectionRectangularBlock.qml</file>
+        <file>blocks/selection/RectangularAreaBlock.qml</file>
         <file>blocks/ai/DapiRenderer.qml</file>
         <file>blocks/ai/MaskRenderer.qml</file>
         <file>blocks/ai/CenterRenderer.qml</file>

@@ -1,4 +1,4 @@
-#include "AreaSelectionRectangularBlock.h"
+#include "RectangularAreaBlock.h"
 
 #include "core/CoreController.h"
 #include "core/manager/BlockList.h"
@@ -11,9 +11,9 @@
 #include "microscopy/blocks/basic/DataViewBlock.h"
 
 
-bool AreaSelectionRectangularBlock::s_registered = BlockList::getInstance().addBlock(AreaSelectionRectangularBlock::info());
+bool RectangularAreaBlock::s_registered = BlockList::getInstance().addBlock(RectangularAreaBlock::info());
 
-AreaSelectionRectangularBlock::AreaSelectionRectangularBlock(CoreController* controller, QString uid)
+RectangularAreaBlock::RectangularAreaBlock(CoreController* controller, QString uid)
     : InOutBlock(controller, uid)
     , m_color(this, "color", {0, 1, 0})
     , m_left(this, "left", 0.0, -999999, 999999)
@@ -23,11 +23,11 @@ AreaSelectionRectangularBlock::AreaSelectionRectangularBlock(CoreController* con
     , m_assignedView(this, "assignedView")
     , m_cellCount(this, "cellCount", 0, 0, 999999, /*persistent*/ false)
 {
-    connect(m_inputNode, &NodeBase::dataChanged, this, &AreaSelectionRectangularBlock::update);
-    connect(&m_left, &DoubleAttribute::valueChanged, this, &AreaSelectionRectangularBlock::update);
-    connect(&m_top, &DoubleAttribute::valueChanged, this, &AreaSelectionRectangularBlock::update);
-    connect(&m_right, &DoubleAttribute::valueChanged, this, &AreaSelectionRectangularBlock::update);
-    connect(&m_bottom, &DoubleAttribute::valueChanged, this, &AreaSelectionRectangularBlock::update);
+    connect(m_inputNode, &NodeBase::dataChanged, this, &RectangularAreaBlock::update);
+    connect(&m_left, &DoubleAttribute::valueChanged, this, &RectangularAreaBlock::update);
+    connect(&m_top, &DoubleAttribute::valueChanged, this, &RectangularAreaBlock::update);
+    connect(&m_right, &DoubleAttribute::valueChanged, this, &RectangularAreaBlock::update);
+    connect(&m_bottom, &DoubleAttribute::valueChanged, this, &RectangularAreaBlock::update);
 
 
     connect(m_controller->projectManager(), &ProjectManager::projectLoadingFinished, this, [this]() {
@@ -41,7 +41,7 @@ AreaSelectionRectangularBlock::AreaSelectionRectangularBlock(CoreController* con
     });
 }
 
-void AreaSelectionRectangularBlock::onCreatedByUser() {
+void RectangularAreaBlock::onCreatedByUser() {
     // this is a new block, assign to first view:
     const auto views = m_controller->blockManager()->getBlocksByType<DataViewBlock>();
     if (!views.isEmpty()) {
@@ -49,11 +49,11 @@ void AreaSelectionRectangularBlock::onCreatedByUser() {
     }
 }
 
-bool AreaSelectionRectangularBlock::isAssignedTo(QString uid) const {
+bool RectangularAreaBlock::isAssignedTo(QString uid) const {
     return m_assignedView == uid;
 }
 
-void AreaSelectionRectangularBlock::update() {
+void RectangularAreaBlock::update() {
     const auto& inputData = m_inputNode->constData();
     const QVector<int>& cells = inputData.ids();
     CellDatabaseBlock* db = m_inputNode->constData().referenceObject<CellDatabaseBlock>();

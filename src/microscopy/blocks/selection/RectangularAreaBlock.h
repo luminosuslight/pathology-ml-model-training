@@ -1,12 +1,12 @@
-#ifndef AREASELECTIONRECTANGULARBLOCK_H
-#define AREASELECTIONRECTANGULARBLOCK_H
+#ifndef RECTANGULARAREABLOCK_H
+#define RECTANGULARAREABLOCK_H
 
 #include "core/block_basics/InOutBlock.h"
 
 class DataViewBlock;
 
 
-class AreaSelectionRectangularBlock : public InOutBlock {
+class RectangularAreaBlock : public InOutBlock {
 
     Q_OBJECT
 
@@ -15,17 +15,16 @@ public:
     static bool s_registered;
     static BlockInfo info() {
         static BlockInfo info;
-        info.typeName = "Area Selection (Rectangular)";
-        info.nameInUi = "Area (Rectangular)";
+        info.typeName = "Rectangular Area";
         info.category << "Microscopy" << "Selection";
         info.helpText = "";
-        info.qmlFile = "qrc:/microscopy/blocks/selection/AreaSelectionRectangularBlock.qml";
+        info.qmlFile = "qrc:/microscopy/blocks/selection/RectangularAreaBlock.qml";
         info.orderHint = 1000 + 200 + 2;
-        info.complete<AreaSelectionRectangularBlock>();
+        info.complete<RectangularAreaBlock>();
         return info;
     }
 
-    explicit AreaSelectionRectangularBlock(CoreController* controller, QString uid);
+    explicit RectangularAreaBlock(CoreController* controller, QString uid);
 
     void onCreatedByUser() override;
 
@@ -52,4 +51,4 @@ protected:
 
 };
 
-#endif // AREASELECTIONRECTANGULARBLOCK_H
+#endif // RECTANGULARAREABLOCK_H
