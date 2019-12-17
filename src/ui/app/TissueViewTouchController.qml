@@ -39,7 +39,7 @@ CustomTouchArea {
             kineticEffect.start(touch.x, touch.y)
         } else {
             //initialPinchDistance = Math.sqrt(Math.pow(touch.sceneX - firstTouch.sceneX, 2) + Math.pow(touch.sceneY - firstTouch.sceneY, 2))
-            initialScale = view.attr("scale").val
+            //initialScale = view.attr("scale").val
             // console.log("Pinch started. Initial dist: ", initialPinchDistance)
         }
     }
@@ -64,7 +64,7 @@ CustomTouchArea {
 
     NumberAnimation {
         id: planeNormalScaleAnimation
-        target: view.attr("scale")
+        targets: [view.attr("xScale"), view.attr("yScale")]
         property: "val"
         duration: 500
         easing.type: Easing.OutCubic
@@ -72,17 +72,8 @@ CustomTouchArea {
     }
 
     NumberAnimation {
-        id: planeOriginXAnimation
-        target: view.attr("contentX")
-        property: "val"
-        duration: 700
-        easing.type: Easing.OutCubic
-        to: 0
-    }
-
-    NumberAnimation {
-        id: planeOriginYAnimation
-        target: view.attr("contentY")
+        id: planeOriginAnimation
+        targets: [view.attr("contentX"), view.attr("contentY")]
         property: "val"
         duration: 700
         easing.type: Easing.OutCubic
@@ -92,8 +83,7 @@ CustomTouchArea {
     onDoubleClick: {
         kineticEffect.setValue(0, 0)
         planeNormalScaleAnimation.start()
-        planeOriginXAnimation.start()
-        planeOriginYAnimation.start()
+        planeOriginAnimation.start()
     }
 
     MouseArea {
@@ -110,20 +100,24 @@ CustomTouchArea {
         onPressed: mouse.accepted = false
         onWheel: {
             const wheelDelta = wheel.pixelDelta.y ? wheel.pixelDelta.y * Screen.devicePixelRatio : wheel.angleDelta.y
-            let oldScale =  view.attr("scale").val
-            let newScale = Math.min(Math.max(minScale, oldScale + (wheelDelta / 3000) * oldScale), maxScale)
-            let diff = newScale / oldScale;
+            let oldXScale =  view.attr("xScale").val
+            let newXScale = Math.min(Math.max(minScale, oldXScale + (wheelDelta / 3000) * oldXScale), maxScale)
+            let diffX = newXScale / oldXScale;
+            let oldYScale =  view.attr("yScale").val
+            let newYScale = Math.min(Math.max(minScale, oldYScale + (wheelDelta / 3000) * oldYScale), maxScale)
+            let diffY = newYScale / oldYScale;
             let oldX = view.attr("contentX").val
             let oldY = view.attr("contentY").val
             let dx = -oldX + wheel.x
             let dy = -oldY + wheel.y
-            let newDx = dx * diff
-            let newDy = dy * diff
+            let newDx = dx * diffX
+            let newDy = dy * diffY
             let contentX = oldX + dx - newDx
             let contentY = oldY + dy - newDy
             view.attr("contentX").val = contentX
             view.attr("contentY").val = contentY
-            view.attr("scale").val = newScale
+            view.attr("xScale").val = newXScale
+            view.attr("yScale").val = newYScale
             kineticEffect.setValue(contentX, contentY)
             wheel.accepted = true
         }

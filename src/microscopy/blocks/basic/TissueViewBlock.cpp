@@ -24,7 +24,10 @@ TissueViewBlock::TissueViewBlock(CoreController* controller, QString uid)
     , m_viewportHeight(this, "viewportHeight", 100, 0, 100*1000)
     , m_contentX(this, "contentX", 0, -100*1000, 100*1000)
     , m_contentY(this, "contentY", 0, -100*1000, 100*1000)
-    , m_scale(this, "scale", 1, 0.0001, 10)
+    , m_xScale(this, "xScale", 1, 0.0001, 20)
+    , m_yScale(this, "yScale", 1, 0.0001, 20)
+    , m_xDimension(this, "xDimension", "x")
+    , m_yDimension(this, "yDimension", "y")
 {
     qmlRegisterType<QSListModel>();
 
@@ -58,7 +61,11 @@ TissueViewBlock::TissueViewBlock(CoreController* controller, QString uid)
     connect(&m_viewportHeight, &IntegerAttribute::valueChanged, this, startTimerIfNotRunning);
     connect(&m_contentX, &DoubleAttribute::valueChanged, this, startTimerIfNotRunning);
     connect(&m_contentY, &DoubleAttribute::valueChanged, this, startTimerIfNotRunning);
-    connect(&m_scale, &DoubleAttribute::valueChanged, this, startTimerIfNotRunning);
+    connect(&m_xScale, &DoubleAttribute::valueChanged, this, startTimerIfNotRunning);
+    connect(&m_yScale, &DoubleAttribute::valueChanged, this, startTimerIfNotRunning);
+
+    connect(&m_xDimension, &StringAttribute::valueChanged, this, &TissueViewBlock::updateDimensions);
+    connect(&m_yDimension, &StringAttribute::valueChanged, this, &TissueViewBlock::updateDimensions);
 }
 
 QList<QObject*> TissueViewBlock::channelBlocks() const {
@@ -87,17 +94,11 @@ QList<QObject*> TissueViewBlock::rectangularAreaBlocks() const {
 
 TissueViewBlock::ViewArea TissueViewBlock::viewArea() const {
     ViewArea area;
-    area.left = -m_contentX / m_scale;
-    area.top = -m_contentY / m_scale;
-    area.right = area.left + m_viewportWidth / m_scale;
-    area.bottom = area.top + m_viewportHeight / m_scale;
+    area.left = -m_contentX / m_xScale;
+    area.top = -m_contentY / m_yScale;
+    area.right = area.left + m_viewportWidth / m_xScale;
+    area.bottom = area.top + m_viewportHeight / m_yScale;
     return area;
-}
-
-void TissueViewBlock::updateCellVisibility() {
-    for (CellVisualizationBlock* visBlock: m_visualizeBlocks) {
-        visBlock->updateCellVisibility();
-    }
 }
 
 void TissueViewBlock::addCenter(double x, double y) {
@@ -291,6 +292,32 @@ QPair<CellShape, float> TissueViewBlock::getShapeEstimationAndScore(int x, int y
     }
 
     return {radii, minValuesSum};
+}
+
+QStringList TissueViewBlock::availableFeatures() const {
+    QStringList features;
+    features << m_xDimension << m_yDimension;
+    auto dbs = m_controller->blockManager()->getBlocksByType<CellDatabaseBlock>();
+    for (auto db: dbs) {
+        for (auto feature: db->features()) {
+            if (!features.contains(feature)) {
+                features.append(feature);
+            }
+        }
+    }
+    return features;
+}
+
+void TissueViewBlock::updateCellVisibility() {
+    for (CellVisualizationBlock* visBlock: m_visualizeBlocks) {
+        visBlock->updateCellVisibility();
+    }
+}
+
+void TissueViewBlock::updateDimensions() {
+    for (CellVisualizationBlock* visBlock: m_visualizeBlocks) {
+        visBlock->updateCells();
+    }
 }
 
 void TissueViewBlock::updateChannelBlocks() {

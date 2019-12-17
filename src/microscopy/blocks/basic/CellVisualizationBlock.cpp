@@ -37,7 +37,7 @@ CellVisualizationBlock::CellVisualizationBlock(CoreController* controller, QStri
 
     connect(&m_assignedView, &StringAttribute::valueChanged, this, [this]() {
         m_view = m_controller->blockManager()->getBlockByUid<TissueViewBlock>(m_assignedView);
-        updateCellVisibility();
+        updateCells();
         emit m_controller->manager<ViewManager>("viewManager")->visualizeAssignmentChanged();
     });
     connect(m_inputNode, &NodeBase::dataChanged,
@@ -69,7 +69,7 @@ CellDatabaseBlock* CellVisualizationBlock::database() const {
 
 void CellVisualizationBlock::updateCells() {
     CellDatabaseBlock* db = m_inputNode->constData().referenceObject<CellDatabaseBlock>();
-    if (!m_inputNode->isConnected() || !db) {
+    if (!m_inputNode->isConnected() || !db || !m_view) {
         m_xPositions.clear();
         m_yPositions.clear();
         emit positionsChanged();
@@ -80,10 +80,12 @@ void CellVisualizationBlock::updateCells() {
     const QVector<int>& cells = m_inputNode->constData().ids();
     m_xPositions.resize(cells.size());
     m_yPositions.resize(cells.size());
+    const int xFeatureId = db->getOrCreateFeatureId(m_view->xDimension());
+    const int yFeatureId = db->getOrCreateFeatureId(m_view->yDimension());
     for (int i = 0; i < cells.size(); ++i) {
         const int idx = cells.at(i);
-        const double x = db->getFeature(CellDatabaseConstants::X_POS, idx);
-        const double y = db->getFeature(CellDatabaseConstants::Y_POS, idx);
+        const double x = db->getFeature(xFeatureId, idx);
+        const double y = db->getFeature(yFeatureId, idx);
         m_xPositions[i] = x;
         m_yPositions[i] = y;
     }
@@ -113,6 +115,12 @@ void CellVisualizationBlock::updateCellVisibility() {
     CellDatabaseBlock* db = m_inputNode->constData().referenceObject<CellDatabaseBlock>();
     if (!m_inputNode->isConnected() || !db || !m_view) {
         m_visibleCells.clear();
+        return;
+    }
+    if (m_view->xDimension().getValue() != "x" || m_view->yDimension().getValue() != "y") {
+        // detailed cell shapes are only shown if the view shows the normal x and y dimensions
+        // which is not the case here:
+        m_detailedView = false;
         return;
     }
     // the db is only required for the largely visible cells, update it here:

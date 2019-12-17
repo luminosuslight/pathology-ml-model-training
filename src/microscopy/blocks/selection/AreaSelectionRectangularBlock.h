@@ -3,6 +3,8 @@
 
 #include "core/block_basics/InOutBlock.h"
 
+class TissueViewBlock;
+
 
 class AreaSelectionRectangularBlock : public InOutBlock {
 
@@ -33,8 +35,6 @@ public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
 
     bool isAssignedTo(QString uid) const;
-    void assignView(QString uid);
-    void removeFromView(QString uid);
 
     void update();
 
@@ -44,9 +44,11 @@ protected:
     DoubleAttribute m_top;
     DoubleAttribute m_right;
     DoubleAttribute m_bottom;
-    StringListAttribute m_assignedViews;
+    StringAttribute m_assignedView;
 
+    // runtime:
     IntegerAttribute m_cellCount;
+    QPointer<TissueViewBlock> m_view;
 
 };
 

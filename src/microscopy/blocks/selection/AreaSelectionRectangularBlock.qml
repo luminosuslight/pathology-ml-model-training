@@ -87,19 +87,11 @@ BlockBase {
             Repeater {
                 model: viewManager.views
                 BlockRow {
-                    CheckBox {
-                        width: 30*dp
-                        active: block.isAssignedTo(modelData.getUid())
-                        onClick: {
-                            if (active) {
-                                block.assignView(modelData.getUid())
-                            } else {
-                                block.removeFromView(modelData.getUid())
-                            }
-                        }
-                    }
-                    StretchText {
+                    ButtonSideLine {
                         text: "View " + (index + 1)
+                        allUpperCase: false
+                        marked: block.attr("assignedView").val === modelData.getUid()
+                        onPress: block.attr("assignedView").val = modelData.getUid()
                     }
                 }
             }

@@ -7,10 +7,10 @@ import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
 
 Rectangle {
-    x: modelData.attr("left").val * view.attr("scale").val + view.attr("contentX").val
-    y: modelData.attr("top").val * view.attr("scale").val + view.attr("contentY").val
-    width: (modelData.attr("right").val - modelData.attr("left").val) * view.attr("scale").val
-    height: (modelData.attr("bottom").val - modelData.attr("top").val) * view.attr("scale").val
+    x: modelData.attr("left").val * view.attr("xScale").val + view.attr("contentX").val
+    y: modelData.attr("top").val * view.attr("yScale").val + view.attr("contentY").val
+    width: (modelData.attr("right").val - modelData.attr("left").val) * view.attr("xScale").val
+    height: (modelData.attr("bottom").val - modelData.attr("top").val) * view.attr("yScale").val
     border.color: modelData.attr("color").qcolor
     border.width: 2*dp
     color: "transparent"
@@ -44,11 +44,12 @@ Rectangle {
             anchors.fill: parent
             mouseOverEnabled: true
             onTouchMove: {
-                const scale = view.attr("scale").val
-                modelData.attr("left").val = modelData.attr("left").val + touch.deltaX / scale
-                modelData.attr("right").val = modelData.attr("right").val + touch.deltaX / scale
-                modelData.attr("top").val = modelData.attr("top").val + touch.deltaY / scale
-                modelData.attr("bottom").val = modelData.attr("bottom").val + touch.deltaY / scale
+                const xScale = view.attr("xScale").val
+                const yScale = view.attr("yScale").val
+                modelData.attr("left").val = modelData.attr("left").val + touch.deltaX / xScale
+                modelData.attr("right").val = modelData.attr("right").val + touch.deltaX / xScale
+                modelData.attr("top").val = modelData.attr("top").val + touch.deltaY / yScale
+                modelData.attr("bottom").val = modelData.attr("bottom").val + touch.deltaY / yScale
             }
         }
     }
@@ -75,9 +76,10 @@ Rectangle {
             anchors.fill: parent
             mouseOverEnabled: true
             onTouchMove: {
-                const scale = view.attr("scale").val
-                modelData.attr("right").val = Math.max(modelData.attr("left").val, modelData.attr("right").val + touch.deltaX / scale)
-                modelData.attr("bottom").val = Math.max(modelData.attr("top").val, modelData.attr("bottom").val + touch.deltaY / scale)
+                const xScale = view.attr("xScale").val
+                const yScale = view.attr("yScale").val
+                modelData.attr("right").val = Math.max(modelData.attr("left").val, modelData.attr("right").val + touch.deltaX / xScale)
+                modelData.attr("bottom").val = Math.max(modelData.attr("top").val, modelData.attr("bottom").val + touch.deltaY / yScale)
             }
         }
     }

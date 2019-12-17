@@ -47,6 +47,7 @@ signals:
     void channelBlocksChanged();
     void visualizeBlocksChanged();
     void rectangularAreaBlocksChanged();
+    void dimensionsChanged();
 
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
@@ -57,15 +58,20 @@ public slots:
 
     ViewArea viewArea() const;
 
-    void updateCellVisibility();
-
     void addCenter(double x, double y);
     void addCell(double x, double y, double radius, const QVector<float>& shape);
 
     QVector<float> getShapeEstimationAtRadius(int x, int y, int radius) const;
     QPair<CellShape, float> getShapeEstimationAndScore(int x, int y, int radius) const;
 
+    QStringList availableFeatures() const;
+    const StringAttribute& xDimension() const { return m_xDimension; }
+    const StringAttribute& yDimension() const { return m_yDimension; }
+
 protected slots:
+    void updateCellVisibility();
+    void updateDimensions();
+
     void updateChannelBlocks();
     void updateVisualizeBlocks();
     void updateRectangularAreaBlocks();
@@ -78,7 +84,10 @@ protected:
     IntegerAttribute m_viewportHeight;
     DoubleAttribute m_contentX;
     DoubleAttribute m_contentY;
-    DoubleAttribute m_scale;
+    DoubleAttribute m_xScale;
+    DoubleAttribute m_yScale;
+    StringAttribute m_xDimension;
+    StringAttribute m_yDimension;
 
     // runtime data:
     QVector<QPointer<TissueImageBlock>> m_channelBlocks;

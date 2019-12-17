@@ -31,8 +31,8 @@ Item {
                     touch.accepted = false
                 } else if (currentMode === TissueView.Mode.Add) {
                     touch.accepted = true
-                    const imageX = (-view.attr("contentX").val + touch.itemX) / view.attr("scale").val
-                    const imageY = (-view.attr("contentY").val + touch.itemY) / view.attr("scale").val
+                    const imageX = (-view.attr("contentX").val + touch.itemX) / view.attr("xScale").val
+                    const imageY = (-view.attr("contentY").val + touch.itemY) / view.attr("yScale").val
                     newNuclei.x = imageX
                     newNuclei.y = imageY
                     newNuclei.width = 1
@@ -47,8 +47,8 @@ Item {
                 }
             }
             onTouchUp: {
-                const imageX = (-view.attr("contentX").val + touch.itemX) / view.attr("scale").val
-                const imageY = (-view.attr("contentY").val + touch.itemY) / view.attr("scale").val
+                const imageX = (-view.attr("contentX").val + touch.itemX) / view.attr("xScale").val
+                const imageY = (-view.attr("contentY").val + touch.itemY) / view.attr("yScale").val
                 if (currentMode === TissueView.Mode.Add) {
                     if (touch.isAtOrigin()) {
                         view.addCenter(imageX, imageY)
@@ -67,8 +67,12 @@ Item {
         height: parent.height
         x: view.attr("contentX").val
         y: view.attr("contentY").val
-        scale: view.attr("scale").val
-        transformOrigin: Qt.TopLeftCorner
+        transform: Scale {
+            origin.x: 0
+            origin.y: 0
+            xScale: view.attr("xScale").val
+            yScale: view.attr("yScale").val
+        }
 
         onWidthChanged: view.attr("viewportWidth").val = width
         onHeightChanged: view.attr("viewportHeight").val = height

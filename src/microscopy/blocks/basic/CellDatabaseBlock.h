@@ -65,6 +65,8 @@ public slots:
     double featureMin(int featureId) const;
     double featureMax(int featureId) const;
 
+    const QStringList& features() const { return m_features.getValue(); }
+
     const CellShape& getShape(int index) const;
     QVector<double> getShapeVector(int index) const;
 
