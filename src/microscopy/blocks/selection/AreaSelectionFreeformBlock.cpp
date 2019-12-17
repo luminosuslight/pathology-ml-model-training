@@ -4,7 +4,7 @@
 #include "core/manager/BlockList.h"
 
 
-bool AreaSelectionFreeformBlock::s_registered = BlockList::getInstance().addBlock(AreaSelectionFreeformBlock::info());
+bool AreaSelectionFreeformBlock::s_registered = false;//BlockList::getInstance().addBlock(AreaSelectionFreeformBlock::info());
 
 AreaSelectionFreeformBlock::AreaSelectionFreeformBlock(CoreController* controller, QString uid)
     : InOutBlock(controller, uid)
