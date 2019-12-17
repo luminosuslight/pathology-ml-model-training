@@ -35,7 +35,6 @@ HEADERS += \
     $$PWD/blocks/selection/AreaSelectionFreeformBlock.h \
     $$PWD/blocks/selection/AreaSelectionRectangularBlock.h \
     $$PWD/blocks/selection/FeatureSelectionBlock.h \
-    $$PWD/blocks/selection/PlotSelectionBlock.h \
     $$PWD/manager/ViewManager.h
 
 SOURCES += \
@@ -70,7 +69,6 @@ SOURCES += \
     $$PWD/blocks/selection/AreaSelectionFreeformBlock.cpp \
     $$PWD/blocks/selection/AreaSelectionRectangularBlock.cpp \
     $$PWD/blocks/selection/FeatureSelectionBlock.cpp \
-    $$PWD/blocks/selection/PlotSelectionBlock.cpp \
     $$PWD/manager/ViewManager.cpp
 
 RESOURCES += \
