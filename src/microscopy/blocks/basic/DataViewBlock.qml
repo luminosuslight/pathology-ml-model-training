@@ -66,17 +66,6 @@ BlockBase {
 
         BlockRow {
             leftMargin: 5*dp
-            StretchText {
-                text: "Visible:"
-            }
-            AttributeCheckbox {
-                width: 30*dp
-                attr: block.attr("visible")
-            }
-        }
-
-        BlockRow {
-            leftMargin: 5*dp
             Text {
                 width: 40*dp
                 text: "y S.:"
@@ -84,6 +73,17 @@ BlockBase {
             AttributeNumericInput {
                 attr: block.attr("yScale")
                 decimals: 1
+            }
+        }
+
+        BlockRow {
+            leftMargin: 5*dp
+            StretchText {
+                text: "Visible:"
+            }
+            AttributeCheckbox {
+                width: 30*dp
+                attr: block.attr("visible")
             }
         }
 

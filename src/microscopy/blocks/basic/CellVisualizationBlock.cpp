@@ -117,7 +117,7 @@ void CellVisualizationBlock::updateCellVisibility() {
         m_visibleCells.clear();
         return;
     }
-    if (m_view->xDimension().getValue() != "x" || m_view->yDimension().getValue() != "y") {
+    if (!m_view->isTissuePlane()) {
         // detailed cell shapes are only shown if the view shows the normal x and y dimensions
         // which is not the case here:
         m_detailedView = false;

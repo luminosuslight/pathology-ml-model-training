@@ -309,6 +309,32 @@ QStringList DataViewBlock::availableFeatures() const {
     return features;
 }
 
+bool DataViewBlock::isTissuePlane() const {
+    return m_xDimension.getValue() == "x" && m_yDimension.getValue() == "y";
+}
+
+double DataViewBlock::getMaxXValue() const {
+    double max = 0.0;
+    for (auto visBlock: m_visualizeBlocks) {
+        if (!visBlock) continue;
+        const auto& values = visBlock->xPositions();
+        if (values.isEmpty()) continue;
+        max = std::max(max, *std::max_element(values.begin(), values.end()));
+    }
+    return max;
+}
+
+double DataViewBlock::getMaxYValue() const {
+    double max = 0.0;
+    for (auto visBlock: m_visualizeBlocks) {
+        if (!visBlock) continue;
+        const auto& values = visBlock->yPositions();
+        if (values.isEmpty()) continue;
+        max = std::max(max, *std::max_element(values.begin(), values.end()));
+    }
+    return max;
+}
+
 void DataViewBlock::updateCellVisibility() {
     for (CellVisualizationBlock* visBlock: m_visualizeBlocks) {
         visBlock->updateCellVisibility();

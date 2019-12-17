@@ -59,8 +59,8 @@ public slots:
 
     bool isAssignedTo(QString uid) const;
 
-    QVector<double> xPositions() const { return m_xPositions; }
-    QVector<double> yPositions() const { return m_yPositions; }
+    const QVector<double>& xPositions() const { return m_xPositions; }
+    const QVector<double>& yPositions() const { return m_yPositions; }
     QVector<int> cellIds() const;
 
     void clearSelection();
@@ -69,8 +69,6 @@ protected slots:
     void updateSelectedCells();
 
 protected:
-
-
     QPointer<NodeBase> m_selectionNode;
 
     HsvAttribute m_outerColor;

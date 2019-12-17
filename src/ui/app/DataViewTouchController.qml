@@ -7,8 +7,8 @@ CustomTouchArea {
     secondTouchEnabled: false
 
     property Item plane
-    property real minScale: 0.1 / Screen.devicePixelRatio
-    property real maxScale: 5
+    property real minScale: 0.05 / Screen.devicePixelRatio
+    property real maxScale: 20
 
     KineticEffect2D {
         id: kineticEffect
@@ -63,8 +63,17 @@ CustomTouchArea {
     }
 
     NumberAnimation {
-        id: planeNormalScaleAnimation
-        targets: [view.attr("xScale"), view.attr("yScale")]
+        id: planeXScaleAnimation
+        target: view.attr("xScale")
+        property: "val"
+        duration: 500
+        easing.type: Easing.OutCubic
+        to: minScale
+    }
+
+    NumberAnimation {
+        id: planeYScaleAnimation
+        target: view.attr("yScale")
         property: "val"
         duration: 500
         easing.type: Easing.OutCubic
@@ -82,7 +91,14 @@ CustomTouchArea {
 
     onDoubleClick: {
         kineticEffect.setValue(0, 0)
-        planeNormalScaleAnimation.start()
+        planeXScaleAnimation.to = Math.max(plane.width / view.getMaxXValue(), minScale)
+        planeYScaleAnimation.to = Math.max(plane.height / view.getMaxYValue(), minScale)
+        if (view.isTissuePlane) {
+            planeXScaleAnimation.to = Math.min(planeXScaleAnimation.to, planeYScaleAnimation.to)
+            planeYScaleAnimation.to = planeXScaleAnimation.to
+        }
+        planeXScaleAnimation.start()
+        planeYScaleAnimation.start()
         planeOriginAnimation.start()
     }
 
@@ -100,25 +116,20 @@ CustomTouchArea {
         onPressed: mouse.accepted = false
         onWheel: {
             const wheelDelta = wheel.pixelDelta.y ? wheel.pixelDelta.y * Screen.devicePixelRatio : wheel.angleDelta.y
-            let oldXScale =  view.attr("xScale").val
-            let newXScale = Math.min(Math.max(minScale, oldXScale + (wheelDelta / 3000) * oldXScale), maxScale)
-            let diffX = newXScale / oldXScale;
-            let oldYScale =  view.attr("yScale").val
-            let newYScale = Math.min(Math.max(minScale, oldYScale + (wheelDelta / 3000) * oldYScale), maxScale)
-            let diffY = newYScale / oldYScale;
-            let oldX = view.attr("contentX").val
-            let oldY = view.attr("contentY").val
-            let dx = -oldX + wheel.x
-            let dy = -oldY + wheel.y
-            let newDx = dx * diffX
-            let newDy = dy * diffY
-            let contentX = oldX + dx - newDx
-            let contentY = oldY + dy - newDy
-            view.attr("contentX").val = contentX
-            view.attr("contentY").val = contentY
-            view.attr("xScale").val = newXScale
-            view.attr("yScale").val = newYScale
-            kineticEffect.setValue(contentX, contentY)
+
+            for (let attributes of [["xScale", "contentX", wheel.x], ["yScale", "contentY", wheel.y]]) {
+                // think Y instead of X for second iteration
+                let oldXScale =  view.attr(attributes[0]).val
+                let newXScale = Math.min(Math.max(minScale, oldXScale + (wheelDelta / 3000) * oldXScale), maxScale)
+                let diffX = newXScale / oldXScale;
+                let oldX = view.attr(attributes[1]).val
+                let dx = -oldX + attributes[2]
+                let newDx = dx * diffX
+                let contentX = oldX + dx - newDx
+                view.attr(attributes[1]).val = contentX
+                view.attr(attributes[0]).val = newXScale
+            }
+            kineticEffect.setValue(view.attr("contentX").val, view.attr("contentY").val)
             wheel.accepted = true
         }
     }

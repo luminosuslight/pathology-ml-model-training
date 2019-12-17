@@ -19,6 +19,7 @@ class DataViewBlock : public BlockBase {
     Q_PROPERTY(QList<QObject*> channelBlocks READ channelBlocks NOTIFY channelBlocksChanged)
     Q_PROPERTY(QList<QObject*> visualizeBlocks READ visualizeBlocks NOTIFY visualizeBlocksChanged)
     Q_PROPERTY(QList<QObject*> rectangularAreaBlocks READ rectangularAreaBlocks NOTIFY rectangularAreaBlocksChanged)
+    Q_PROPERTY(bool isTissuePlane READ isTissuePlane NOTIFY dimensionsChanged)
 
 public:
 
@@ -67,6 +68,10 @@ public slots:
     QStringList availableFeatures() const;
     const StringAttribute& xDimension() const { return m_xDimension; }
     const StringAttribute& yDimension() const { return m_yDimension; }
+    bool isTissuePlane() const;
+
+    double getMaxXValue() const;
+    double getMaxYValue() const;
 
 protected slots:
     void updateCellVisibility();
