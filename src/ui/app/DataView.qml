@@ -61,6 +61,20 @@ Item {
         }
     }
 
+    Rectangle {
+        width: parent.width
+        height: 1
+        color: "#333"
+        y: view.attr("contentY").val
+    }
+
+    Rectangle {
+        width: 1
+        height: parent.height
+        color: "#333"
+        x: view.attr("contentX").val
+    }
+
     Item {
         id: plane
         width: parent.width
@@ -120,6 +134,39 @@ Item {
             }
         }
     }  // workspace
+
+    Text {
+        anchors.left: parent.left
+        anchors.leftMargin: 5*dp
+        anchors.top: parent.top
+        anchors.topMargin: 2*dp
+        color: "#777"
+        font.pixelSize: 12*dp
+        font.family: "Courier"
+        text: (-view.attr("contentX").val / view.attr("xScale").val).toFixed(1) + "\n" + (-view.attr("contentY").val / view.attr("yScale").val).toFixed(1)
+    }
+
+    Text {
+        anchors.right: parent.right
+        anchors.rightMargin: 5*dp
+        anchors.top: parent.top
+        anchors.topMargin: 2*dp
+        color: "#777"
+        font.pixelSize: 12*dp
+        font.family: "Courier"
+        text: ((-view.attr("contentX").val + parent.width) / view.attr("xScale").val).toFixed(1)
+    }
+
+    Text {
+        anchors.left: parent.left
+        anchors.leftMargin: 5*dp
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 2*dp
+        color: "#777"
+        font.pixelSize: 12*dp
+        font.family: "Courier"
+        text: ((-view.attr("contentY").val + parent.height) / view.attr("yScale").val).toFixed(1)
+    }
 
     Repeater {
         model: view.rectangularAreaBlocks
