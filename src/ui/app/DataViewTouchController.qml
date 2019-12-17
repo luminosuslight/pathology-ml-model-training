@@ -89,9 +89,9 @@ CustomTouchArea {
     MouseArea {
         anchors.fill: parent
         cursorShape: {
-            if (currentMode === TissueView.Mode.View) {
+            if (currentMode === DataView.Mode.View) {
                 return Qt.OpenHandCursor
-            } else if (currentMode === TissueView.Mode.Add) {
+            } else if (currentMode === DataView.Mode.Add) {
                 return Qt.CrossCursor
             } else {
                 return Qt.ArrowCursor

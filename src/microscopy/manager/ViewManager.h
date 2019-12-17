@@ -8,7 +8,7 @@
 #include <QQuickItem>
 
 class CoreController;
-class TissueViewBlock;
+class DataViewBlock;
 
 class ViewManager : public QObject {
 
@@ -26,7 +26,7 @@ signals:
     void areaAssignmentChanged();
 
 public slots:
-    const QList<TissueViewBlock*>& views() const;
+    const QList<DataViewBlock*>& views() const;
     QList<QObject*> viewsQml() const;
 
 protected:
@@ -35,7 +35,7 @@ protected:
 protected:
     CoreController* const m_controller;
 
-    QList<TissueViewBlock*> m_views;
+    QList<DataViewBlock*> m_views;
 };
 
 #endif // VIEWMANAGER_H

@@ -29,7 +29,7 @@
         <file>blocks/basic/CellDatabaseBlock.qml</file>
         <file>blocks/basic/CellFeatureVisualizationBlock.qml</file>
         <file>blocks/basic/TissueImageBlock.qml</file>
-        <file>blocks/basic/TissueViewBlock.qml</file>
+        <file>blocks/basic/DataViewBlock.qml</file>
         <file>blocks/selection/AreaSelectionFreeformBlock.qml</file>
         <file>blocks/selection/FeatureSelectionBlock.qml</file>
         <file>blocks/ai/FindCentersBlock.qml</file>

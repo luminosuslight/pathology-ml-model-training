@@ -7,7 +7,7 @@
 #include "core/connections/Nodes.h"
 #include "microscopy/manager/ViewManager.h"
 #include "microscopy/blocks/basic/CellDatabaseBlock.h"
-#include "microscopy/blocks/basic/TissueViewBlock.h"
+#include "microscopy/blocks/basic/DataViewBlock.h"
 
 #include <qsyncable/QSDiffRunner>
 
@@ -31,12 +31,12 @@ CellVisualizationBlock::CellVisualizationBlock(CoreController* controller, QStri
     m_visibleCells.setRoleNames({"idx", "colorIndex"});
 
     connect(m_controller->projectManager(), &ProjectManager::projectLoadingFinished, this, [this]() {
-        m_view = m_controller->blockManager()->getBlockByUid<TissueViewBlock>(m_assignedView);
+        m_view = m_controller->blockManager()->getBlockByUid<DataViewBlock>(m_assignedView);
         updateCells();
     });
 
     connect(&m_assignedView, &StringAttribute::valueChanged, this, [this]() {
-        m_view = m_controller->blockManager()->getBlockByUid<TissueViewBlock>(m_assignedView);
+        m_view = m_controller->blockManager()->getBlockByUid<DataViewBlock>(m_assignedView);
         updateCells();
         emit m_controller->manager<ViewManager>("viewManager")->visualizeAssignmentChanged();
     });
@@ -52,7 +52,7 @@ CellVisualizationBlock::CellVisualizationBlock(CoreController* controller, QStri
 
 void CellVisualizationBlock::onCreatedByUser() {
     // this is a new block, assign to first view:
-    const auto views = m_controller->blockManager()->getBlocksByType<TissueViewBlock>();
+    const auto views = m_controller->blockManager()->getBlocksByType<DataViewBlock>();
     if (!views.isEmpty()) {
         m_assignedView = views.first()->getUid();
     }

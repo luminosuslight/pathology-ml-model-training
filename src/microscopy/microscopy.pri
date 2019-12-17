@@ -30,8 +30,8 @@ HEADERS += \
     $$PWD/blocks/basic/CellDatabaseBlock.h \
     $$PWD/blocks/basic/CellFeatureVisualizationBlock.h \
     $$PWD/blocks/basic/CellVisualizationBlock.h \
+    $$PWD/blocks/basic/DataViewBlock.h \
     $$PWD/blocks/basic/TissueImageBlock.h \
-    $$PWD/blocks/basic/TissueViewBlock.h \
     $$PWD/blocks/selection/AreaSelectionFreeformBlock.h \
     $$PWD/blocks/selection/AreaSelectionRectangularBlock.h \
     $$PWD/blocks/selection/FeatureSelectionBlock.h \
@@ -64,8 +64,8 @@ SOURCES += \
     $$PWD/blocks/basic/CellDatabaseBlock.cpp \
     $$PWD/blocks/basic/CellFeatureVisualizationBlock.cpp \
     $$PWD/blocks/basic/CellVisualizationBlock.cpp \
+    $$PWD/blocks/basic/DataViewBlock.cpp \
     $$PWD/blocks/basic/TissueImageBlock.cpp \
-    $$PWD/blocks/basic/TissueViewBlock.cpp \
     $$PWD/blocks/selection/AreaSelectionFreeformBlock.cpp \
     $$PWD/blocks/selection/AreaSelectionRectangularBlock.cpp \
     $$PWD/blocks/selection/FeatureSelectionBlock.cpp \

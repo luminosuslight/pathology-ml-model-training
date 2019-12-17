@@ -6,7 +6,7 @@
 #include <qsyncable/QSListModel>
 
 class CellDatabaseBlock;
-class TissueViewBlock;
+class DataViewBlock;
 
 
 class CellVisualizationBlock : public OneInputBlock {
@@ -81,7 +81,7 @@ protected:
 
     // runtime:
     BoolAttribute m_detailedView;
-    QPointer<TissueViewBlock> m_view;
+    QPointer<DataViewBlock> m_view;
     QPointer<CellDatabaseBlock> m_lastDb;
     QSListModel m_visibleCells;
 

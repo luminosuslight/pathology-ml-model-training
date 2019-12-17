@@ -16,9 +16,9 @@ Item {
         Select
     }
 
-    property int currentMode: TissueView.Mode.View
+    property int currentMode: DataView.Mode.View
 
-    TissueViewTouchController {
+    DataViewTouchController {
         anchors.fill: parent
         plane: plane
 
@@ -26,10 +26,10 @@ Item {
             anchors.fill: parent
 
             onTouchDown: {
-                if (currentMode === TissueView.Mode.View
+                if (currentMode === DataView.Mode.View
                         || touch.modifiers & Qt.ControlModifier) {
                     touch.accepted = false
-                } else if (currentMode === TissueView.Mode.Add) {
+                } else if (currentMode === DataView.Mode.Add) {
                     touch.accepted = true
                     const imageX = (-view.attr("contentX").val + touch.itemX) / view.attr("xScale").val
                     const imageY = (-view.attr("contentY").val + touch.itemY) / view.attr("yScale").val
@@ -40,7 +40,7 @@ Item {
                 }
             }
             onTouchMove: {
-                if (currentMode === TissueView.Mode.Add) {
+                if (currentMode === DataView.Mode.Add) {
                     const imageRadius = Math.sqrt(Math.pow(touch.itemX - touch.itemOriginX, 2) + Math.pow(touch.itemY - touch.itemOriginY, 2)) / view.attr("scale").val
                     newNuclei.width = imageRadius
                     newNucleiCircle.radii = view.getShapeEstimationAtRadius(newNuclei.x, newNuclei.y, imageRadius)
@@ -49,7 +49,7 @@ Item {
             onTouchUp: {
                 const imageX = (-view.attr("contentX").val + touch.itemX) / view.attr("xScale").val
                 const imageY = (-view.attr("contentY").val + touch.itemY) / view.attr("yScale").val
-                if (currentMode === TissueView.Mode.Add) {
+                if (currentMode === DataView.Mode.Add) {
                     if (touch.isAtOrigin()) {
                         view.addCenter(imageX, imageY)
                     } else {
@@ -137,20 +137,20 @@ Item {
             anchors.fill: parent
             ButtonSideLine {
                 text: "View"
-                marked: currentMode === TissueView.Mode.View
-                onPress: currentMode = TissueView.Mode.View
+                marked: currentMode === DataView.Mode.View
+                onPress: currentMode = DataView.Mode.View
                 allUpperCase: false
             }
             ButtonSideLine {
                 text: "Add"
-                marked: currentMode === TissueView.Mode.Add
-                onPress: currentMode = TissueView.Mode.Add
+                marked: currentMode === DataView.Mode.Add
+                onPress: currentMode = DataView.Mode.Add
                 allUpperCase: false
             }
             ButtonSideLine {
                 text: "Select"
-                marked: currentMode === TissueView.Mode.Select
-                onPress: currentMode = TissueView.Mode.Select
+                marked: currentMode === DataView.Mode.Select
+                onPress: currentMode = DataView.Mode.Select
                 allUpperCase: false
             }
         }

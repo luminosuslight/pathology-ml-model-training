@@ -25,7 +25,7 @@ StretchRow {
                 id: loader
                 anchors.fill: parent
                 property QtObject view: modelData
-                source: "qrc:/ui/app/TissueView.qml"
+                source: "qrc:/ui/app/DataView.qml"
                 active: false
             }
         }

@@ -98,7 +98,7 @@ Window {
         anchors.fill: parent
         anchors.bottomMargin: parent.height * 0.5
 
-        TissueViewLoader {
+        DataViewLoader {
             anchors.fill: parent
         }
     }

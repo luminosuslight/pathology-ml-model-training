@@ -8,7 +8,7 @@
 
 #include "microscopy/manager/ViewManager.h"
 #include "microscopy/blocks/basic/CellDatabaseBlock.h"
-#include "microscopy/blocks/basic/TissueViewBlock.h"
+#include "microscopy/blocks/basic/DataViewBlock.h"
 
 
 bool AreaSelectionRectangularBlock::s_registered = BlockList::getInstance().addBlock(AreaSelectionRectangularBlock::info());
@@ -31,11 +31,11 @@ AreaSelectionRectangularBlock::AreaSelectionRectangularBlock(CoreController* con
 
 
     connect(m_controller->projectManager(), &ProjectManager::projectLoadingFinished, this, [this]() {
-        m_view = m_controller->blockManager()->getBlockByUid<TissueViewBlock>(m_assignedView);
+        m_view = m_controller->blockManager()->getBlockByUid<DataViewBlock>(m_assignedView);
         update();
     });
     connect(&m_assignedView, &StringAttribute::valueChanged, this, [this]() {
-        m_view = m_controller->blockManager()->getBlockByUid<TissueViewBlock>(m_assignedView);
+        m_view = m_controller->blockManager()->getBlockByUid<DataViewBlock>(m_assignedView);
         update();
         emit m_controller->manager<ViewManager>("viewManager")->areaAssignmentChanged();
     });
@@ -43,7 +43,7 @@ AreaSelectionRectangularBlock::AreaSelectionRectangularBlock(CoreController* con
 
 void AreaSelectionRectangularBlock::onCreatedByUser() {
     // this is a new block, assign to first view:
-    const auto views = m_controller->blockManager()->getBlocksByType<TissueViewBlock>();
+    const auto views = m_controller->blockManager()->getBlocksByType<DataViewBlock>();
     if (!views.isEmpty()) {
         m_assignedView = views.first()->getUid();
     }

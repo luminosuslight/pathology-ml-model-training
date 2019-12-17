@@ -2,7 +2,7 @@
 
 #include "core/CoreController.h"
 #include "core/manager/BlockManager.h"
-#include "microscopy/blocks/basic/TissueViewBlock.h"
+#include "microscopy/blocks/basic/DataViewBlock.h"
 
 
 ViewManager::ViewManager(CoreController* controller)
@@ -10,14 +10,14 @@ ViewManager::ViewManager(CoreController* controller)
     , m_controller(controller)
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
-    qmlRegisterType<TissueViewBlock>();
+    qmlRegisterType<DataViewBlock>();
 
     connect(m_controller->blockManager(), &BlockManager::blockInstanceCountChanged,
             this, &ViewManager::updateViews);
     updateViews();
 }
 
-const QList<TissueViewBlock*>& ViewManager::views() const {
+const QList<DataViewBlock*>& ViewManager::views() const {
     return m_views;
 }
 
@@ -30,7 +30,7 @@ QList<QObject*> ViewManager::viewsQml() const {
 }
 
 void ViewManager::updateViews() {
-    QList<TissueViewBlock*> views = m_controller->blockManager()->getBlocksByType<TissueViewBlock>();
+    QList<DataViewBlock*> views = m_controller->blockManager()->getBlocksByType<DataViewBlock>();
     if (views != m_views) {
         m_views = views;
         emit viewsChanged();

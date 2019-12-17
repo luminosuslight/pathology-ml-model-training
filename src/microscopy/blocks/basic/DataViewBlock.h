@@ -1,5 +1,5 @@
-#ifndef TISSUEVIEWBLOCK_H
-#define TISSUEVIEWBLOCK_H
+#ifndef DATAVIEWBLOCK_H
+#define DATAVIEWBLOCK_H
 
 #include "core/block_basics/BlockBase.h"
 
@@ -12,7 +12,7 @@ class CellVisualizationBlock;
 class AreaSelectionRectangularBlock;
 
 
-class TissueViewBlock : public BlockBase {
+class DataViewBlock : public BlockBase {
 
     Q_OBJECT
 
@@ -25,16 +25,16 @@ public:
     static bool s_registered;
     static BlockInfo info() {
         static BlockInfo info;
-        info.typeName = "Tissue View";
+        info.typeName = "Data View";
         info.category << "Microscopy" << "Basic";
         info.helpText = "";
-        info.qmlFile = "qrc:/microscopy/blocks/basic/TissueViewBlock.qml";
+        info.qmlFile = "qrc:/microscopy/blocks/basic/DataViewBlock.qml";
         info.orderHint = 1000 + 100 + 1;
-        info.complete<TissueViewBlock>();
+        info.complete<DataViewBlock>();
         return info;
     }
 
-    explicit TissueViewBlock(CoreController* controller, QString uid);
+    explicit DataViewBlock(CoreController* controller, QString uid);
 
     struct ViewArea {
         double left = 0.0;
@@ -96,4 +96,4 @@ protected:
     QTimer m_visibilityUpdateTimer;
 };
 
-#endif // TISSUEVIEWBLOCK_H
+#endif // DATAVIEWBLOCK_H

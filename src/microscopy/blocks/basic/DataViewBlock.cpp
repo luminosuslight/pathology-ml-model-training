@@ -1,4 +1,4 @@
-#include "TissueViewBlock.h"
+#include "DataViewBlock.h"
 
 #include "core/CoreController.h"
 #include "core/manager/BlockList.h"
@@ -16,9 +16,9 @@
 #include <QTimer>
 
 
-bool TissueViewBlock::s_registered = BlockList::getInstance().addBlock(TissueViewBlock::info());
+bool DataViewBlock::s_registered = BlockList::getInstance().addBlock(DataViewBlock::info());
 
-TissueViewBlock::TissueViewBlock(CoreController* controller, QString uid)
+DataViewBlock::DataViewBlock(CoreController* controller, QString uid)
     : BlockBase(controller, uid)
     , m_viewportWidth(this, "viewportWidth", 100, 0, 100*1000)
     , m_viewportHeight(this, "viewportHeight", 100, 0, 100*1000)
@@ -32,17 +32,17 @@ TissueViewBlock::TissueViewBlock(CoreController* controller, QString uid)
     qmlRegisterType<QSListModel>();
 
     connect(m_controller->blockManager(), &BlockManager::blockInstanceCountChanged,
-            this, &TissueViewBlock::updateChannelBlocks);
+            this, &DataViewBlock::updateChannelBlocks);
     connect(m_controller->blockManager(), &BlockManager::blockInstanceCountChanged,
-            this, &TissueViewBlock::updateVisualizeBlocks);
+            this, &DataViewBlock::updateVisualizeBlocks);
     connect(m_controller->blockManager(), &BlockManager::blockInstanceCountChanged,
-            this, &TissueViewBlock::updateRectangularAreaBlocks);
+            this, &DataViewBlock::updateRectangularAreaBlocks);
     connect(m_controller->manager<ViewManager>("viewManager"), &ViewManager::imageAssignmentChanged,
-            this, &TissueViewBlock::updateChannelBlocks);
+            this, &DataViewBlock::updateChannelBlocks);
     connect(m_controller->manager<ViewManager>("viewManager"), &ViewManager::visualizeAssignmentChanged,
-            this, &TissueViewBlock::updateVisualizeBlocks);
+            this, &DataViewBlock::updateVisualizeBlocks);
     connect(m_controller->manager<ViewManager>("viewManager"), &ViewManager::areaAssignmentChanged,
-            this, &TissueViewBlock::updateRectangularAreaBlocks);
+            this, &DataViewBlock::updateRectangularAreaBlocks);
 
     connect(m_controller->projectManager(), &ProjectManager::projectLoadingFinished, this, [this]() {
         updateChannelBlocks();
@@ -52,7 +52,7 @@ TissueViewBlock::TissueViewBlock(CoreController* controller, QString uid)
 
     m_visibilityUpdateTimer.setInterval(60);
     m_visibilityUpdateTimer.setSingleShot(true);
-    connect(&m_visibilityUpdateTimer, &QTimer::timeout, this, &TissueViewBlock::updateCellVisibility);
+    connect(&m_visibilityUpdateTimer, &QTimer::timeout, this, &DataViewBlock::updateCellVisibility);
     auto startTimerIfNotRunning = [this]() {
         if (!m_visibilityUpdateTimer.isActive()) m_visibilityUpdateTimer.start();
     };
@@ -64,11 +64,11 @@ TissueViewBlock::TissueViewBlock(CoreController* controller, QString uid)
     connect(&m_xScale, &DoubleAttribute::valueChanged, this, startTimerIfNotRunning);
     connect(&m_yScale, &DoubleAttribute::valueChanged, this, startTimerIfNotRunning);
 
-    connect(&m_xDimension, &StringAttribute::valueChanged, this, &TissueViewBlock::updateDimensions);
-    connect(&m_yDimension, &StringAttribute::valueChanged, this, &TissueViewBlock::updateDimensions);
+    connect(&m_xDimension, &StringAttribute::valueChanged, this, &DataViewBlock::updateDimensions);
+    connect(&m_yDimension, &StringAttribute::valueChanged, this, &DataViewBlock::updateDimensions);
 }
 
-QList<QObject*> TissueViewBlock::channelBlocks() const {
+QList<QObject*> DataViewBlock::channelBlocks() const {
     QList<QObject*> list;
     for (auto block: m_channelBlocks) {
         list.append(block);
@@ -76,7 +76,7 @@ QList<QObject*> TissueViewBlock::channelBlocks() const {
     return list;
 }
 
-QList<QObject*> TissueViewBlock::visualizeBlocks() const {
+QList<QObject*> DataViewBlock::visualizeBlocks() const {
     QList<QObject*> list;
     for (auto block: m_visualizeBlocks) {
         list.append(block);
@@ -84,7 +84,7 @@ QList<QObject*> TissueViewBlock::visualizeBlocks() const {
     return list;
 }
 
-QList<QObject*> TissueViewBlock::rectangularAreaBlocks() const {
+QList<QObject*> DataViewBlock::rectangularAreaBlocks() const {
     QList<QObject*> list;
     for (auto block: m_rectangularAreaBlocks) {
         list.append(block);
@@ -92,7 +92,7 @@ QList<QObject*> TissueViewBlock::rectangularAreaBlocks() const {
     return list;
 }
 
-TissueViewBlock::ViewArea TissueViewBlock::viewArea() const {
+DataViewBlock::ViewArea DataViewBlock::viewArea() const {
     ViewArea area;
     area.left = -m_contentX / m_xScale;
     area.top = -m_contentY / m_yScale;
@@ -101,7 +101,7 @@ TissueViewBlock::ViewArea TissueViewBlock::viewArea() const {
     return area;
 }
 
-void TissueViewBlock::addCenter(double x, double y) {
+void DataViewBlock::addCenter(double x, double y) {
     const auto dbs = getDbs();
     if (dbs.isEmpty()) {
         m_controller->guiManager()->showToast("Please assign at least one connected visualize block.");
@@ -117,7 +117,7 @@ void TissueViewBlock::addCenter(double x, double y) {
     }
 }
 
-void TissueViewBlock::addCenterAndGuessArea(int x, int y) {
+void DataViewBlock::addCenterAndGuessArea(int x, int y) {
     const auto dbs = getDbs();
     for (auto db: dbs) {
         // get min and max nucleus size for a good estimation:
@@ -152,7 +152,7 @@ void TissueViewBlock::addCenterAndGuessArea(int x, int y) {
     }
 }
 
-void TissueViewBlock::addCell(double x, double y, double radius, const QVector<float>& shape) {
+void DataViewBlock::addCell(double x, double y, double radius, const QVector<float>& shape) {
     if (std::none_of(shape.begin(), shape.end(), [](float v){ return v > 0.0f; })) {
         return;
     }
@@ -171,7 +171,7 @@ void TissueViewBlock::addCell(double x, double y, double radius, const QVector<f
     }
 }
 
-QVector<float> TissueViewBlock::getShapeEstimationAtRadius(int x, int y, int radius) const {
+QVector<float> DataViewBlock::getShapeEstimationAtRadius(int x, int y, int radius) const {
     const bool watershedChannelAvailable = std::any_of(m_channelBlocks.begin(), m_channelBlocks.end(),
                                                        [](TissueImageBlock* ch){ return ch->isNucleiChannel(); });
     if (!watershedChannelAvailable) {
@@ -186,7 +186,7 @@ QVector<float> TissueViewBlock::getShapeEstimationAtRadius(int x, int y, int rad
     return QVector<float>(shape.begin(), shape.end());
 }
 
-QPair<CellShape, float> TissueViewBlock::getShapeEstimationAndScore(int x, int y, int radius) const {
+QPair<CellShape, float> DataViewBlock::getShapeEstimationAndScore(int x, int y, int radius) const {
     if (radius < 2) return {};
 
     QVector<float> pixelValues(radius);
@@ -294,7 +294,7 @@ QPair<CellShape, float> TissueViewBlock::getShapeEstimationAndScore(int x, int y
     return {radii, minValuesSum};
 }
 
-QStringList TissueViewBlock::availableFeatures() const {
+QStringList DataViewBlock::availableFeatures() const {
     QStringList features;
     features << m_xDimension << m_yDimension;
     auto dbs = m_controller->blockManager()->getBlocksByType<CellDatabaseBlock>();
@@ -308,19 +308,19 @@ QStringList TissueViewBlock::availableFeatures() const {
     return features;
 }
 
-void TissueViewBlock::updateCellVisibility() {
+void DataViewBlock::updateCellVisibility() {
     for (CellVisualizationBlock* visBlock: m_visualizeBlocks) {
         visBlock->updateCellVisibility();
     }
 }
 
-void TissueViewBlock::updateDimensions() {
+void DataViewBlock::updateDimensions() {
     for (CellVisualizationBlock* visBlock: m_visualizeBlocks) {
         visBlock->updateCells();
     }
 }
 
-void TissueViewBlock::updateChannelBlocks() {
+void DataViewBlock::updateChannelBlocks() {
     QVector<QPointer<TissueImageBlock>> channelBlocks;
     for (auto block: m_controller->blockManager()->getBlocksByType<TissueImageBlock>()) {
         if (!block) continue;
@@ -345,14 +345,14 @@ void TissueViewBlock::updateChannelBlocks() {
     for (auto block: channelBlocks) {
         if (m_channelBlocks.contains(block)) continue;
         if (block->getGuiItem()) {
-            connect(block->getGuiItem(), &QQuickItem::yChanged, this, &TissueViewBlock::updateChannelBlocks);
+            connect(block->getGuiItem(), &QQuickItem::yChanged, this, &DataViewBlock::updateChannelBlocks);
         }
     }
     m_channelBlocks = channelBlocks;
     emit channelBlocksChanged();
 }
 
-void TissueViewBlock::updateVisualizeBlocks() {
+void DataViewBlock::updateVisualizeBlocks() {
     QVector<QPointer<CellVisualizationBlock>> visualizeBlocks;
     for (auto block: m_controller->blockManager()->getBlocksByType<CellVisualizationBlock>()) {
         if (!block) continue;
@@ -366,7 +366,7 @@ void TissueViewBlock::updateVisualizeBlocks() {
     emit visualizeBlocksChanged();
 }
 
-void TissueViewBlock::updateRectangularAreaBlocks() {
+void DataViewBlock::updateRectangularAreaBlocks() {
     QVector<QPointer<AreaSelectionRectangularBlock>> areaBlocks;
     for (auto block: m_controller->blockManager()->getBlocksByType<AreaSelectionRectangularBlock>()) {
         if (!block) continue;
@@ -380,7 +380,7 @@ void TissueViewBlock::updateRectangularAreaBlocks() {
     emit rectangularAreaBlocksChanged();
 }
 
-QSet<CellDatabaseBlock*> TissueViewBlock::getDbs() const {
+QSet<CellDatabaseBlock*> DataViewBlock::getDbs() const {
     QSet<CellDatabaseBlock*> dbs;
     for (const auto& visBlock: m_visualizeBlocks) {
         const auto db = visBlock->database();

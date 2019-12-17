@@ -7,7 +7,7 @@
 #include "core/connections/Nodes.h"
 
 #include "microscopy/manager/ViewManager.h"
-#include "microscopy/blocks/basic/TissueViewBlock.h"
+#include "microscopy/blocks/basic/DataViewBlock.h"
 
 #include <QtConcurrent>
 
@@ -33,7 +33,7 @@ TissueImageBlock::TissueImageBlock(CoreController* controller, QString uid)
 
 void TissueImageBlock::onCreatedByUser() {
     // this is a new block, assign to first view:
-    const auto views = m_controller->blockManager()->getBlocksByType<TissueViewBlock>();
+    const auto views = m_controller->blockManager()->getBlocksByType<DataViewBlock>();
     if (!views.isEmpty()) {
         assignView(views.first()->getUid());
     }

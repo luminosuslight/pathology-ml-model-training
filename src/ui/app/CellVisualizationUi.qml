@@ -57,7 +57,7 @@ Item {
                     width: Math.max(5*dp, parent.width / 2)
                     height: width
                     onTouchDown: {
-                        if (currentMode === TissueView.Mode.View
+                        if (currentMode === DataView.Mode.View
                                 || touch.modifiers & Qt.ControlModifier) {
                             touch.accepted = false
                         }
@@ -67,9 +67,9 @@ Item {
                         if (touch.modifiers & Qt.ControlModifier) {
                             return
                         }
-                        if (currentMode === TissueView.Mode.Add) {
+                        if (currentMode === DataView.Mode.Add) {
                             visBlock.database.removeCell(idx)
-                        } else if (currentMode === TissueView.Mode.Select) {
+                        } else if (currentMode === DataView.Mode.Select) {
                             if (visBlock.isSelected(idx)) {
                                 visBlock.deselectCell(idx)
                             } else {

@@ -3,7 +3,7 @@
 
 #include "core/block_basics/InOutBlock.h"
 
-class TissueViewBlock;
+class DataViewBlock;
 
 
 class AreaSelectionRectangularBlock : public InOutBlock {
@@ -48,7 +48,7 @@ protected:
 
     // runtime:
     IntegerAttribute m_cellCount;
-    QPointer<TissueViewBlock> m_view;
+    QPointer<DataViewBlock> m_view;
 
 };
 
