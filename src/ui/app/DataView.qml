@@ -92,7 +92,7 @@ Item {
         onHeightChanged: view.attr("viewportHeight").val = height
 
         Repeater {
-            model: view.channelBlocks
+            model: view.isTissuePlane ? view.channelBlocks : []
 
             TissueChannelUi {}
         }

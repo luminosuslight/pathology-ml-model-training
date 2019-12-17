@@ -342,6 +342,7 @@ void DataViewBlock::updateCellVisibility() {
 }
 
 void DataViewBlock::updateDimensions() {
+    emit dimensionsChanged();
     for (CellVisualizationBlock* visBlock: m_visualizeBlocks) {
         visBlock->updateCells();
     }
