@@ -11,13 +11,14 @@ StretchRow {
         model: viewManager.views
 
         Item {
+            visible: modelData.attr("visible").val
             implicitWidth: -1
 
             Timer {
-                // delay view creation untill views list isn't changing anymore
-                interval: 150
+                // delay view creation until view list isn't changing anymore
+                interval: 200
                 repeat: false
-                running: true
+                running: modelData.attr("visible").val
                 onTriggered: loader.active = true
             }
 

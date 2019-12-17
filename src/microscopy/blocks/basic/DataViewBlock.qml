@@ -7,7 +7,7 @@ import "qrc:/core/ui/controls"
 BlockBase {
     id: root
     width: 120*dp
-    height: 7*30*dp
+    height: 8*30*dp
 
     StretchColumn {
         anchors.fill: parent
@@ -61,6 +61,17 @@ BlockBase {
             AttributeNumericInput {
                 attr: block.attr("xScale")
                 decimals: 1
+            }
+        }
+
+        BlockRow {
+            leftMargin: 5*dp
+            StretchText {
+                text: "Visible:"
+            }
+            AttributeCheckbox {
+                width: 30*dp
+                attr: block.attr("visible")
             }
         }
 

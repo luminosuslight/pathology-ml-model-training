@@ -20,6 +20,7 @@ bool DataViewBlock::s_registered = BlockList::getInstance().addBlock(DataViewBlo
 
 DataViewBlock::DataViewBlock(CoreController* controller, QString uid)
     : BlockBase(controller, uid)
+    , m_visible(this, "visible", true)
     , m_viewportWidth(this, "viewportWidth", 100, 0, 100*1000)
     , m_viewportHeight(this, "viewportHeight", 100, 0, 100*1000)
     , m_contentX(this, "contentX", 0, -100*1000, 100*1000)

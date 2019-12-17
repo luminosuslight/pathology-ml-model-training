@@ -80,6 +80,7 @@ protected slots:
     void addCenterAndGuessArea(int x, int y);
 
 protected:
+    BoolAttribute m_visible;
     IntegerAttribute m_viewportWidth;
     IntegerAttribute m_viewportHeight;
     DoubleAttribute m_contentX;
