@@ -18,6 +18,15 @@ Item {
 
     property int currentMode: DataView.Mode.View
 
+    Connections {
+        target: view
+        onIsTissuePlaneChanged: {
+            if (!view.isTissuePlane) {
+                currentMode = DataView.Mode.View
+            }
+        }
+    }
+
     DataViewTouchController {
         anchors.fill: parent
         plane: plane
@@ -180,6 +189,7 @@ Item {
         height: 30*dp
         width: 4*75*dp
         color: Qt.hsva(0, 0, 0, 0.7)
+        visible: view.isTissuePlane
         BlockRow {
             anchors.fill: parent
             ButtonSideLine {
