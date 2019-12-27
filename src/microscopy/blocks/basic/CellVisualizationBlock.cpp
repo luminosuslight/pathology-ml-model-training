@@ -16,9 +16,11 @@ bool CellVisualizationBlock::s_registered = BlockList::getInstance().addBlock(Ce
 
 CellVisualizationBlock::CellVisualizationBlock(CoreController* controller, QString uid)
     : OneInputBlock(controller, uid)
-    , m_outerColor(this, "outerColor", {0.33, 1, 1})
+    , m_color1(this, "color1", {0.33, 1, 1})
+    , m_color2(this, "color2", {0.66, 1, 1})
     , m_strength(this, "strength", 0.5)
     , m_opacity(this, "opacity", 0.7)
+    , m_colorFeature(this, "colorFeature", "Solid")
     , m_assignedView(this, "assignedView")
     , m_selectedCells(this, "selectedCells")
     , m_detailedView(this, "detailedView", false, /*persistent*/ false)
@@ -28,7 +30,7 @@ CellVisualizationBlock::CellVisualizationBlock(CoreController* controller, QStri
 
     // prevent QML engine from taking ownership and deleting this object:
     m_visibleCells.setParent(this);
-    m_visibleCells.setRoleNames({"idx", "colorIndex"});
+    m_visibleCells.setRoleNames({"idx", "colorValue"});
 
     connect(m_controller->projectManager(), &ProjectManager::projectLoadingFinished, this, [this]() {
         m_view = m_controller->blockManager()->getBlockByUid<DataViewBlock>(m_assignedView);
@@ -42,6 +44,8 @@ CellVisualizationBlock::CellVisualizationBlock(CoreController* controller, QStri
     });
     connect(m_inputNode, &NodeBase::dataChanged,
             this, &CellVisualizationBlock::updateCells);
+
+    connect(&m_colorFeature, &StringAttribute::valueChanged, this, &CellVisualizationBlock::updateCells);
 
     connect(&m_selectedCells, &VariantListAttribute::valueChanged, this, [this]() {
         updateSelectedCells();
@@ -72,6 +76,7 @@ void CellVisualizationBlock::updateCells() {
     if (!m_inputNode->isConnected() || !db || !m_view) {
         m_xPositions.clear();
         m_yPositions.clear();
+        m_colorValues.clear();
         emit positionsChanged();
         m_visibleCells.clear();
         return;
@@ -80,6 +85,7 @@ void CellVisualizationBlock::updateCells() {
     const QVector<int>& cells = m_inputNode->constData().ids();
     m_xPositions.resize(cells.size());
     m_yPositions.resize(cells.size());
+    m_colorValues.resize(cells.size());
     const int xFeatureId = db->getOrCreateFeatureId(m_view->xDimension());
     const int yFeatureId = db->getOrCreateFeatureId(m_view->yDimension());
     for (int i = 0; i < cells.size(); ++i) {
@@ -89,6 +95,25 @@ void CellVisualizationBlock::updateCells() {
         m_xPositions[i] = x;
         m_yPositions[i] = y;
     }
+
+    if (m_colorFeature.getValue() != "Solid") {
+        const int colorFeatureId = db->getOrCreateFeatureId(m_colorFeature.getValue());
+        // TODO: check whether it is better to get min and max only of the input cells
+        // and not of the whole database
+        const double minColorValue = db->featureMin(colorFeatureId);
+        double colorValueRange = db->featureMax(colorFeatureId) - minColorValue;
+        if (colorValueRange == 0.0) {
+            colorValueRange = 1.0;
+        }
+        for (int i = 0; i < cells.size(); ++i) {
+            const int idx = cells.at(i);
+            const double colorValue = db->getFeature(colorFeatureId, idx);
+            m_colorValues[i] = (colorValue - minColorValue) / colorValueRange;
+        }
+    } else {
+        m_colorValues.fill(0.0);
+    }
+
     emit positionsChanged();
     updateCellVisibility();
 }
@@ -107,8 +132,43 @@ QVector<int> CellVisualizationBlock::cellIds() const {
     return m_inputNode->constData().ids();
 }
 
+QColor CellVisualizationBlock::color(double colorValue) {
+    const double s1 = m_color1.sat();
+    const double h1 = s1 > 0.0 ? m_color1.hue() : m_color2.hue();
+    const double v1 = m_color1.val();
+
+    const double s2 = m_color2.sat();
+    const double h2 = s2 > 0.0 ? m_color2.hue() : m_color1.hue();
+    const double v2 = m_color2.val();
+
+    const double cInv = 1.0 - colorValue;
+
+    QColor actual = QColor::fromHsvF(h1 * cInv + h2 * colorValue,
+                                     s1 * cInv + s2 * colorValue,
+                                     v1 * cInv + v2 * colorValue,
+                                     1.0);
+    return actual;
+}
+
 void CellVisualizationBlock::clearSelection() {
     m_selectedCells.clear();
+}
+
+QStringList CellVisualizationBlock::availableFeatures() const {
+    QStringList features;
+    features << "Solid";
+    if (m_colorFeature.getValue() != "Solid") {
+        features << m_colorFeature;
+    }
+    auto dbs = m_controller->blockManager()->getBlocksByType<CellDatabaseBlock>();
+    for (auto db: dbs) {
+        for (auto feature: db->features()) {
+            if (!feature.isEmpty() && !features.contains(feature)) {
+                features.append(feature);
+            }
+        }
+    }
+    return features;
 }
 
 void CellVisualizationBlock::updateCellVisibility() {
@@ -144,8 +204,9 @@ void CellVisualizationBlock::updateCellVisibility() {
         if (x + radius >= area.left && x - radius <= area.right) {
             const double y = m_yPositions[i];
             if (y + radius >= area.top && y - radius <= area.bottom) {
+                const double colorValue = m_colorValues[i];
                 visible.append(QVariantMap({{"idx", QVariant(idx)},
-                                           {"colorIndex", 0}}));
+                                           {"colorValue", colorValue}}));
                 if (visible.size() > 1024) {
                     // early exit, there are too many cells visible
                     // don't change list for fade out animation

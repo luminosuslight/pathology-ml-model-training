@@ -6,13 +6,32 @@ import "qrc:/core/ui/controls"
 
 BlockBase {
     id: root
-    width: 110*dp
-    height: 80*dp
+    width: block.attr("colorFeature").val === "Solid" ? 110*dp : 160*dp
+    height: 110*dp
     settingsComponent: settings
 
     StretchColumn {
         height: parent.height
         width: parent.width
+
+        BlockRow {
+            AttributeCombobox {
+                attr: block.attr("colorFeature")
+                values: block.availableFeatures()
+                onClick: values = block.availableFeatures()
+            }
+
+            AttributeDotColorPicker {
+                width: 30*dp
+                attr: block.attr("color1")
+            }
+
+            AttributeDotColorPicker {
+                visible: block.attr("colorFeature").val !== "Solid"
+                width: 30*dp
+                attr: block.attr("color2")
+            }
+        }
 
         BlockRow {
             Spacer { implicitWidth: -0.5 }
@@ -48,15 +67,6 @@ BlockBase {
                 node: block.node("inputNode")
             }
             text: "Vis  "
-
-            AttributeDotColorPicker {
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: parent.right
-                anchors.rightMargin: 15*dp
-                width: 26*dp
-                height: 26*dp
-                attr: block.attr("outerColor")
-            }
             OutputNodeCommand {
                 node: block.node("selection")
                 suggestions: ["Feature Setter"]

@@ -5,13 +5,15 @@ import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
 
 Item {
-    Points {
+    ColoredPoints {
         width: 1
         height: 1
-        color: visBlock.attr("outerColor").qcolor
+        color1: visBlock.attr("color1").qcolor
+        color2: visBlock.attr("color2").qcolor
         pointSize: Math.max(1, visBlock.attr("strength").val * 4) * dp
         xPositions: visBlock.xPositions
         yPositions: visBlock.yPositions
+        colorValues: visBlock.colorValues
         opacity: visBlock.attr("detailedView").val ? 0.0 : visBlock.attr("opacity").val
         Behavior on opacity {
             NumberAnimation {
@@ -35,20 +37,38 @@ Item {
             model: visBlock.visibleCells()
 
             IrregularCircleOutline {
-                // idx and colorIndex comes from the model
+                id: cellOutline
+                // idx and colorValue come from the model
                 width: visBlock.database.getFeature(2, idx) * 2
                 height: width
                 x: visBlock.database.getFeature(0, idx) - width / 2
                 y: visBlock.database.getFeature(1, idx) - width / 2
                 radii: visBlock.database.getShapeVector(idx)
-                color: visBlock.isSelected(idx) ? "red" : visBlock.attr("outerColor").qcolor
+                color: visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
                 lineWidth: Math.max(1, visBlock.attr("strength").val * 4) * dp
 
+                Connections {
+                    target: visBlock.attr("color1")
+                    onValChanged: {
+                        cellOutline.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
+                        rect.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
+                    }
+                }
+
+                Connections {
+                    target: visBlock.attr("color2")
+                    onValChanged: {
+                        cellOutline.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
+                        rect.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
+                    }
+                }
+
                 Rectangle {
+                    id: rect
                     width: Math.max(1, visBlock.attr("strength").val * 4) * dp
                     height: width
                     anchors.centerIn: parent
-                    color: visBlock.isSelected(idx) ? "red" : visBlock.attr("outerColor").qcolor
+                    color: visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
                     visible: visBlock.database.getFeature(2, idx) < 1.0
                 }
 

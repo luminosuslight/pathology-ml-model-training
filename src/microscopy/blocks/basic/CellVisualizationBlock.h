@@ -16,6 +16,7 @@ class CellVisualizationBlock : public OneInputBlock {
     Q_PROPERTY(QObject* database READ databaseQml NOTIFY databaseChanged)
     Q_PROPERTY(QVector<double> xPositions READ xPositions NOTIFY positionsChanged)
     Q_PROPERTY(QVector<double> yPositions READ yPositions NOTIFY positionsChanged)
+    Q_PROPERTY(QVector<double> colorValues READ colorValues NOTIFY positionsChanged)
     Q_PROPERTY(QVector<int> cellIds READ cellIds NOTIFY positionsChanged)
 
 public:
@@ -61,9 +62,14 @@ public slots:
 
     const QVector<double>& xPositions() const { return m_xPositions; }
     const QVector<double>& yPositions() const { return m_yPositions; }
+    const QVector<double>& colorValues() const { return m_colorValues; }
     QVector<int> cellIds() const;
 
+    QColor color(double colorValue);
+
     void clearSelection();
+
+    QStringList availableFeatures() const;
 
 protected slots:
     void updateSelectedCells();
@@ -71,9 +77,11 @@ protected slots:
 protected:
     QPointer<NodeBase> m_selectionNode;
 
-    HsvAttribute m_outerColor;
+    HsvAttribute m_color1;
+    HsvAttribute m_color2;
     DoubleAttribute m_strength;
     DoubleAttribute m_opacity;
+    StringAttribute m_colorFeature;
     StringAttribute m_assignedView;
     VariantListAttribute m_selectedCells;
 
@@ -85,6 +93,7 @@ protected:
 
     QVector<double> m_xPositions;
     QVector<double> m_yPositions;
+    QVector<double> m_colorValues;
 
 };
 
