@@ -30,8 +30,11 @@ signals:
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
 
+    void fillInMidpointValues();
+
+    void fillInAverageValues();
+
 protected:
-    QPointer<NodeBase> m_featuresOutNode;
     QPointer<NodeBase> m_channelNode;
 
 };

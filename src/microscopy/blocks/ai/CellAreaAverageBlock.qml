@@ -7,24 +7,21 @@ import "qrc:/core/ui/controls"
 BlockBase {
     id: root
     width: 120*dp
-    height: 150*dp
+    height: 5*30*dp
 
     StretchColumn {
         anchors.fill: parent
 
         ButtonBottomLine {
-            text: "Run ▻"
+            text: "Midpoint ▻"
             allUpperCase: false
+            onPress: block.fillInMidpointValues()
         }
 
-        BlockRow {
-            StretchText {
-                hAlign: Text.AlignRight
-                text: "Feature"
-            }
-            OutputNodeRect {
-                node: block.node("featuresOut")
-            }
+        ButtonBottomLine {
+            text: "Average ▻"
+            allUpperCase: false
+            onPress: block.fillInAverageValues()
         }
 
         BlockRow {
