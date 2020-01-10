@@ -37,7 +37,7 @@ public slots:
 
     void addImageBlock(QString filename);
 
-    QVector<float> randomRadii(float ellipseFactor, float variance) const;
+    QVector<double> randomRadii(float ellipseFactor, float variance) const;
 
 protected:
     std::random_device m_rd;

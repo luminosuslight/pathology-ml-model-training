@@ -60,9 +60,9 @@ public slots:
     ViewArea viewArea() const;
 
     void addCenter(double x, double y);
-    void addCell(double x, double y, double radius, const QVector<float>& shape);
+    void addCell(double x, double y, double radius, const QVector<double>& shape);
 
-    QVector<float> getShapeEstimationAtRadius(int x, int y, int radius) const;
+    QVector<double> getShapeEstimationAtRadius(int x, int y, int radius) const;
     QPair<CellShape, float> getShapeEstimationAndScore(int x, int y, int radius) const;
 
     QStringList availableFeatures() const;

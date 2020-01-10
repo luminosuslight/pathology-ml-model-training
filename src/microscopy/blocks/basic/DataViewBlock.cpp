@@ -153,7 +153,7 @@ void DataViewBlock::addCenterAndGuessArea(int x, int y) {
     }
 }
 
-void DataViewBlock::addCell(double x, double y, double radius, const QVector<float>& shape) {
+void DataViewBlock::addCell(double x, double y, double radius, const QVector<double>& shape) {
     if (std::none_of(shape.begin(), shape.end(), [](float v){ return v > 0.0f; })) {
         return;
     }
@@ -172,7 +172,7 @@ void DataViewBlock::addCell(double x, double y, double radius, const QVector<flo
     }
 }
 
-QVector<float> DataViewBlock::getShapeEstimationAtRadius(int x, int y, int radius) const {
+QVector<double> DataViewBlock::getShapeEstimationAtRadius(int x, int y, int radius) const {
     const bool watershedChannelAvailable = std::any_of(m_channelBlocks.begin(), m_channelBlocks.end(),
                                                        [](TissueImageBlock* ch){ return ch->isNucleiChannel(); });
     if (!watershedChannelAvailable) {
@@ -184,14 +184,14 @@ QVector<float> DataViewBlock::getShapeEstimationAtRadius(int x, int y, int radiu
     const auto result = getShapeEstimationAndScore(x, y, radius);
     if (result.second == 0.0f) return {};
     const auto& shape = result.first;
-    return QVector<float>(shape.begin(), shape.end());
+    return QVector<double>(shape.begin(), shape.end());
 }
 
 QPair<CellShape, float> DataViewBlock::getShapeEstimationAndScore(int x, int y, int radius) const {
     if (radius < 2) return {};
 
-    QVector<float> pixelValues(radius);
-    QVector<float> changes(radius);
+    QVector<double> pixelValues(radius);
+    QVector<double> changes(radius);
     CellShape radii;
     float minValuesSum = 0.0;
     const int radiiCount = CellDatabaseConstants::RADII_COUNT;

@@ -57,11 +57,11 @@ void CellRendererBlock::addImageBlock(QString filename) {
     block->onCreatedByUser();
 }
 
-QVector<float> CellRendererBlock::randomRadii(float ellipseFactor, float variance) const {
+QVector<double> CellRendererBlock::randomRadii(float ellipseFactor, float variance) const {
     std::uniform_real_distribution<float> sizeVarianceDist(variance, 1.0f);
     std::uniform_real_distribution<float> ellipseDist(ellipseFactor, 1.0);
     std::uniform_real_distribution<float> rotationDist(0.0f, 1.0f);
-    QVector<float> radii(24);
+    QVector<double> radii(24);
 
     const float rotation = rotationDist(m_engine);
     const float ellipseStrength = ellipseDist(m_engine);
