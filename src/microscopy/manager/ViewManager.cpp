@@ -14,6 +14,9 @@ ViewManager::ViewManager(CoreController* controller)
 
     connect(m_controller->blockManager(), &BlockManager::blockInstanceCountChanged,
             this, &ViewManager::updateViews);
+
+    connect(this, &ViewManager::viewsChanged,
+            this, &ViewManager::visibleViewsChanged);
     updateViews();
 }
 
@@ -29,8 +32,24 @@ QList<QObject*> ViewManager::viewsQml() const {
     return views;
 }
 
+QList<QObject*> ViewManager::visibleViewsQml() const {
+    QList<QObject*> views;
+    for (auto view: m_views) {
+        if (qobject_cast<BoolAttribute*>(view->attr("visible"))->getValue()) {
+            views.append(view);
+        }
+    }
+    return views;
+}
+
 void ViewManager::updateViews() {
     QList<DataViewBlock*> views = m_controller->blockManager()->getBlocksByType<DataViewBlock>();
+    for (auto view: views) {
+        if (!m_views.contains(view)) {
+            connect(qobject_cast<BoolAttribute*>(view->attr("visible")), &BoolAttribute::valueChanged,
+                    this, &ViewManager::visibleViewsChanged);
+        }
+    }
     if (views != m_views) {
         m_views = views;
         emit viewsChanged();

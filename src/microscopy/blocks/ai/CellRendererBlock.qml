@@ -51,7 +51,7 @@ BlockBase {
                 allUpperCase: false
                 onPress: {
                     loader.item.grabToImage(function(result) {
-                        const filename = "/home/tim/Masterarbeit/artificial_data/%1.tiff".arg(renderTypeCombobox.texts[renderTypeCombobox.currentIndex])
+                        const filename = "/Users/tim/Masterarbeit/artificial_data/%1.tiff".arg(renderTypeCombobox.texts[renderTypeCombobox.currentIndex])
                         result.saveToFile(filename)
                         block.addImageBlock(filename)
                     });

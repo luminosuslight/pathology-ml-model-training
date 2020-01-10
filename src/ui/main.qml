@@ -13,93 +13,96 @@ Window {
     title: "microscopy - " + controller.getVersionString()
     width: 1000
     height: 800
-    property bool bgIsSeamless: guiManager.backgroundName.indexOf("tiled") !== -1
     visible: false  // is shown by CoreController ctor
 
     // flags: Qt.platform.os === "ios" ? Qt.MaximizeUsingFullscreenGeometryHint : 0
 
-    Item {
+    StretchColumn {
         id: content
         anchors.fill: parent
-        anchors.topMargin: parent.height * 0.5
         layer.enabled: GRAPHICAL_EFFECTS_LEVEL >= 3
         layer.smooth: false
         layer.mipmap: false
 
-        Loader {
-            sourceComponent: bgIsSeamless ? seamlessBackground : staticBackground
-        }
-
-        Component {
-            id: seamlessBackground
-            Image {
-                width: content.width + sourceSize.width
-                height: content.height + sourceSize.height
-                fillMode: Image.Tile
-                source: "qrc:/images/bg/" + guiManager.backgroundName
-                x: ((plane.x % sourceSize.width) + sourceSize.width) % sourceSize.width - sourceSize.width
-                y: ((plane.y % sourceSize.height) + sourceSize.height) % sourceSize.height - sourceSize.height
-            }
-        }
-        Component {
-            id: staticBackground
-            Image {
-                width: content.width
-                height: content.height
-                // using jpg instead of png to force opaque rendering
-                source: "qrc:/images/bg/" + guiManager.backgroundName
-                fillMode: Image.PreserveAspectCrop
-            }
-        }
-
-        WorkspacePlaneTouchController {
-            plane: plane
-            anchors.fill: parent
-            objectName: "planeController"
-        }
-
-        WorkspacePlane {
-            // does not have a "size", because it is not visible by itself
-            id: plane
-            width: parent.width
-            height: parent.height
-            objectName: "plane"
-            onXChanged: controller.blockManager().updateBlockVisibility(plane)
-            onYChanged: controller.blockManager().updateBlockVisibility(plane)
-        }
-
-        Keys.onPressed: {
-            if (event.key === Qt.Key_Z && (event.modifiers & Qt.ControlModifier)) {
-                // handle CTRL + Z shortcut:
-                controller.blockManager().restoreDeletedBlock()
-                event.accepted = true
-            } else if (event.key === Qt.Key_V && (event.modifiers & Qt.ControlModifier)) {
-                // handle CTRL + V shortcut:
-                controller.blockManager().pasteBlock();
-                event.accepted = true
-            } else if (event.key === Qt.Key_Left) {
-                // handle left arrow in presentations:
-                if (controller.anchorManager().getAnchorsExist()) {
-                    controller.anchorManager().showPrevious();
-                }
-            } else if (event.key === Qt.Key_Right || event.key === Qt.Key_Space) {
-                // handle right arrow and space in presentations:
-                if (controller.anchorManager().getAnchorsExist()) {
-                    controller.anchorManager().showNext();
-                }
-            }
-        }
-    }
-
-    // -------------------------------- Tissue Views ---------------------------------
-
-    Rectangle {
-        color: "black"
-        anchors.fill: parent
-        anchors.bottomMargin: parent.height * 0.5
+        // -------------------------------- Tissue Views ---------------------------------
 
         DataViewLoader {
-            anchors.fill: parent
+            implicitHeight: -1
+            visible: viewManager.visibleViews.length
+            z: 2  // draw on top of node view
+        }
+
+        // -------------------------------- Node Views ---------------------------------
+
+        Item {
+            id: nodeView
+            implicitHeight: -1
+            z: 1  // draw below data views, no need for clipping
+
+            Loader {
+                property bool bgIsSeamless: guiManager.backgroundName.indexOf("tiled") !== -1
+                sourceComponent: bgIsSeamless ? seamlessBackground : staticBackground
+            }
+
+            Component {
+                id: seamlessBackground
+                Image {
+                    width: nodeView.width + sourceSize.width
+                    height: nodeView.height + sourceSize.height
+                    fillMode: Image.Tile
+                    source: "qrc:/images/bg/" + guiManager.backgroundName
+                    x: ((plane.x % sourceSize.width) + sourceSize.width) % sourceSize.width - sourceSize.width
+                    y: ((plane.y % sourceSize.height) + sourceSize.height) % sourceSize.height - sourceSize.height
+                }
+            }
+            Component {
+                id: staticBackground
+                Image {
+                    width: nodeView.width
+                    height: nodeView.height
+                    // using jpg instead of png to force opaque rendering
+                    source: "qrc:/images/bg/" + guiManager.backgroundName
+                    fillMode: Image.PreserveAspectCrop
+                }
+            }
+
+            WorkspacePlaneTouchController {
+                plane: plane
+                anchors.fill: parent
+                objectName: "planeController"
+            }
+
+            WorkspacePlane {
+                // does not have a "size", because it is not visible by itself
+                id: plane
+                width: parent.width
+                height: parent.height
+                objectName: "plane"
+                onXChanged: controller.blockManager().updateBlockVisibility(plane)
+                onYChanged: controller.blockManager().updateBlockVisibility(plane)
+            }
+
+            Keys.onPressed: {
+                if (event.key === Qt.Key_Z && (event.modifiers & Qt.ControlModifier)) {
+                    // handle CTRL + Z shortcut:
+                    controller.blockManager().restoreDeletedBlock()
+                    event.accepted = true
+                } else if (event.key === Qt.Key_V && (event.modifiers & Qt.ControlModifier)) {
+                    // handle CTRL + V shortcut:
+                    controller.blockManager().pasteBlock();
+                    event.accepted = true
+                } else if (event.key === Qt.Key_Left) {
+                    // handle left arrow in presentations:
+                    if (controller.anchorManager().getAnchorsExist()) {
+                        controller.anchorManager().showPrevious();
+                    }
+                } else if (event.key === Qt.Key_Right || event.key === Qt.Key_Space) {
+                    // handle right arrow and space in presentations:
+                    if (controller.anchorManager().getAnchorsExist()) {
+                        controller.anchorManager().showNext();
+                    }
+                }
+            }
         }
     }
 

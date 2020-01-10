@@ -15,12 +15,14 @@ class ViewManager : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(QList<QObject*> views READ viewsQml NOTIFY viewsChanged)
+    Q_PROPERTY(QList<QObject*> visibleViews READ visibleViewsQml NOTIFY visibleViewsChanged)
 
 public:
     explicit ViewManager(CoreController* controller);
 
 signals:
     void viewsChanged();
+    void visibleViewsChanged();
     void imageAssignmentChanged();
     void visualizeAssignmentChanged();
     void areaAssignmentChanged();
@@ -28,6 +30,8 @@ signals:
 public slots:
     const QList<DataViewBlock*>& views() const;
     QList<QObject*> viewsQml() const;
+
+    QList<QObject*> visibleViewsQml() const;
 
 protected:
     void updateViews();

@@ -4,30 +4,34 @@ import "qrc:/ui/app"
 import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
 
-StretchRow {
+Rectangle {
     id: root
+    color: "black"
 
-    Repeater {
-        model: viewManager.views
+    StretchRow {
+        anchors.fill: parent
 
-        Item {
-            visible: modelData.attr("visible").val
-            implicitWidth: -1
+        Repeater {
+            model: viewManager.visibleViews
 
-            Timer {
-                // delay view creation until view list isn't changing anymore
-                interval: 200
-                repeat: false
-                running: modelData.attr("visible").val
-                onTriggered: loader.active = true
-            }
+            Item {
+                implicitWidth: -1
 
-            Loader {
-                id: loader
-                anchors.fill: parent
-                property QtObject view: modelData
-                source: "qrc:/ui/app/DataView.qml"
-                active: false
+                Timer {
+                    // delay view creation until view list isn't changing anymore
+                    interval: 200
+                    repeat: false
+                    running: true
+                    onTriggered: loader.active = true
+                }
+
+                Loader {
+                    id: loader
+                    anchors.fill: parent
+                    property QtObject view: modelData
+                    source: "qrc:/ui/app/DataView.qml"
+                    active: false
+                }
             }
         }
     }
