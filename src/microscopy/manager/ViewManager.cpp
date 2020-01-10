@@ -42,6 +42,19 @@ QList<QObject*> ViewManager::visibleViewsQml() const {
     return views;
 }
 
+QStringList ViewManager::availableFeatures() const {
+    QStringList features;
+    auto dbs = m_controller->blockManager()->getBlocksByType<CellDatabaseBlock>();
+    for (auto db: dbs) {
+        for (auto feature: db->features()) {
+            if (!features.contains(feature)) {
+                features.append(feature);
+            }
+        }
+    }
+    return features;
+}
+
 void ViewManager::updateViews() {
     QList<DataViewBlock*> views = m_controller->blockManager()->getBlocksByType<DataViewBlock>();
     for (auto view: views) {

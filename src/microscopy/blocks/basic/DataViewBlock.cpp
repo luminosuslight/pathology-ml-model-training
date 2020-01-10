@@ -296,15 +296,12 @@ QPair<CellShape, float> DataViewBlock::getShapeEstimationAndScore(int x, int y, 
 }
 
 QStringList DataViewBlock::availableFeatures() const {
-    QStringList features;
-    features << m_xDimension << m_yDimension;
-    auto dbs = m_controller->blockManager()->getBlocksByType<CellDatabaseBlock>();
-    for (auto db: dbs) {
-        for (auto feature: db->features()) {
-            if (!features.contains(feature)) {
-                features.append(feature);
-            }
-        }
+    QStringList features = m_controller->manager<ViewManager>("viewManager")->availableFeatures();
+    if (!features.contains(m_xDimension)) {
+        features << m_xDimension;
+    }
+    if (!features.contains(m_yDimension)) {
+        features << m_yDimension;
     }
     return features;
 }

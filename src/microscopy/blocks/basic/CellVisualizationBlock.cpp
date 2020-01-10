@@ -155,18 +155,12 @@ void CellVisualizationBlock::clearSelection() {
 }
 
 QStringList CellVisualizationBlock::availableFeatures() const {
-    QStringList features;
-    features << "Solid";
-    if (m_colorFeature.getValue() != "Solid") {
-        features << m_colorFeature;
+    QStringList features = m_controller->manager<ViewManager>("viewManager")->availableFeatures();
+    if (!features.contains("Solid")) {
+        features << "Solid";
     }
-    auto dbs = m_controller->blockManager()->getBlocksByType<CellDatabaseBlock>();
-    for (auto db: dbs) {
-        for (auto feature: db->features()) {
-            if (!feature.isEmpty() && !features.contains(feature)) {
-                features.append(feature);
-            }
-        }
+    if (!features.contains(m_colorFeature.getValue())) {
+        features << m_colorFeature.getValue();
     }
     return features;
 }

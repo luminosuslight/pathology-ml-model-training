@@ -30,8 +30,9 @@ signals:
 public slots:
     const QList<DataViewBlock*>& views() const;
     QList<QObject*> viewsQml() const;
-
     QList<QObject*> visibleViewsQml() const;
+
+    QStringList availableFeatures() const;
 
 protected:
     void updateViews();
