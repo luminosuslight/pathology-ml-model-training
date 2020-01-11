@@ -48,6 +48,10 @@ public slots:
 
     QString filename() const { return QFileInfo(m_filePath.getValue()).fileName(); }
 
+    void upload();
+    void download();
+    void removeFromServer();
+
 protected slots:
     void onFilePathChanged();
 
@@ -61,10 +65,13 @@ protected:
     BoolAttribute m_isNucleiChannel;
     BoolAttribute m_interpretAs16Bit;
     StringListAttribute m_assignedViews;
+    StringAttribute m_serverHash;
 
     // runtime data:
     QImage m_image;
     StringAttribute m_loadedFile;
+    BoolAttribute m_locallyAvailable;
+    DoubleAttribute m_networkProgress;
 
 };
 

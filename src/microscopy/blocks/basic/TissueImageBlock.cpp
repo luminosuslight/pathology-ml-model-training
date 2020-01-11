@@ -4,6 +4,7 @@
 #include "core/manager/BlockList.h"
 #include "core/manager/BlockManager.h"
 #include "core/manager/FileSystemManager.h"
+#include "core/manager/UpdateManager.h"
 #include "core/connections/Nodes.h"
 
 #include "microscopy/manager/ViewManager.h"
@@ -25,7 +26,10 @@ TissueImageBlock::TissueImageBlock(CoreController* controller, QString uid)
     , m_isNucleiChannel(this, "isNucleiChannel", false)
     , m_interpretAs16Bit(this, "interpretAs16Bit", false)
     , m_assignedViews(this, "assignedViews")
+    , m_serverHash(this, "serverHash")
     , m_loadedFile(this, "loadedFile", "", /*persistent*/ false)
+    , m_locallyAvailable(this, "locallyAvailable", false, /*persistent*/ false)
+    , m_networkProgress(this, "networkProgress", 0.0, 0.0, 1.0, /*persistent*/ false)
 {
     connect(&m_filePath, &StringAttribute::valueChanged, this, &TissueImageBlock::onFilePathChanged);
     connect(&m_filePath, &StringAttribute::valueChanged, this, &TissueImageBlock::filenameChanged);
@@ -76,6 +80,71 @@ void TissueImageBlock::removeFromView(QString uid) {
     emit m_controller->manager<ViewManager>("viewManager")->imageAssignmentChanged();
 }
 
+void TissueImageBlock::upload() {
+    if (m_loadedFile.getValue().isEmpty()) return;
+
+    auto nam = m_controller->updateManager()->nam();
+    auto dao = m_controller->dao();
+
+    QNetworkRequest request;
+    request.setUrl(QUrl("http://localhost:5000/data"));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
+    auto data = dao->loadLocalFile(dao->withoutFilePrefix(m_loadedFile));
+    auto reply = nam->post(request, data);
+
+    connect(reply, &QNetworkReply::uploadProgress, this, [this](qint64 bytesSent, qint64 bytesTotal) {
+        if (bytesTotal) {
+            m_networkProgress = double(bytesSent) / bytesTotal;
+        } else {
+            m_networkProgress = 0.0;
+        }
+    });
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        m_serverHash = QString::fromUtf8(reply->readAll());
+        reply->deleteLater();
+    });
+}
+
+void TissueImageBlock::download() {
+    if (m_serverHash.getValue().isEmpty()) return;
+
+    auto nam = m_controller->updateManager()->nam();
+
+    QNetworkRequest request;
+    request.setUrl(QUrl("http://localhost:5000/data/" + m_serverHash));
+    auto reply = nam->get(request);
+
+    connect(reply, &QNetworkReply::downloadProgress, this, [this](qint64 bytesSent, qint64 bytesTotal) {
+        if (bytesTotal) {
+            m_networkProgress = double(bytesSent) / bytesTotal;
+        } else {
+            m_networkProgress = 0.0;
+        }
+    });
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        auto dao = m_controller->dao();
+        dao->saveFile("downloads", m_serverHash, reply->readAll());
+        m_filePath = "file://" + dao->getDataDir("downloads") + m_serverHash;
+        reply->deleteLater();
+    });
+}
+
+void TissueImageBlock::removeFromServer() {
+    if (m_serverHash.getValue().isEmpty()) return;
+    auto nam = m_controller->updateManager()->nam();
+    QNetworkRequest request;
+    QString url = "http://localhost:5000/data/" + m_serverHash;
+    request.setUrl(QUrl(url));
+    request.setRawHeader("User-Agent", "Luminosus 1.0");
+    auto reply = nam->deleteResource(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        m_serverHash = "";
+        qDebug() << "Successfully deleted.";
+        reply->deleteLater();
+        // TODO: who owns the reply object?
+    });
+}
+
 void TissueImageBlock::onFilePathChanged() {
     QString file = m_filePath.getValue();
     if (m_loadedFile == file) return;
@@ -99,6 +168,7 @@ void TissueImageBlock::onFilePathChanged() {
         m_image = image;
         m_loadedFile = file;
         m_interpretAs16Bit = file.endsWith(specialEnding);
+        m_locallyAvailable = true;
     } else if (image.format() == QImage::Format_Grayscale16) {
         // We will convert this grascale 16 bit image to ARGB32
         // by storing the first (MSB) 8bit in the red 8bit channel
@@ -134,7 +204,9 @@ void TissueImageBlock::onFilePathChanged() {
         m_image.save(m_controller->dao()->withoutFilePrefix(newName));
         m_loadedFile = newName;
         m_filePath = newName;
+        m_locallyAvailable = true;
     } else {
         qWarning() << "Image format not supported or file doesn't exist:" << image.format();
+        m_locallyAvailable = false;
     }
 }

@@ -6,6 +6,8 @@ import os
 import os.path
 
 UPLOAD_FOLDER = 'uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -17,7 +19,7 @@ def secure_filename(filename):
 
 @app.route('/version', methods=['GET'])
 def version():
-    return "1.0"
+    return "1.0", 200
 
 
 @app.route('/data', methods=['POST'])
@@ -27,13 +29,13 @@ def upload():
     path = os.path.join(app.config['UPLOAD_FOLDER'], hash)
     with open(path, 'wb') as file:
         file.write(raw_data)
-    return hash
+    return hash, 200
 
 
 @app.route('/data/check/<hash>', methods=['GET'])
 def check(hash):
     path = os.path.join(app.config['UPLOAD_FOLDER'], hash)
-    return "1" if os.path.isfile(path) else "0"
+    return ("1" if os.path.isfile(path) else "0"), 200
 
 
 @app.route('/data/<hash>', methods=['GET'])
@@ -45,7 +47,7 @@ def download(hash):
     with open(path, 'rb') as file:
         content = file.read()
 
-    return content
+    return content, 200
 
 
 @app.route('/data/<hash>', methods=['DELETE'])
@@ -55,7 +57,7 @@ def delete_data(hash):
         abort(404)
 
     os.remove(path)
-    return
+    return '', 204
 
 
 #@app.route('/model', methods=['GET'])

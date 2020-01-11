@@ -131,6 +131,7 @@ BlockBase {
                         nameFilters: "Image Files (*.tiff *.tif *.png *.jpg *.jpeg *.bpm)"
                         onAccepted: {
                             if (fileUrl) {
+                                block.attr("serverHash").val = ""
                                 block.attr("filePath").val = fileUrl
                             }
                             fileDialogLoader.active = false
@@ -144,6 +145,68 @@ BlockBase {
                             visible = true
                         }
                     }
+                }
+            }
+
+            BlockRow {
+                ButtonBottomLine {
+                    implicitWidth: -1
+                    text: "Upload"
+                    allUpperCase: false
+                    onPress: block.upload()
+
+                    Rectangle {
+                        anchors.bottom: parent.bottom
+                        width: parent.width * block.attr("networkProgress").val
+                        height: 2*dp
+                        color: "lightgreen"
+
+                        Behavior on width {
+                            NumberAnimation {
+                                duration: 200
+                            }
+                        }
+                    }
+                }
+
+                Item {
+                    width: 15*dp
+                    Rectangle {
+                        width: 5*dp
+                        height: 5*dp
+                        anchors.centerIn: parent
+                        radius: width / 2
+                        color: block.attr("locallyAvailable").val ? "lightgreen" : "black"
+                    }
+                }
+            }
+
+            BlockRow {
+                ButtonBottomLine {
+                    implicitWidth: -1
+                    text: "Download"
+                    allUpperCase: false
+                    onPress: block.download()
+                }
+
+                Item {
+                    width: 15*dp
+                    Rectangle {
+                        width: 5*dp
+                        height: 5*dp
+                        anchors.centerIn: parent
+                        radius: width / 2
+                        color: block.attr("serverHash").val ? "lightgreen" : "black"
+                    }
+                }
+            }
+
+            BlockRow {
+                ButtonBottomLine {
+                    implicitWidth: -1
+                    text: "Remove from Server"
+                    allUpperCase: false
+                    onPress: block.removeFromServer()
                 }
             }
 
