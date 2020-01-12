@@ -423,49 +423,44 @@ Window {
             }
             dropAreaBackground.visible = true
         }
+
+        function addBlockForUrl(url) {
+            var block = undefined
+            if (url.indexOf(".jpg") !== -1 || url.indexOf(".jpeg") !== -1
+                    || url.indexOf(".JPG") !== -1 || url.indexOf(".JPEG") !== -1) {
+                block = controller.blockManager().addBlockByNameQml("Image")
+                block.filePath = url
+            } else if (url.indexOf(".mp3") !== -1 || url.indexOf(".wav") !== -1
+                       || url.indexOf(".MP3") !== -1 || url.indexOf(".WAV") !== -1) {
+                block = controller.blockManager().addBlockByNameQml("Audio Playback")
+                block.filePath = url
+            } else if (url.indexOf(".pdf") !== -1 || url.indexOf(".PDF") !== -1) {
+                block = controller.blockManager().addBlockByNameQml("PDF File")
+                block.attr("filePath").val = url
+            } else if (url.indexOf(".tif") !== -1 || url.indexOf(".TIF") !== -1
+                       || url.indexOf(".png") !== -1 || url.indexOf(".PNG") !== -1) {
+                block = controller.blockManager().addBlockByNameQml("Tissue Image")
+                block.loadLocalFile(url)
+            } else {
+                block = controller.blockManager().addBlockByNameQml("Notes")
+                block.text = url
+            }
+        }
+
         onDropped: {
             dropAreaBackground.visible = false
 
-            var block = undefined
             var url = undefined
             if (drop.hasUrls && drop.urls[0].indexOf(".lpr") !== -1) {
                 controller.requestTemplateImport(drop.urls[0])
             } else if (drop.hasUrls) {
                 for (var i=0; i<drop.urls.length; i++) {
                     url = drop.urls[i]
-                    if (url.indexOf(".jpg") !== -1 || url.indexOf(".jpeg") !== -1 || url.indexOf(".png") !== -1
-                            || url.indexOf(".JPG") !== -1 || url.indexOf(".JPEG") !== -1 || url.indexOf(".PNG") !== -1) {
-                        block = controller.blockManager().addBlockByNameQml("Image")
-                        block.filePath = url
-                    } else if (url.indexOf(".mp3") !== -1 || url.indexOf(".wav") !== -1
-                               || url.indexOf(".MP3") !== -1 || url.indexOf(".WAV") !== -1) {
-                        block = controller.blockManager().addBlockByNameQml("Audio Playback")
-                        block.filePath = url
-                    } else if (url.indexOf(".pdf") !== -1 || url.indexOf(".PDF") !== -1) {
-                        block = controller.blockManager().addBlockByNameQml("PDF File")
-                        block.attr("filePath").val = url
-                   } else {
-                        block = controller.blockManager().addBlockByNameQml("Notes")
-                        block.text = url
-                    }
+                    addBlockForUrl(url)
                 }
             } else {
                 url = drop.text
-                if (url.indexOf(".jpg") !== -1 || url.indexOf(".jpeg") !== -1 || url.indexOf(".png") !== -1
-                        || url.indexOf(".JPG") !== -1 || url.indexOf(".JPEG") !== -1 || url.indexOf(".PNG") !== -1) {
-                    block = controller.blockManager().addBlockByNameQml("Image")
-                    block.filePath = url
-                } else if (url.indexOf(".mp3") !== -1 || url.indexOf(".wav") !== -1
-                           || url.indexOf(".MP3") !== -1 || url.indexOf(".WAV") !== -1) {
-                    block = controller.blockManager().addBlockByNameQml("Audio Playback")
-                    block.filePath = url
-                } else if (url.indexOf(".pdf") !== -1 || url.indexOf(".PDF") !== -1) {
-                     block = controller.blockManager().addBlockByNameQml("PDF File")
-                     block.attr("filePath").val = url
-                } else {
-                    block = controller.blockManager().addBlockByNameQml("Notes")
-                    block.text = url
-                }
+                addBlockForUrl(url)
             }
 
             drop.acceptProposedAction()

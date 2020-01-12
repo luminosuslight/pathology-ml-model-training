@@ -108,7 +108,7 @@ void DataViewBlock::addCenter(double x, double y) {
         m_controller->guiManager()->showToast("Please assign at least one connected visualize block.");
     }
     const bool watershedChannelAvailable = std::any_of(m_channelBlocks.begin(), m_channelBlocks.end(),
-                                                       [](TissueImageBlock* ch){ return ch->isNucleiChannel(); });
+                                                       [](TissueImageBlock* ch){ return ch->interactiveWatershed(); });
     if (watershedChannelAvailable) {
         addCenterAndGuessArea(int(x), int(y));
     } else {
@@ -174,7 +174,7 @@ void DataViewBlock::addCell(double x, double y, double radius, const QVector<dou
 
 QVector<double> DataViewBlock::getShapeEstimationAtRadius(int x, int y, int radius) const {
     const bool watershedChannelAvailable = std::any_of(m_channelBlocks.begin(), m_channelBlocks.end(),
-                                                       [](TissueImageBlock* ch){ return ch->isNucleiChannel(); });
+                                                       [](TissueImageBlock* ch){ return ch->interactiveWatershed(); });
     if (!watershedChannelAvailable) {
         if (radius == 10) {
             m_controller->guiManager()->showToast("Please enable 'Interactive Watershed' for at least one channel.");
@@ -190,20 +190,20 @@ QVector<double> DataViewBlock::getShapeEstimationAtRadius(int x, int y, int radi
 QPair<CellShape, float> DataViewBlock::getShapeEstimationAndScore(int x, int y, int radius) const {
     if (radius < 2) return {};
 
-    QVector<double> pixelValues(radius);
-    QVector<double> changes(radius);
+    QVector<float> pixelValues(radius);
+    QVector<float> changes(radius);
     CellShape radii;
     float minValuesSum = 0.0;
     const int radiiCount = CellDatabaseConstants::RADII_COUNT;
 
-    QVector<TissueImageBlock*> nucleiChannel;
+    QVector<TissueImageBlock*> interactiveWatershedChannels;
     for (auto channel: m_channelBlocks) {
-        if (channel->isNucleiChannel()) {
-            nucleiChannel.append(channel);
+        if (channel->interactiveWatershed()) {
+            interactiveWatershedChannels.append(channel);
         }
     }
-    if (nucleiChannel.isEmpty()) {
-        m_controller->guiManager()->showToast("Please enable at least one image channel to use for segmentation.");
+    if (interactiveWatershedChannels.isEmpty()) {
+        m_controller->guiManager()->showToast("Please enable at least one image channel to use for interactive watershed.");
         return {radii, 0};
     }
 
@@ -218,7 +218,7 @@ QPair<CellShape, float> DataViewBlock::getShapeEstimationAndScore(int x, int y, 
             pixelValues[d] = 0;
             // sum up the pixel values at this point of each channel
             // showing nuclei information:
-            for (auto channel: nucleiChannel) {
+            for (auto channel: interactiveWatershedChannels) {
                 pixelValues[d] += channel->pixelValue(x + dx, y + dy);
             }
         }

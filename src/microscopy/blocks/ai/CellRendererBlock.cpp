@@ -53,7 +53,7 @@ void CellRendererBlock::addImageBlock(QString filename) {
     }
     block->focus();
     static_cast<StringAttribute*>(block->attr("label"))->setValue("Rendered Cells");
-    static_cast<StringAttribute*>(block->attr("filePath"))->setValue("file://" + filename);
+    block->loadLocalFile("file://" + filename);
     block->onCreatedByUser();
 }
 

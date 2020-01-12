@@ -7,7 +7,7 @@ Item {
         width: sourceSize.width
         height: sourceSize.height
         autoTransform: true
-        source: modelData.attr("loadedFile").val
+        source: modelData.attr("uiFilePath").val
         asynchronous: true
         smooth: false
         visible: false

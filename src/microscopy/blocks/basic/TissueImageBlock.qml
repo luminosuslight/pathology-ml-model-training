@@ -65,6 +65,21 @@ BlockBase {
                 attr: block.attr("color")
             }
 
+            ShaderEffect {
+                visible: block.attr("networkProgress").val > 0.0
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.right: parent.right
+                anchors.rightMargin: 15*dp
+                width: 26*dp
+                height: 26*dp
+                property variant lineWidth: (2.5*dp) / width
+                property variant smoothness: 1.0 / width
+                property variant color: "lightgreen"
+                property variant backgroundColor: "#333"
+                property variant value: block.attr("networkProgress").val
+                fragmentShader: "qrc:/core/ui/items/ring_shader.frag"
+            }
+
             OutputNode {
                 node: block.node("outputNode")
             }
@@ -86,7 +101,7 @@ BlockBase {
                 }
                 AttributeCheckbox {
                     width: 30*dp
-                    attr: block.attr("isNucleiChannel")
+                    attr: block.attr("interactiveWatershed")
                 }
             }
 
@@ -102,111 +117,81 @@ BlockBase {
 
             BlockRow {
                 StretchText {
-                    text: "Path:"
+                    text: "File:"
+                    color: "#bbb"
                 }
                 TextInput {
                     width: parent.width - 65*dp
-                    text: block.attr("filePath").val || "No image loaded"
+                    text: block.attr("selectedFilePath").val || "No image loaded"
                     clip: true
-                    color: "#ccc"
+                    color: "#aaa"
                 }
             }
 
             BlockRow {
-                ButtonBottomLine {
-                    implicitWidth: -1
-                    text: "Load new Image"
-                    onClick: fileDialogLoader.active = true
+                StretchText {
+                    text: "Data:"
+                    color: "#bbb"
                 }
-
-                Loader {
-                    id: fileDialogLoader
-                    active: false
-
-                    sourceComponent: FileDialog {
-                        id: fileDialog
-                        title: "Select Tissue Image File"
-                        folder: shortcuts.documents
-                        selectMultiple: false
-                        nameFilters: "Image Files (*.tiff *.tif *.png *.jpg *.jpeg *.bpm)"
-                        onAccepted: {
-                            if (fileUrl) {
-                                block.attr("serverHash").val = ""
-                                block.attr("filePath").val = fileUrl
-                            }
-                            fileDialogLoader.active = false
-                        }
-                        onRejected: {
-                            fileDialogLoader.active = false
-                        }
-                        Component.onCompleted: {
-                            // don't set visible to true before component is complete
-                            // because otherwise the dialog will not be configured correctly
-                            visible = true
-                        }
-                    }
+                TextInput {
+                    width: parent.width - 65*dp
+                    text: block.attr("imageDataPath").val || "Data not available"
+                    clip: true
+                    color: "#aaa"
                 }
             }
 
             BlockRow {
+                StretchText {
+                    text: "UI:"
+                    color: "#bbb"
+                }
+                TextInput {
+                    width: parent.width - 65*dp
+                    text: block.attr("uiFilePath").val || "Data not available"
+                    clip: true
+                    color: "#aaa"
+                }
+            }
+
+            BlockRow {
+                visible: block.locallyAvailable && !block.attr("remotelyAvailable").val
                 ButtonBottomLine {
                     implicitWidth: -1
-                    text: "Upload"
+                    text: "Upload to Cloud ↑"
                     allUpperCase: false
                     onPress: block.upload()
-
-                    Rectangle {
-                        anchors.bottom: parent.bottom
-                        width: parent.width * block.attr("networkProgress").val
-                        height: 2*dp
-                        color: "lightgreen"
-
-                        Behavior on width {
-                            NumberAnimation {
-                                duration: 200
-                            }
-                        }
-                    }
-                }
-
-                Item {
-                    width: 15*dp
-                    Rectangle {
-                        width: 5*dp
-                        height: 5*dp
-                        anchors.centerIn: parent
-                        radius: width / 2
-                        color: block.attr("locallyAvailable").val ? "lightgreen" : "black"
-                    }
                 }
             }
 
             BlockRow {
+                visible: block.attr("remotelyAvailable").val
+                StretchText {
+                    text: "Stored in Cloud ✓"
+                    color: "lightgreen"
+                }
+            }
+
+            BlockRow {
+                visible: block.attr("remotelyAvailable").val && !block.locallyAvailable
                 ButtonBottomLine {
                     implicitWidth: -1
-                    text: "Download"
+                    text: "Download ↓"
                     allUpperCase: false
                     onPress: block.download()
                 }
-
-                Item {
-                    width: 15*dp
-                    Rectangle {
-                        width: 5*dp
-                        height: 5*dp
-                        anchors.centerIn: parent
-                        radius: width / 2
-                        color: block.attr("serverHash").val ? "lightgreen" : "black"
-                    }
-                }
             }
 
             BlockRow {
+                visible: block.attr("remotelyAvailable").val
                 ButtonBottomLine {
                     implicitWidth: -1
                     text: "Remove from Server"
+                    color: "darkred"
                     allUpperCase: false
-                    onPress: block.removeFromServer()
+                    clickDurationEnabled: true
+                    onShortClick: guiManager.showToast("Press and hold to delete")
+                    onLongClick: block.removeFromServer()
                 }
             }
 
@@ -226,6 +211,42 @@ BlockBase {
                     }
                     StretchText {
                         text: "View " + (index + 1)
+                    }
+                }
+            }
+
+            BlockRow {
+                ButtonBottomLine {
+                    implicitWidth: -1
+                    text: "Load new Image →"
+                    allUpperCase: false
+                    onClick: fileDialogLoader.active = true
+                }
+
+                Loader {
+                    id: fileDialogLoader
+                    active: false
+
+                    sourceComponent: FileDialog {
+                        id: fileDialog
+                        title: "Select Tissue Image File"
+                        folder: shortcuts.documents
+                        selectMultiple: false
+                        nameFilters: "Image Files (*.tiff *.tif *.png *.jpg *.jpeg *.bpm)"
+                        onAccepted: {
+                            if (fileUrl) {
+                                block.loadLocalFile(fileUrl)
+                            }
+                            fileDialogLoader.active = false
+                        }
+                        onRejected: {
+                            fileDialogLoader.active = false
+                        }
+                        Component.onCompleted: {
+                            // don't set visible to true before component is complete
+                            // because otherwise the dialog will not be configured correctly
+                            visible = true
+                        }
                     }
                 }
             }
