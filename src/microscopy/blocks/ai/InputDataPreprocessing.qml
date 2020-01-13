@@ -2,6 +2,7 @@ import QtQuick 2.12
 import CustomElements 1.0
 import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
+import "qrc:/ui/app"
 
 Rectangle {
     id: root
@@ -13,25 +14,55 @@ Rectangle {
     property real noise: 0.0
     property real brightness: 0.0
 
-    Image {
+    Loader {
         id: image1
-        source: block.attr("inputSources").val[0]
-        asynchronous: true
-        visible: false
+        active: block.attr("inputSources").val[0] !== undefined
+        visible: false  // drawn by shaderEffectSource
+        sourceComponent: Component {
+            TissueChannelUi {
+                imageBlock: block.attr("inputSources").val[0]
+            }
+        }
+    }
+    ShaderEffectSource {
+        id: source1
+        anchors.fill: image1
+        sourceItem: image1
+        visible: false  // used by shaderEffect below
     }
 
-    Image {
+    Loader {
         id: image2
-        source: block.attr("inputSources").val[1]
-        asynchronous: true
-        visible: false
+        active: block.attr("inputSources").val[1] !== undefined
+        visible: false  // drawn by shaderEffectSource
+        sourceComponent: Component {
+            TissueChannelUi {
+                imageBlock: block.attr("inputSources").val[1]
+            }
+        }
+    }
+    ShaderEffectSource {
+        id: source2
+        anchors.fill: image2
+        sourceItem: image2
+        visible: false  // used by shaderEffect below
     }
 
-    Image {
+    Loader {
         id: image3
-        source: block.attr("inputSources").val[2]
-        asynchronous: true
-        visible: false
+        active: block.attr("inputSources").val[2] !== undefined
+        visible: false  // drawn by shaderEffectSource
+        sourceComponent: Component {
+            TissueChannelUi {
+                imageBlock: block.attr("inputSources").val[2]
+            }
+        }
+    }
+    ShaderEffectSource {
+        id: source3
+        anchors.fill: image3
+        sourceItem: image3
+        visible: false  // used by shaderEffect below
     }
 
     ShaderEffect {
@@ -40,10 +71,9 @@ Rectangle {
         height: Math.max(image1.height, image2.height, image3.height)
         x: (width - root.width) * xOffset * -1
         y: (height - root.height) * yOffset * -1
-        transformOrigin: Item.Center
-        property variant src1: image1
-        property variant src2: image2
-        property variant src3: image3
+        property variant src1: source1
+        property variant src2: source2
+        property variant src3: source3
         property variant noise: root.noise
         property variant brightness: root.brightness
         vertexShader: "qrc:/microscopy/ui/default_shader.vert"

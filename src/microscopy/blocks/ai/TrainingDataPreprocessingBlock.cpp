@@ -16,8 +16,8 @@ TrainingDataPreprocessingBlock::TrainingDataPreprocessingBlock(CoreController* c
     : OneInputBlock(controller, uid)
     , m_noise(this, "noise", 0.5)
     , m_brightness(this, "brightness", 0.5)
-    , m_inputSources(this, "inputSources", {"", "", ""}, /*persistent*/ false)
-    , m_targetSources(this, "targetSources", {"", "", ""}, /*persistent*/ false)
+    , m_inputSources(this, "inputSources", {{}, {}, {}}, /*persistent*/ false)
+    , m_targetSources(this, "targetSources", {{}, {}, {}}, /*persistent*/ false)
 {
     m_input1Node = createInputNode("input1");
     m_input2Node = createInputNode("input2");
@@ -46,26 +46,28 @@ void TrainingDataPreprocessingBlock::run() {
 void TrainingDataPreprocessingBlock::updateSources() {
     m_inputSources->clear();
     for (NodeBase* node: {m_input1Node, m_input2Node, m_input3Node}) {
-        QString path = "";
+        TissueImageBlock* block = nullptr;
         if (node->isConnected()) {
-            TissueImageBlock* block = qobject_cast<TissueImageBlock*>(node->getConnectedNodes().first()->getBlock());
-            if (block) {
-                path = block->filePath();
-            }
+            block = qobject_cast<TissueImageBlock*>(node->getConnectedNodes().first()->getBlock());
         }
-        m_inputSources->append(path);
+        if (block) {
+            m_inputSources->append(QVariant::fromValue(block));
+        } else {
+            m_inputSources->append(QVariant());
+        }
     }
     m_inputSources.valueChanged();
     m_targetSources->clear();
     for (NodeBase* node: {m_target1Node, m_target2Node, m_target3Node}) {
-        QString path = "";
+        TissueImageBlock* block = nullptr;
         if (node->isConnected()) {
-            TissueImageBlock* block = qobject_cast<TissueImageBlock*>(node->getConnectedNodes().first()->getBlock());
-            if (block) {
-                path = block->filePath();
-            }
+            block = qobject_cast<TissueImageBlock*>(node->getConnectedNodes().first()->getBlock());
         }
-        m_targetSources->append(path);
+        if (block) {
+            m_targetSources->append(QVariant::fromValue(block));
+        } else {
+            m_targetSources->append(QVariant());
+        }
     }
     m_targetSources.valueChanged();
 }

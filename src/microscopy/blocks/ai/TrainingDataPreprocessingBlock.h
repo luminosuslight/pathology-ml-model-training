@@ -56,8 +56,8 @@ protected:
     DoubleAttribute m_brightness;
 
     // runtime:
-    StringListAttribute m_inputSources;
-    StringListAttribute m_targetSources;
+    VariantListAttribute m_inputSources;
+    VariantListAttribute m_targetSources;
 
     QString m_currentDataFilename;
     QCborMap m_currentData;

@@ -103,7 +103,9 @@ Item {
         Repeater {
             model: view.isTissuePlane ? view.channelBlocks : []
 
-            TissueChannelUi {}
+            TissueChannelUi {
+                imageBlock: modelData
+            }
         }
 
         Repeater {
