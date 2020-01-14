@@ -1,6 +1,5 @@
 from flask import Flask
 from flask import request, abort
-import numpy as np
 import cbor2
 
 from hashlib import md5
@@ -95,7 +94,7 @@ def predict(model_id, hash):
         print("Image not found:", hash)
         abort(404)
 
-    print(f"Doing inference with model {model_id} and file {hash}...")
+    print(f"Doing inference with model '{model_id}' and file {hash}...")
 
     output_img_data, centers = default_network.get_output_and_centers(path)
 
@@ -107,7 +106,12 @@ def predict(model_id, hash):
               'cellCenters': centers}
 
     cbor = cbor2.dumps(result)
-    return cbor
+    return cbor, 200
+
+
+@app.route('/progress', methods=['GET'])
+def progress():
+    return str(default_network.progress), 200
 
 # @app.route('/model/train/<data_hash>', methods=['GET'])
 # def train(data_hash):

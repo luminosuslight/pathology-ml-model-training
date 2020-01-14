@@ -1,9 +1,9 @@
-import numpy as np
 import fastai
 from fastai.vision import *
 from fastai.callbacks import *
 import cv2
 import PIL
+import numpy as np
 
 import math
 import io
@@ -20,20 +20,24 @@ class NeuralNetwork(object):
         :param model_path: the path containing the 'export.pkl' file
         """
         self.learn = load_learner(model_path)
+        self.progress = 0.0
 
     def get_output_and_centers(self, img_path):
         img = open_image(img_path)
-        print("Input image:", img, img.shape)
+        print("Input image:", img)
         output_img_raw_data = img_to_buffer(self.predict_image(img))
         centers = get_cell_centers(output_img_raw_data)
         return output_img_raw_data, centers
 
     def predict_image(self, img):
         result = deepcopy(img)
-        print(f"Predicting full image by splitting it up into {math.ceil(img.shape[1] / 128) * math.ceil(img.shape[2] / 128)} patches...")
-        for px in range(math.ceil(img.shape[1] / 128)):
-            print("Current column:", px)
-            for py in range(math.ceil(img.shape[2] / 128)):
+        x_patches = math.ceil(img.shape[1] / 128)
+        y_patches = math.ceil(img.shape[2] / 128)
+        print(f"Predicting full image by splitting it up into {x_patches * y_patches} patches...")
+        for px in range(x_patches):
+            self.progress = px / x_patches
+            print(f"Progress: {int(self.progress * 100)}%")
+            for py in range(y_patches):
                 x = px * 128
                 y = py * 128
                 ex = min(x + 256, img.shape[1])
@@ -51,6 +55,7 @@ class NeuralNetwork(object):
                 except RuntimeError:
                     print("An error occurred during prediction of patch at", x, y, ex, ey)
                     result.data[:, x:ex, y:ey] = 0.0
+        self.progress = 0.0
         return result
 
 
