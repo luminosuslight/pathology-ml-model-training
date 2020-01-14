@@ -5,6 +5,8 @@
 
 #include <QImage>
 
+class BackendManager;
+
 
 class CnnInferenceBlock : public InOutBlock {
 
@@ -35,7 +37,12 @@ public slots:
 
     void updateSources();
 
+protected slots:
+    void doInference(QByteArray imageData);
+
 protected:
+    BackendManager* m_backend;
+
     QPointer<NodeBase> m_input1Node;
     QPointer<NodeBase> m_input2Node;
     QPointer<NodeBase> m_input3Node;

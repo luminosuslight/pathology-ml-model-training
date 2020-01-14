@@ -6,6 +6,7 @@
 
 #include <QObject>
 #include <QNetworkAccessManager>
+#include <QCborMap>
 
 class CoreController;
 
@@ -28,6 +29,7 @@ public slots:
     void downloadFile(QString hash, std::function<void(double)> onProgress, std::function<void(QByteArray)> onSuccess);
     void removeFile(QString hash, std::function<void(void)> onSuccess);
 
+    void runInference(QString hash, std::function<void(QCborMap)> onSuccess);
 
 protected:
     CoreController* const m_controller;

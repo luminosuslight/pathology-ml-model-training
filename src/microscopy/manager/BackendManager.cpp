@@ -11,7 +11,7 @@ BackendManager::BackendManager(CoreController* controller)
     , ObjectWithAttributes(this)
     , m_controller(controller)
     , m_nam(m_controller->updateManager()->nam())
-    , m_serverUrl(this, "serverUrl", "http://tim-ml-server:5000")
+    , m_serverUrl(this, "serverUrl", "http://192.168.178.83:5000")
     , m_version(this, "version", "", /*persistent*/ false)
     , m_inferenceProgress(this, "inferenceProgress", 0.0, 0.0, 1.0, /*persistent*/ false)
 {
@@ -26,6 +26,7 @@ void BackendManager::updateVersion() {
     auto reply = m_nam->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         m_version = reply->readAll();
+        qDebug() << "Backend server found, version" << m_version;
         reply->deleteLater();
     });
 }
@@ -89,6 +90,18 @@ void BackendManager::removeFile(QString hash, std::function<void ()> onSuccess) 
     auto reply = m_nam->deleteResource(request);
     connect(reply, &QNetworkReply::finished, this, [reply, onSuccess]() {
         onSuccess();
+        reply->deleteLater();
+    });
+}
+
+void BackendManager::runInference(QString hash, std::function<void (QCborMap)> onSuccess) {
+    QNetworkRequest request;
+    request.setUrl(QUrl(m_serverUrl + "/model/default/prediction/" + hash));
+    auto reply = m_nam->get(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply, onSuccess]() {
+        m_inferenceProgress = 0.0;
+        auto cbor = QCborValue::fromCbor(reply->readAll()).toMap();
+        onSuccess(cbor);
         reply->deleteLater();
     });
 }
