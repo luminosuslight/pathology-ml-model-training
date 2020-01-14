@@ -23,9 +23,10 @@ class NeuralNetwork(object):
 
     def get_output_and_centers(self, img_path):
         img = open_image(img_path)
-        img_buffer = img_to_buffer(self.predict_image(img))
-        centers = get_cell_centers(img_buffer)
-        return img_buffer, centers
+        print("Input image:", img, img.shape)
+        output_img_raw_data = img_to_buffer(self.predict_image(img))
+        centers = get_cell_centers(output_img_raw_data)
+        return output_img_raw_data, centers
 
     def predict_image(self, img):
         result = deepcopy(img)
@@ -35,6 +36,7 @@ class NeuralNetwork(object):
                 y = py * 128
                 ex = min(x + 256, img.shape[1])
                 ey = min(y + 256, img.shape[2])
+                print("Current patch:", px, py, x, y, ex, ey)
                 p, prediction, b = self.learn.predict(img.data[:, x:ex, y:ey])
                 if x < 128 or ex == img.shape[1] or y < 128 or ey == img.shape[2]:
                     # this is at the border, use full prediction:
@@ -47,8 +49,10 @@ class NeuralNetwork(object):
 
 
 def get_cell_centers(image_buffer):
+    print("Finding cell centers...")
     image_arr = np.fromstring(image_buffer, dtype='uint8')
     cv_img = cv2.imdecode(image_arr, cv2.IMREAD_UNCHANGED)
+    print("CV image shape:", cv_img.shape)
     _, center_channel, nuclei_mask = cv2.split(cv_img)  # bgr format
     _, center_binary = cv2.threshold(center_channel, 127, 255, cv2.THRESH_BINARY)
     connectivity = 8  # You need to choose 4 or 8 for connectivity type

@@ -29,13 +29,18 @@ def version():
     return "1.0", 200
 
 
-@app.route('/data', methods=['POST'])
-def upload():
-    raw_data = request.get_data()
+def store_in_uploads(raw_data):
     hash = md5(raw_data).hexdigest()
     path = os.path.join(app.config['UPLOAD_FOLDER'], hash)
     with open(path, 'wb') as file:
         file.write(raw_data)
+    return hash
+
+
+@app.route('/data', methods=['POST'])
+def upload():
+    raw_data = request.get_data()
+    hash = store_in_uploads(raw_data)
     return hash, 200
 
 
@@ -90,19 +95,16 @@ def predict(model_id, hash):
         print("Image not found:", hash)
         abort(404)
 
+    print(f"Doing inference with model {model_id} and file {hash}...")
+
     output_img_data, centers = default_network.get_output_and_centers(path)
 
-    output_hash = md5(output_img_data).hexdigest()
-    path = os.path.join(app.config['UPLOAD_FOLDER'], output_hash)
-    with open(path, 'wb') as file:
-        file.write(output_img_data)
+    print(f"Inference complete, now storing result and sending it back...")
 
-    centroids = np.array([[5, 6], [8, 19], [40, 45]]).astype(float)
-    nuclei_data = {'xPositions': tuple(centroids[:, 0]),
-                   'yPositions': tuple(centroids[:, 1])}
+    output_hash = store_in_uploads(output_img_data)
 
     result = {'outputImageHash': output_hash,
-              'cellCenters': nuclei_data}
+              'cellCenters': centers}
 
     cbor = cbor2.dumps(result)
     return cbor
