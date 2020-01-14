@@ -30,21 +30,27 @@ class NeuralNetwork(object):
 
     def predict_image(self, img):
         result = deepcopy(img)
+        print(f"Predicting full image by splitting it up into {math.ceil(img.shape[1] / 128) * math.ceil(img.shape[2] / 128)} patches...")
         for px in range(math.ceil(img.shape[1] / 128)):
+            print("Current column:", px)
             for py in range(math.ceil(img.shape[2] / 128)):
                 x = px * 128
                 y = py * 128
                 ex = min(x + 256, img.shape[1])
                 ey = min(y + 256, img.shape[2])
-                print("Current patch:", px, py, x, y, ex, ey)
-                p, prediction, b = self.learn.predict(img.data[:, x:ex, y:ey])
-                if x < 128 or ex == img.shape[1] or y < 128 or ey == img.shape[2]:
-                    # this is at the border, use full prediction:
-                    # FIXME: there will be a border 256px from the left and bottom
-                    result.data[:, x:ex, y:ey] = prediction
-                else:
-                    # use only middle part to avoid border artifacts:
-                    result.data[:, x + 64:x + 64 + 128, y + 64:y + 64 + 128] = prediction[:, 64:64 + 128, 64:64 + 128]
+                try:
+                    p, prediction, b = self.learn.predict(img.data[:, x:ex, y:ey])
+                    if x < 128 or ex == img.shape[1] or y < 128 or ey == img.shape[2]:
+                        # this is at the border, use full prediction:
+                        # FIXME: there will be a border 256px from the left and bottom
+                        result.data[:, x:ex, y:ey] = prediction
+                    else:
+                        # use only middle part to avoid border artifacts:
+                        result.data[:, x + 64:x + 64 + 128, y + 64:y + 64 + 128] = prediction[:, 64:64 + 128,
+                                                                                   64:64 + 128]
+                except RuntimeError:
+                    print("An error occurred during prediction of patch at", x, y, ex, ey)
+                    result.data[:, x:ex, y:ey] = 0.0
         return result
 
 
