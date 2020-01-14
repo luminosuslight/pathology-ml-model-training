@@ -6,6 +6,8 @@
 #include <QImage>
 #include <QFileInfo>
 
+class BackendManager;
+
 
 class TissueImageBlock : public OneOutputBlock {
 
@@ -58,12 +60,14 @@ public slots:
     void loadRemoteFile(QString hash);
 
     bool locallyAvailable() const;
-    bool updateRemoteAvailability();
+    void updateRemoteAvailability();
 
 protected:
     void loadImageData();
 
 protected:
+    BackendManager* m_backend;
+
     StringAttribute m_selectedFilePath;
     StringAttribute m_hashOfSelectedFile;
     StringAttribute m_imageDataPath;

@@ -1,6 +1,7 @@
 #include "core/helpers/application_setup.h"
 #include "core/CoreController.h"
 #include "microscopy/manager/ViewManager.h"
+#include "microscopy/manager/BackendManager.h"
 
 #include <QApplication>
 #include <QQmlApplicationEngine>
@@ -32,7 +33,9 @@ int main(int argc, char *argv[])
 
     CoreController controller(engine);
     ViewManager viewManager(&controller);
+    BackendManager backendManager(&controller);
     controller.registerManager("viewManager", &viewManager);
+    controller.registerManager("backendManager", &backendManager);
     controller.finishLoading(QUrl(QStringLiteral("qrc:/ui/main.qml")));
 
 

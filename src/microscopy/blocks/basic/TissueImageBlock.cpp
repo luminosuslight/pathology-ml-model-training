@@ -9,6 +9,7 @@
 #include "core/connections/Nodes.h"
 
 #include "microscopy/manager/ViewManager.h"
+#include "microscopy/manager/BackendManager.h"
 #include "microscopy/blocks/basic/DataViewBlock.h"
 
 #include <QtConcurrent>
@@ -30,6 +31,7 @@ bool TissueImageBlock::s_registered = BlockList::getInstance().addBlock(TissueIm
 
 TissueImageBlock::TissueImageBlock(CoreController* controller, QString uid)
     : OneOutputBlock(controller, uid)
+    , m_backend(m_controller->manager<BackendManager>("backendManager"))
     , m_selectedFilePath(this, "selectedFilePath", "")
     , m_hashOfSelectedFile(this, "hashOfSelectedFile", "")
     , m_imageDataPath(this, "imageDataPath", "")
@@ -121,73 +123,41 @@ void TissueImageBlock::removeFromView(QString uid) {
 void TissueImageBlock::upload() {
     if (m_imageDataPath.getValue().isEmpty()) return;
 
-    auto nam = m_controller->updateManager()->nam();
     auto dao = m_controller->dao();
-
-    QNetworkRequest request;
-    request.setUrl(QUrl("http://tim-ml-server:5000/data"));
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
-    auto data = dao->loadLocalFile(dao->withoutFilePrefix(m_imageDataPath));
-    auto reply = nam->post(request, data);
-
-    connect(reply, &QNetworkReply::uploadProgress, this, [this](qint64 bytesSent, qint64 bytesTotal) {
-        if (bytesTotal) {
-            m_networkProgress = double(bytesSent) / bytesTotal;
-        } else {
-            m_networkProgress = 0.0;
-        }
-    });
-    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+    const auto data = dao->loadLocalFile(dao->withoutFilePrefix(m_imageDataPath));
+    m_backend->uploadFile(data, [this](double progress) {
+        m_networkProgress = progress;
+    }, [this](QString serverHash) {
         m_networkProgress = 0.0;
-        QString serverHash = QString::fromUtf8(reply->readAll());
         if (serverHash == m_hashOfSelectedFile) {
             m_remotelyAvailable = true;
         } else {
             m_remotelyAvailable = false;
             qWarning() << "Something went wrong during upload, hashs do not match.";
         }
-        reply->deleteLater();
     });
 }
 
 void TissueImageBlock::download() {
     if (m_hashOfSelectedFile.getValue().isEmpty()) return;
 
-    auto nam = m_controller->updateManager()->nam();
-
-    QNetworkRequest request;
-    request.setUrl(QUrl("http://tim-ml-server:5000/data/" + m_hashOfSelectedFile));
-    auto reply = nam->get(request);
-
-    connect(reply, &QNetworkReply::downloadProgress, this, [this](qint64 bytesSent, qint64 bytesTotal) {
-        if (bytesTotal) {
-            m_networkProgress = double(bytesSent) / bytesTotal;
-        } else {
-            m_networkProgress = 0.0;
-        }
-    });
-    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+    m_backend->downloadFile(m_hashOfSelectedFile, [this](double progress) {
+        m_networkProgress = progress;
+    }, [this](QByteArray data) {
         m_networkProgress = 0.0;
         auto dao = m_controller->dao();
-        dao->saveFile("downloads", m_hashOfSelectedFile, reply->readAll());
+        dao->saveFile("downloads", m_hashOfSelectedFile, data);
         QString imageDataPath = "file://" + dao->getDataDir("downloads") + m_hashOfSelectedFile;
         m_imageDataPath = imageDataPath;
         loadImageData();
-        reply->deleteLater();
     });
 }
 
 void TissueImageBlock::removeFromServer() {
     if (m_hashOfSelectedFile.getValue().isEmpty()) return;
-    auto nam = m_controller->updateManager()->nam();
-    QNetworkRequest request;
-    QString url = "http://tim-ml-server:5000/data/" + m_hashOfSelectedFile;
-    request.setUrl(QUrl(url));
-    request.setRawHeader("User-Agent", "Luminosus 1.0");
-    auto reply = nam->deleteResource(request);
-    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+
+    m_backend->removeFile(m_hashOfSelectedFile, [this]() {
         m_remotelyAvailable = false;
-        reply->deleteLater();
     });
 }
 
@@ -217,22 +187,15 @@ bool TissueImageBlock::locallyAvailable() const {
     return QDir().exists(m_controller->dao()->withoutFilePrefix(m_imageDataPath));
 }
 
-bool TissueImageBlock::updateRemoteAvailability() {
-    if (m_hashOfSelectedFile.getValue().isEmpty()) return false;
+void TissueImageBlock::updateRemoteAvailability() {
+    if (m_hashOfSelectedFile.getValue().isEmpty()) {
+        m_remotelyAvailable = false;
+        return;
+    }
 
-    auto nam = m_controller->updateManager()->nam();
-
-    QNetworkRequest request;
-    request.setUrl(QUrl("http://tim-ml-server:5000/data/check/" + m_hashOfSelectedFile));
-    auto reply = nam->get(request);
-
-    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
-        QByteArray result = reply->readAll();
-        m_remotelyAvailable = QString::fromUtf8(result) == "1";
-        reply->deleteLater();
+    m_backend->checkFile(m_hashOfSelectedFile, [this](bool fileExists) {
+        m_remotelyAvailable = fileExists;
     });
-
-    return false;
 }
 
 void TissueImageBlock::loadImageData() {
