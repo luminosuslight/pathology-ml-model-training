@@ -3,6 +3,8 @@
 
 #include "core/block_basics/InOutBlock.h"
 
+#include <QImage>
+
 
 class CnnInferenceBlock : public InOutBlock {
 
@@ -29,12 +31,19 @@ signals:
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
 
-    void run();
+    void runInference(QImage image);
+
+    void updateSources();
 
 protected:
     QPointer<NodeBase> m_input1Node;
     QPointer<NodeBase> m_input2Node;
     QPointer<NodeBase> m_input3Node;
+
+    // runtime:
+    VariantListAttribute m_inputSources;
+    DoubleAttribute m_networkProgress;
+    BoolAttribute m_running;
 
 };
 

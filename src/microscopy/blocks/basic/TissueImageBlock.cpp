@@ -125,7 +125,7 @@ void TissueImageBlock::upload() {
     auto dao = m_controller->dao();
 
     QNetworkRequest request;
-    request.setUrl(QUrl("http://localhost:5000/data"));
+    request.setUrl(QUrl("http://tim-ml-server:5000/data"));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
     auto data = dao->loadLocalFile(dao->withoutFilePrefix(m_imageDataPath));
     auto reply = nam->post(request, data);
@@ -156,7 +156,7 @@ void TissueImageBlock::download() {
     auto nam = m_controller->updateManager()->nam();
 
     QNetworkRequest request;
-    request.setUrl(QUrl("http://localhost:5000/data/" + m_hashOfSelectedFile));
+    request.setUrl(QUrl("http://tim-ml-server:5000/data/" + m_hashOfSelectedFile));
     auto reply = nam->get(request);
 
     connect(reply, &QNetworkReply::downloadProgress, this, [this](qint64 bytesSent, qint64 bytesTotal) {
@@ -181,7 +181,7 @@ void TissueImageBlock::removeFromServer() {
     if (m_hashOfSelectedFile.getValue().isEmpty()) return;
     auto nam = m_controller->updateManager()->nam();
     QNetworkRequest request;
-    QString url = "http://localhost:5000/data/" + m_hashOfSelectedFile;
+    QString url = "http://tim-ml-server:5000/data/" + m_hashOfSelectedFile;
     request.setUrl(QUrl(url));
     request.setRawHeader("User-Agent", "Luminosus 1.0");
     auto reply = nam->deleteResource(request);
@@ -207,6 +207,12 @@ void TissueImageBlock::loadLocalFile(QString filePath) {
     });
 }
 
+void TissueImageBlock::loadRemoteFile(QString hash) {
+    m_selectedFilePath = "";
+    m_hashOfSelectedFile = hash;
+    download();
+}
+
 bool TissueImageBlock::locallyAvailable() const {
     return QDir().exists(m_controller->dao()->withoutFilePrefix(m_imageDataPath));
 }
@@ -217,7 +223,7 @@ bool TissueImageBlock::updateRemoteAvailability() {
     auto nam = m_controller->updateManager()->nam();
 
     QNetworkRequest request;
-    request.setUrl(QUrl("http://localhost:5000/data/check/" + m_hashOfSelectedFile));
+    request.setUrl(QUrl("http://tim-ml-server:5000/data/check/" + m_hashOfSelectedFile));
     auto reply = nam->get(request);
 
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {

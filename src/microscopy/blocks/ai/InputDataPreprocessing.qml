@@ -7,6 +7,8 @@ import "qrc:/ui/app"
 Rectangle {
     id: root
     color: "black"
+    implicitWidth: Math.max(image1.width, image2.width, image3.width)
+    implicitHeight: Math.max(image1.height, image2.height, image3.height)
 
     property real xOffset: 0.0
     property real yOffset: 0.0

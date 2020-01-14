@@ -55,6 +55,7 @@ public slots:
     void removeFromServer();
 
     void loadLocalFile(QString filePath);
+    void loadRemoteFile(QString hash);
 
     bool locallyAvailable() const;
     bool updateRemoteAvailability();

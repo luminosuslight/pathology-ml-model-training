@@ -10,8 +10,8 @@ BlockBase {
     width: 512  // not dp
     height: 256 + 7*30*dp + 1*dp
 
-    property real xOffset: 0.0
-    property real yOffset: 0.0
+    property real xOffset: 0.5
+    property real yOffset: 0.5
     property real contentRotation: 0.0
     property real noise: 0.0
     property real brightness: 0.0

@@ -48,6 +48,7 @@ public slots:
     void importNNResult(QString positionsFilePath, QString maskFilePath);
 
     void importCenters(QString positionsFilePath);
+    void importCenterData(QCborMap data);
 
     void reserve(int count);
 

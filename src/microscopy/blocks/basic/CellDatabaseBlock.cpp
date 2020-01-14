@@ -229,7 +229,10 @@ void CellDatabaseBlock::importNNResult(QString positionsFilePath, QString maskFi
 void CellDatabaseBlock::importCenters(QString positionsFilePath) {
     const QByteArray cbor = m_controller->dao()->loadLocalFile(m_controller->dao()->withoutFilePrefix(positionsFilePath));
     const QCborMap data = QCborValue::fromCbor(cbor).toMap();
+    importCenterData(data);
+}
 
+void CellDatabaseBlock::importCenterData(QCborMap data) {
     auto loadFromCborArray = [](QCborArray arr) {
         QVector<int> target;
         target.reserve(int(arr.size()));
