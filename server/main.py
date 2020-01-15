@@ -6,6 +6,7 @@ from hashlib import md5
 import os
 import os.path
 import sys
+import shutil
 
 from inference import NeuralNetwork
 from train import train_unet
@@ -98,7 +99,7 @@ def train():
 
     model_path = "models/" + model_id
     if os.path.exists(model_path):
-        os.removedirs(model_path)
+        shutil.rmtree(model_path, ignore_errors=True)
 
     os.makedirs(model_path)
     input_folder = os.path.join(model_path, 'input')
