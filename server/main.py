@@ -13,7 +13,7 @@ from train import train_unet
 
 print("Python version:", sys.version)
 
-default_network = NeuralNetwork('/home/tim/Masterarbeit/artificial_data/input')
+default_network = NeuralNetwork('models/f81c0bd5273b967c2a9b980faac7dbb5/input')
 
 
 UPLOAD_FOLDER = 'uploads'
@@ -141,7 +141,7 @@ def train():
 
     # TODO: store model name and train model
 
-    train_unet(model_path)
+    train_unet(model_path, epochs=3)
 
     return model_id, 200
 
