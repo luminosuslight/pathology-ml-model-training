@@ -86,10 +86,57 @@ def train():
     print("Base Model:", cbor['baseModel'])
     print("Epochs:", cbor['epochs'])
     print("Train Data Hash:", cbor['trainDataHash'])
-    print("Eval Data Hash:", cbor['evalDataHash'])
-    model_id = f"{cbor['baseModel']}-{cbor['trainDataHash']}"
+    print("Validation Data Hash:", cbor['validDataHash'])
+    if cbor['baseModel']:
+        model_id = f"{cbor['baseModel']}-{cbor['trainDataHash']}"
+    else:
+        model_id = cbor['trainDataHash']
 
-    # TODO: unpack data, store model name and train model
+    model_path = "models/" + model_id
+    if os.path.exists(model_path):
+        os.removedirs(model_path)
+
+    os.makedirs(model_path)
+    input_folder = os.path.join(model_path, 'input')
+    os.makedirs(input_folder)
+    target_folder = os.path.join(model_path, 'target')
+    os.makedirs(target_folder)
+
+    # unpack train data:
+    train_data_path = os.path.join(app.config['UPLOAD_FOLDER'], cbor['trainDataHash'])
+
+    with open(train_data_path, 'rb') as file:
+        train_data = cbor2.loads(file.read())
+
+    for i, jpg_data in enumerate(train_data['inputImages']):
+        path = os.path.join(input_folder, f"train_{i}.jpg")
+        with open(path, 'wb') as file:
+            file.write(jpg_data)
+
+    for i, jpg_data in enumerate(train_data['targetImages']):
+        path = os.path.join(target_folder, f"train_{i}.jpg")
+        with open(path, 'wb') as file:
+            file.write(jpg_data)
+
+    # unpack validation data:
+    valid_data_path = os.path.join(app.config['UPLOAD_FOLDER'], cbor['validDataHash'])
+
+    with open(valid_data_path, 'rb') as file:
+        valid_data = cbor2.loads(file.read())
+
+    for i, jpg_data in enumerate(valid_data['inputImages']):
+        path = os.path.join(input_folder, f"valid_{i}.jpg")
+        with open(path, 'wb') as file:
+            file.write(jpg_data)
+
+    for i, jpg_data in enumerate(valid_data['targetImages']):
+        path = os.path.join(target_folder, f"valid_{i}.jpg")
+        with open(path, 'wb') as file:
+            file.write(jpg_data)
+
+    # TODO: store model name and train model
+
+    
 
     return model_id, 200
 
