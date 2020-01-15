@@ -5,8 +5,12 @@ import cbor2
 from hashlib import md5
 import os
 import os.path
+import sys
 
 from inference import NeuralNetwork
+from train import train_unet
+
+print("Python version:", sys.version)
 
 default_network = NeuralNetwork('/home/tim/Masterarbeit/artificial_data/input')
 
@@ -136,7 +140,7 @@ def train():
 
     # TODO: store model name and train model
 
-    
+    train_unet(model_path)
 
     return model_id, 200
 
