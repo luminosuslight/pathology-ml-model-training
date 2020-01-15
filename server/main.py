@@ -77,6 +77,23 @@ def delete_data(hash):
 #    return list_of_models
 
 
+@app.route('/model', methods=['POST'])
+def train():
+    raw_data = request.get_data()
+    cbor = cbor2.loads(raw_data)
+    print(cbor.keys())
+    print("Model Name:", cbor['modelName'])
+    print("Base Model:", cbor['baseModel'])
+    print("Epochs:", cbor['epochs'])
+    print("Train Data Hash:", cbor['trainDataHash'])
+    print("Eval Data Hash:", cbor['evalDataHash'])
+    model_id = f"{cbor['baseModel']}-{cbor['trainDataHash']}"
+
+    # TODO: unpack data, store model name and train model
+
+    return model_id, 200
+
+
 # @app.route('/model/<model_id>', methods=['GET'])
 # def model_metadata(model_id):
 #    # get metadata
@@ -109,8 +126,8 @@ def predict(model_id, hash):
     return cbor, 200
 
 
-@app.route('/progress', methods=['GET'])
-def progress():
+@app.route('/inference_progress', methods=['GET'])
+def inference_progress():
     return str(default_network.progress), 200
 
 # @app.route('/model/train/<data_hash>', methods=['GET'])
