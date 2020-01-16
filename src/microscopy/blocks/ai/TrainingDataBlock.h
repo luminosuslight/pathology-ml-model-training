@@ -15,10 +15,11 @@ public:
         static BlockInfo info;
         info.typeName = "Training Data";
         info.category << "Microscopy" << "AI";
-        info.helpText = "Points to a .zip file that contains the input and target images "
+        info.helpText = "Points to a .cbor file that contains the input and target images "
                         "to train a CNN.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/TrainingDataBlock.qml";
         info.orderHint = 1000 + 400 + 5;
+        info.visibilityRequirements << VisibilityRequirement::InvisibleBlock;
         info.complete<TrainingDataBlock>();
         return info;
     }
@@ -29,6 +30,8 @@ signals:
 
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
+
+    StringAttribute& path() { return m_path; }
 
 protected:
     StringAttribute m_path;

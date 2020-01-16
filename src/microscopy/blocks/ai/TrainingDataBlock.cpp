@@ -8,6 +8,6 @@ bool TrainingDataBlock::s_registered = BlockList::getInstance().addBlock(Trainin
 
 TrainingDataBlock::TrainingDataBlock(CoreController* controller, QString uid)
     : OneOutputBlock(controller, uid)
-    , m_path(this, "path", "train_data.zip")
+    , m_path(this, "path", "")
 {
 }
