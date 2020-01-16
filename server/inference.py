@@ -27,6 +27,7 @@ class NeuralNetwork(object):
         print("Input image:", img)
         output_img_raw_data = img_to_buffer(self.predict_image(img))
         centers = get_cell_centers(output_img_raw_data)
+        self.progress = 0.0
         return output_img_raw_data, centers
 
     def predict_image(self, img):
@@ -42,20 +43,23 @@ class NeuralNetwork(object):
                 y = py * 128
                 ex = min(x + 256, img.shape[1])
                 ey = min(y + 256, img.shape[2])
+                patch = img.data[:, x:ex, y:ey]
+                if patch.shape != (3, 256, 256):
+                    patch.resize((3, 256, 256))
+
                 try:
-                    p, prediction, b = self.learn.predict(img.data[:, x:ex, y:ey])
+                    p, prediction, b = self.learn.predict(patch)
                     if x < 128 or ex == img.shape[1] or y < 128 or ey == img.shape[2]:
                         # this is at the border, use full prediction:
                         # FIXME: there will be a border 256px from the left and bottom
-                        result.data[:, x:ex, y:ey] = prediction
+                        result.data[:, x:ex, y:ey] = prediction[:, :ex-x, :ey-y]
                     else:
                         # use only middle part to avoid border artifacts:
                         result.data[:, x + 64:x + 64 + 128, y + 64:y + 64 + 128] = prediction[:, 64:64 + 128,
-                                                                                   64:64 + 128]
+                                                                                              64:64 + 128]
                 except RuntimeError:
                     print("An error occurred during prediction of patch at", x, y, ex, ey)
                     result.data[:, x:ex, y:ey] = 0.0
-        self.progress = 0.0
         return result
 
 

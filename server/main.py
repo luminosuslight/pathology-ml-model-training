@@ -89,7 +89,7 @@ def delete_data(hash):
 def train():
     raw_data = request.get_data()
     params = cbor2.loads(raw_data)
-    dir(params)
+    print(params)
 
     if params['baseModel']:
         model_id = f"{params['baseModel']}-{params['trainDataHash']}"
@@ -106,8 +106,8 @@ def train():
     return model_id, 200
 
 
-@app.route('/train_progress', methods=['GET'])
-def train_progress():
+@app.route('/training_progress', methods=['GET'])
+def training_progress():
     return str(training_tracker.progress), 200
 
 
@@ -117,18 +117,19 @@ def train_progress():
 #    return model_metadata
 
 
-@app.route('/model/<model_id>/prediction/<hash>', methods=['GET'])
-def predict(model_id, hash):
+@app.route('/model/<model_id>/prediction/<img_hash>', methods=['GET'])
+def predict(model_id, img_hash):
     if model_id != "default":
-        print("Model not found:", model_id)
+        # TODO: implement usage of other models
+        print("Only default model is supported.")
         abort(404)
 
-    path = os.path.join(app.config['UPLOAD_FOLDER'], hash)
+    path = os.path.join(app.config['UPLOAD_FOLDER'], img_hash)
     if not os.path.isfile(path):
-        print("Image not found:", hash)
+        print("Image not found:", img_hash)
         abort(404)
 
-    print(f"Doing inference with model '{model_id}' and file {hash}...")
+    print(f"Doing inference with model '{model_id}' and file {img_hash}...")
 
     output_img_data, centers = default_network.get_output_and_centers(path)
 
@@ -139,8 +140,8 @@ def predict(model_id, hash):
     result = {'outputImageHash': output_hash,
               'cellCenters': centers}
 
-    cbor = cbor2.dumps(result)
-    return cbor, 200
+    result_cbor = cbor2.dumps(result)
+    return result_cbor, 200
 
 
 @app.route('/inference_progress', methods=['GET'])
