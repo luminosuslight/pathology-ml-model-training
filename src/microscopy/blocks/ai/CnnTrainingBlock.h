@@ -3,6 +3,8 @@
 
 #include "core/block_basics/InOutBlock.h"
 
+class BackendManager;
+
 
 class CnnTrainingBlock : public InOutBlock {
 
@@ -32,8 +34,15 @@ public slots:
     void run();
 
 protected:
-    QPointer<NodeBase> m_evalDataNode;
+    BackendManager* m_backend;
+    QPointer<NodeBase> m_valDataNode;
+    QPointer<NodeBase> m_baseModelNode;
 
+    StringAttribute m_modelName;
+    IntegerAttribute m_epochs;
+
+    // runtime:
+    DoubleAttribute m_networkProgress;
 };
 
 #endif // CNNTRAININGBLOCK_H
