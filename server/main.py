@@ -13,7 +13,7 @@ from train import unpack_data_and_train
 
 print("Python version:", sys.version)
 
-default_network = NeuralNetwork('models/f81c0bd5273b967c2a9b980faac7dbb5/input')
+default_network = NeuralNetwork('/home/tim/Masterarbeit/artificial_data/input')
 
 
 UPLOAD_FOLDER = 'uploads'

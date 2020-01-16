@@ -5,8 +5,6 @@ from pathlib import Path
 import os
 import shutil
 
-train_progress = 0.0
-
 
 def unpack_data_and_train(params, model_id, train_data, valid_data):
 
@@ -54,13 +52,16 @@ def train_unet(path, epochs):
     databunch = label_lists.databunch(bs=1)
     databunch.c = 3
 
+    global train_progress
+    train_progress.dataset_size = len(databunch.train_dl)
+
     wd = 1e-3
     y_range = (-3., 3.)
     loss_gen = MSELossFlat()
 
     arch = models.resnet18
     learn = unet_learner(databunch, arch, pretrained=True, wd=wd, blur=True, norm_type=NormType.Weight,
-                         self_attention=True, y_range=y_range, loss_func=loss_gen, callback_fns=[ProgressUpdateCallback])
+                         self_attention=True, y_range=y_range, loss_func=loss_gen, callbacks=[train_progress])
     # learn = learn.to_fp16()  # to save memory?
 
     learning_rate = 1e-3
@@ -74,9 +75,13 @@ class ProgressUpdateCallback(Callback):
     run_after = Recorder
 
     def __init__(self):
-        pass
+        self.progress = 0.0
+        self.dataset_size = 1
 
-    def after_batch(self):
-        global train_progress
-        print(len(self.dl), self.iter, self.n_epoch, self.epoch)
-        train_progress = len(self.dl) / (self.iter + 1)
+    def on_batch_end(self, n_epochs, epoch, num_batch, iteration, **kwargs):
+        print(num_batch, self.dataset_size, n_epochs, epoch)
+        self.progress = (epoch * self.dataset_size + num_batch) / (n_epochs * self.dataset_size)
+        print(self.progress)
+
+train_progress = ProgressUpdateCallback()
+
