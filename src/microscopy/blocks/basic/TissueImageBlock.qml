@@ -65,19 +65,10 @@ BlockBase {
                 attr: block.attr("color")
             }
 
-            ShaderEffect {
-                visible: block.attr("networkProgress").val > 0.0
-                anchors.verticalCenter: parent.verticalCenter
+            DotProgressIndicator {
                 anchors.right: parent.right
                 anchors.rightMargin: 15*dp
-                width: 26*dp
-                height: 26*dp
-                property variant lineWidth: (2.5*dp) / width
-                property variant smoothness: 1.0 / width
-                property variant color: "lightgreen"
-                property variant backgroundColor: "#333"
-                property variant value: block.attr("networkProgress").val
-                fragmentShader: "qrc:/core/ui/items/ring_shader.frag"
+                progress: block.attr("networkProgress").val
             }
 
             OutputNode {
@@ -122,7 +113,7 @@ BlockBase {
                 }
                 TextInput {
                     width: parent.width - 65*dp
-                    text: block.attr("selectedFilePath").val || "No image loaded"
+                    text: block.attr("selectedFilePath").val || "No local path"
                     clip: true
                     color: "#aaa"
                 }
