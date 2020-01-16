@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Dialogs 1.2
+import QtQuick.Window 2.12
 import CustomElements 1.0
 import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
@@ -7,8 +8,8 @@ import "qrc:/core/ui/controls"
 
 BlockBase {
     id: root
-    width: 512  // not dp
-    height: 256 + 7*30*dp + 1*dp
+    width: 512*dp
+    height: 256*dp + 7*30*dp + 1*dp
 
     property real xOffset: 0.5
     property real yOffset: 0.5
@@ -17,7 +18,6 @@ BlockBase {
     property real brightness: 0.0
 
     property int alreadyGenerated: 0
-    property int imagesToGenerate: 100
 
     function startGenerating(filename) {
         block.createNewDataFile(filename)
@@ -36,7 +36,7 @@ BlockBase {
 
     Timer {
         id: waitForRenderingTimer
-        interval: 70
+        interval: 30
         repeat: false
         running:  false
         onTriggered: captureInput()
@@ -46,55 +46,64 @@ BlockBase {
         inputImageArea.grabToImage(function(result) {
             block.addInputImage(result.image)
             captureTarget()
-        });
+        }, Qt.size(256, 256));
     }
 
     function captureTarget() {
         targetImageArea.grabToImage(function(result) {
             block.addTargetImage(result.image)
             alreadyGenerated = alreadyGenerated + 1
-            if (alreadyGenerated < imagesToGenerate) {
+            if (alreadyGenerated < block.attr("imagesToGenerate").val) {
                 refresh()
             } else {
                 block.writeDataFile()
                 alreadyGenerated = 0
             }
-        });
+        }, Qt.size(256, 256));
     }
 
     StretchColumn {
         anchors.fill: parent
 
         StretchRow {
-            height: 256
-            InputDataPreprocessing {
-                id: inputImageArea
-                width: 256 // not dp
-                height: 256 // not dp
-                clip: true
-                xOffset: root.xOffset
-                yOffset: root.yOffset
-                contentRotation: root.contentRotation
-                noise: root.noise
-                brightness: root.brightness
+            height: 256*dp
+            Item {
+                implicitWidth: -1
+                InputDataPreprocessing {
+                    id: inputImageArea
+                    width: 256 / Screen.devicePixelRatio
+                    height: 256 / Screen.devicePixelRatio
+                    anchors.centerIn: parent
+                    clip: true
+                    xOffset: root.xOffset
+                    yOffset: root.yOffset
+                    contentRotation: root.contentRotation
+                    noise: root.noise
+                    brightness: root.brightness
+                }
             }
-            TargetDataPreprocessing {
-                id: targetImageArea
-                width: 256 // not dp
-                height: 256 // not dp
-                clip: true
-                xOffset: root.xOffset
-                yOffset: root.yOffset
-                contentRotation: root.contentRotation
+
+            Item {
+                implicitWidth: -1
+                TargetDataPreprocessing {
+                    id: targetImageArea
+                    width: 256 / Screen.devicePixelRatio
+                    height: 256 / Screen.devicePixelRatio
+                    anchors.centerIn: parent
+                    clip: true
+                    xOffset: root.xOffset
+                    yOffset: root.yOffset
+                    contentRotation: root.contentRotation
+                }
             }
         }
 
         Item {
-            height: 1*dp
+            height: 2*dp
             Rectangle {
                 height: parent.height
-                width: parent.width * (alreadyGenerated / imagesToGenerate)
-                color: "red"
+                width: parent.width * (alreadyGenerated / block.attr("imagesToGenerate").val)
+                color: "lightgreen"
             }
         }
 
@@ -102,7 +111,8 @@ BlockBase {
             InputNode {
                 node: block.node("input1")
             }
-            StretchText {
+            Text {
+                width: 170*dp
                 text: "Input 1 (Red)"
             }
 
@@ -151,10 +161,12 @@ BlockBase {
         }
 
         BlockRow {
+            rightMargin: 5*dp
             InputNode {
                 node: block.node("input2")
             }
-            StretchText {
+            Text {
+                width: 170*dp
                 text: "Input 2 (Green)"
             }
             StretchText {
@@ -168,10 +180,12 @@ BlockBase {
         }
 
         BlockRow {
+            rightMargin: 5*dp
             InputNode {
                 node: block.node("input3")
             }
-            StretchText {
+            Text {
+                width: 170*dp
                 text: "Input 3 (Blue)"
             }
             StretchText {
@@ -185,11 +199,21 @@ BlockBase {
         }
 
         BlockRow {
+            rightMargin: 5*dp
             InputNode {
                 node: block.node("target1")
             }
-            StretchText {
+            Text {
+                width: 170*dp
                 text: "Target 1 (Red)"
+            }
+            StretchText {
+                text: "Count:"
+            }
+            AttributeNumericInput {
+                width: 70*dp
+                implicitWidth: 0
+                attr: block.attr("imagesToGenerate")
             }
         }
 
@@ -197,7 +221,8 @@ BlockBase {
             InputNode {
                 node: block.node("target2")
             }
-            StretchText {
+            Text {
+                width: 170*dp
                 text: "Target 2 (Green)"
             }
         }
@@ -206,13 +231,14 @@ BlockBase {
             InputNode {
                 node: block.node("target3")
             }
-            StretchText {
+            Text {
+                width: 170*dp
                 text: "Target 3 (Blue)"
             }
         }
 
         DragArea {
-            text: "Train Data Prepr."
+            text: "Training Data"
 
             BlockRow {
                 anchors.fill: parent
@@ -220,7 +246,7 @@ BlockBase {
                     node: block.node("inputNode")
                 }
                 StretchText {
-                    text: "Area"
+                    text: "Area (TODO)"
                 }
             }
         }

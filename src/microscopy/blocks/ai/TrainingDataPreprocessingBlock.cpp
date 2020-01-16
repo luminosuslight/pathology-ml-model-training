@@ -9,6 +9,9 @@
 #include "microscopy/blocks/ai/TrainingDataBlock.h"
 #include "microscopy/blocks/basic/TissueImageBlock.h"
 
+#include <QBuffer>
+#include <QImageWriter>
+
 
 bool TrainingDataPreprocessingBlock::s_registered = BlockList::getInstance().addBlock(TrainingDataPreprocessingBlock::info());
 
@@ -16,6 +19,7 @@ TrainingDataPreprocessingBlock::TrainingDataPreprocessingBlock(CoreController* c
     : OneInputBlock(controller, uid)
     , m_noise(this, "noise", 0.5)
     , m_brightness(this, "brightness", 0.5)
+    , m_imagesToGenerate(this, "imagesToGenerate", 100, 1, 10000)
     , m_inputSources(this, "inputSources", {{}, {}, {}}, /*persistent*/ false)
     , m_targetSources(this, "targetSources", {{}, {}, {}}, /*persistent*/ false)
 {
@@ -77,26 +81,43 @@ void TrainingDataPreprocessingBlock::createNewDataFile(QString filename) {
         filename.append(".cbor");
     }
     m_currentDataFilename = filename;
-    m_currentData = QCborMap();
-    m_currentData["inputImages"_q] = QCborArray();
-    m_currentData["targetImages"_q] = QCborArray();
+    m_inputImages.clear();
+    m_targetImages.clear();
 }
 
 void TrainingDataPreprocessingBlock::addInputImage(QImage image) {
+    // 40ms 16MB PNG, 8ms PNG uncompressed 50MB, 0.5ms 50MB TIF, 4ms 13MB JPG 100
+    // JPG always does chroma subsampling, even at quality 100
     QByteArray pngData;
-    // TODO: convert image to png byte array
-    m_currentData["inputImages"_q].toArray().append(pngData);
+    QBuffer buffer(&pngData);
+    buffer.open(QIODevice::WriteOnly);
+    image.save(&buffer, "PNG", 100);
+    m_inputImages.append(pngData);
 }
 
 void TrainingDataPreprocessingBlock::addTargetImage(QImage image) {
     QByteArray pngData;
-    // TODO: convert image to png byte array
-    m_currentData["targetImages"_q].toArray().append(pngData);
+    QBuffer buffer(&pngData);
+    buffer.open(QIODevice::WriteOnly);
+    image.save(&buffer, "PNG", 100);
+    m_targetImages.append(pngData);
 }
 
 void TrainingDataPreprocessingBlock::writeDataFile() {
     QString filename = m_controller->dao()->withoutFilePrefix(m_currentDataFilename);
-    m_controller->dao()->saveLocalFile(filename, m_currentData.toCborValue().toCbor());
+    auto data = QCborMap();
+    data["inputImages"_q] = m_inputImages;
+    data["targetImages"_q] = m_targetImages;
+    m_controller->dao()->saveLocalFile(filename, data.toCborValue().toCbor());
     m_currentDataFilename.clear();
-    m_currentData.clear();
+    m_inputImages.clear();
+    m_targetImages.clear();
+
+    TrainingDataBlock* block = qobject_cast<TrainingDataBlock*>(m_controller->blockManager()->addNewBlock(TrainingDataBlock::info().typeName));
+    if (!block) {
+        qWarning() << "Could not create TrainingDataBlock.";
+        return;
+    }
+    block->focus();
+    block->path().setValue(filename);
 }

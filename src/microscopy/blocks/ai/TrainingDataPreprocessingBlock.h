@@ -19,7 +19,7 @@ public:
         info.nameInUi = "Train Data Preproc.";
         info.category << "Microscopy" << "AI";
         info.helpText = "Splits input images in random patches, augments them and stores them "
-                        "in a .zip file, ready to be used to train a network.";
+                        "in a .cbor file, ready to be used to train a network.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/TrainingDataPreprocessingBlock.qml";
         info.orderHint = 1000 + 400 + 4;
         info.complete<TrainingDataPreprocessingBlock>();
@@ -54,13 +54,15 @@ protected:
 
     DoubleAttribute m_noise;
     DoubleAttribute m_brightness;
+    IntegerAttribute m_imagesToGenerate;
 
     // runtime:
     VariantListAttribute m_inputSources;
     VariantListAttribute m_targetSources;
 
     QString m_currentDataFilename;
-    QCborMap m_currentData;
+    QCborArray m_inputImages;
+    QCborArray m_targetImages;
 
 };
 
