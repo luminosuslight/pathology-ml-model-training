@@ -42,7 +42,7 @@ void CnnInferenceBlock::runInference(QImage image) {
         QByteArray imageData;
         QBuffer buffer(&imageData);
         buffer.open(QIODevice::WriteOnly);
-        image.save(&buffer, "JPG", 100);
+        image.save(&buffer, "PNG", 80);  // 80 is the compression level here, 100 is uncompressed
         qDebug() << "Save image to buffer:" << HighResTime::getElapsedSecAndUpdate(begin);
 
         // backend->uploadFile() needs to be called in main thread:
