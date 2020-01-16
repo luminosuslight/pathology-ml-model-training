@@ -6,10 +6,10 @@ from hashlib import md5
 import os
 import os.path
 import sys
-import shutil
+import threading
 
 from inference import NeuralNetwork
-from train import train_unet
+from train import unpack_data_and_train
 
 print("Python version:", sys.version)
 
@@ -54,15 +54,18 @@ def check(hash):
     return ("1" if os.path.isfile(path) else "0"), 200
 
 
+def get_upload(file_hash):
+    data_path = os.path.join(app.config['UPLOAD_FOLDER'], file_hash)
+    if not os.path.isfile(data_path):
+        abort(404)
+    with open(data_path, 'rb') as file:
+        content = file.read()
+    return content
+
+
 @app.route('/data/<hash>', methods=['GET'])
 def download(hash):
-    path = os.path.join(app.config['UPLOAD_FOLDER'], hash)
-    if not os.path.isfile(path):
-        abort(404)
-
-    with open(path, 'rb') as file:
-        content = file.read()
-
+    content = get_upload(hash)
     return content, 200
 
 
@@ -85,63 +88,20 @@ def delete_data(hash):
 @app.route('/model', methods=['POST'])
 def train():
     raw_data = request.get_data()
-    cbor = cbor2.loads(raw_data)
-    print(cbor.keys())
-    print("Model Name:", cbor['modelName'])
-    print("Base Model:", cbor['baseModel'])
-    print("Epochs:", cbor['epochs'])
-    print("Train Data Hash:", cbor['trainDataHash'])
-    print("Validation Data Hash:", cbor['validDataHash'])
-    if cbor['baseModel']:
-        model_id = f"{cbor['baseModel']}-{cbor['trainDataHash']}"
+    params = cbor2.loads(raw_data)
+    dir(params)
+
+    if params['baseModel']:
+        model_id = f"{params['baseModel']}-{params['trainDataHash']}"
     else:
-        model_id = cbor['trainDataHash']
+        model_id = params['trainDataHash']
 
-    model_path = "models/" + model_id
-    if os.path.exists(model_path):
-        shutil.rmtree(model_path, ignore_errors=True)
+    train_data = cbor2.loads(get_upload(params['trainDataHash']))
+    valid_data = cbor2.loads(get_upload(params['validDataHash']))
 
-    os.makedirs(model_path)
-    input_folder = os.path.join(model_path, 'input')
-    os.makedirs(input_folder)
-    target_folder = os.path.join(model_path, 'target')
-    os.makedirs(target_folder)
-
-    # unpack train data:
-    train_data_path = os.path.join(app.config['UPLOAD_FOLDER'], cbor['trainDataHash'])
-
-    with open(train_data_path, 'rb') as file:
-        train_data = cbor2.loads(file.read())
-
-    for i, jpg_data in enumerate(train_data['inputImages']):
-        path = os.path.join(input_folder, f"train_{i}.jpg")
-        with open(path, 'wb') as file:
-            file.write(jpg_data)
-
-    for i, jpg_data in enumerate(train_data['targetImages']):
-        path = os.path.join(target_folder, f"train_{i}.jpg")
-        with open(path, 'wb') as file:
-            file.write(jpg_data)
-
-    # unpack validation data:
-    valid_data_path = os.path.join(app.config['UPLOAD_FOLDER'], cbor['validDataHash'])
-
-    with open(valid_data_path, 'rb') as file:
-        valid_data = cbor2.loads(file.read())
-
-    for i, jpg_data in enumerate(valid_data['inputImages']):
-        path = os.path.join(input_folder, f"valid_{i}.jpg")
-        with open(path, 'wb') as file:
-            file.write(jpg_data)
-
-    for i, jpg_data in enumerate(valid_data['targetImages']):
-        path = os.path.join(target_folder, f"valid_{i}.jpg")
-        with open(path, 'wb') as file:
-            file.write(jpg_data)
-
-    # TODO: store model name and train model
-
-    train_unet(model_path, epochs=3)
+    thread = threading.Thread(target=unpack_data_and_train,
+                              args=(params, model_id, train_data, valid_data))
+    thread.start()
 
     return model_id, 200
 
