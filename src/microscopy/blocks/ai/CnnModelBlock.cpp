@@ -8,6 +8,7 @@ bool CnnModelBlock::s_registered = BlockList::getInstance().addBlock(CnnModelBlo
 
 CnnModelBlock::CnnModelBlock(CoreController* controller, QString uid)
     : OneOutputBlock(controller, uid)
-    , m_modelName(this, "modelName", "resnet18_weights_1234.zip")
+    , m_modelName(this, "modelName", "")
+    , m_modelId(this, "modelId", "")
 {
 }

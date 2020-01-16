@@ -15,9 +15,10 @@ public:
         static BlockInfo info;
         info.typeName = "CNN Model";
         info.category << "Microscopy" << "AI";
-        info.helpText = "";
+        info.helpText = "Represents a trained CNN model.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/CnnModelBlock.qml";
         info.orderHint = 1000 + 400 + 3;
+        info.visibilityRequirements << VisibilityRequirement::InvisibleBlock;
         info.complete<CnnModelBlock>();
         return info;
     }
@@ -29,8 +30,12 @@ signals:
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
 
+    StringAttribute& modelName() { return m_modelName; }
+    StringAttribute& modelId() { return m_modelId; }
+
 protected:
     StringAttribute m_modelName;
+    StringAttribute m_modelId;
 
 };
 
