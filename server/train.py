@@ -20,23 +20,23 @@ def unpack_data_and_train(params, model_id, train_data, valid_data):
 
     # unpack train data:
     for i, jpg_data in enumerate(train_data['inputImages']):
-        path = input_folder/f"train_{i}.jpg"
+        path = input_folder/f"train_{i}.png"
         with open(path, 'wb') as file:
             file.write(jpg_data)
 
     for i, jpg_data in enumerate(train_data['targetImages']):
-        path = target_folder/f"train_{i}.jpg"
+        path = target_folder/f"train_{i}.png"
         with open(path, 'wb') as file:
             file.write(jpg_data)
 
     # unpack validation data:
     for i, jpg_data in enumerate(valid_data['inputImages']):
-        path = input_folder/f"valid_{i}.jpg"
+        path = input_folder/f"valid_{i}.png"
         with open(path, 'wb') as file:
             file.write(jpg_data)
 
     for i, jpg_data in enumerate(valid_data['targetImages']):
-        path = target_folder/f"valid_{i}.jpg"
+        path = target_folder/f"valid_{i}.png"
         with open(path, 'wb') as file:
             file.write(jpg_data)
 
