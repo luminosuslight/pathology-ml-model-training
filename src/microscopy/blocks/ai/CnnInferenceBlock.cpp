@@ -3,14 +3,12 @@
 #include "core/CoreController.h"
 #include "core/manager/BlockList.h"
 #include "core/manager/BlockManager.h"
-#include "core/manager/FileSystemManager.h"
-#include "core/manager/UpdateManager.h"
-#include "core/manager/ProjectManager.h"
 #include "core/connections/Nodes.h"
 
 #include "microscopy/manager/BackendManager.h"
 #include "microscopy/blocks/basic/CellDatabaseBlock.h"
 #include "microscopy/blocks/basic/TissueImageBlock.h"
+#include "microscopy/blocks/ai/CnnModelBlock.h"
 
 #include "core/helpers/utils.h"
 
@@ -40,10 +38,11 @@ void CnnInferenceBlock::runInference(QImage image) {
     QtConcurrent::run([this, image]() {
         qDebug() << "runInference";
         auto begin = HighResTime::now();
+        m_networkProgress = 0.1;
         QByteArray imageData;
         QBuffer buffer(&imageData);
         buffer.open(QIODevice::WriteOnly);
-        image.save(&buffer, "PNG");
+        image.save(&buffer, "JPG", 100);
         qDebug() << "Save image to buffer:" << HighResTime::getElapsedSecAndUpdate(begin);
 
         // backend->uploadFile() needs to be called in main thread:
@@ -77,7 +76,15 @@ void CnnInferenceBlock::doInference(QByteArray imageData) {
         m_networkProgress = 0.0;
         m_running = true;
 
-        m_backend->runInference(serverHash, [this](QCborMap cbor) {
+        QString modelId = "default";
+        if (m_inputNode->isConnected()) {
+            CnnModelBlock* modelBlock = qobject_cast<CnnModelBlock*>(m_inputNode->getConnectedNodes().at(0)->getBlock());
+            if (modelBlock) {
+                modelId = modelBlock->modelId();
+            }
+        }
+
+        m_backend->runInference(serverHash, modelId, [this](QCborMap cbor) {
             m_running = false;
 
             QString resultHash = cbor["outputImageHash"_q].toString();

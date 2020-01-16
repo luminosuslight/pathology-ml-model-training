@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import CustomElements 1.0
+import CustomStyle 1.0
 import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
 
@@ -87,19 +88,15 @@ BlockBase {
         DragArea {
             text: "CNN Inference"
 
-            ShaderEffect {
-                visible: block.attr("networkProgress").val > 0.0
-                anchors.verticalCenter: parent.verticalCenter
+            DotProgressIndicator {
                 anchors.right: parent.right
-                anchors.rightMargin: 15*dp
-                width: 26*dp
-                height: 26*dp
-                property variant lineWidth: (2.5*dp) / width
-                property variant smoothness: 1.0 / width
-                property variant color: "lightgreen"
-                property variant backgroundColor: "#333"
-                property variant value: block.attr("networkProgress").val
-                fragmentShader: "qrc:/core/ui/items/ring_shader.frag"
+                progress: block.attr("networkProgress").val
+                color: Style.primaryActionColor
+            }
+
+            DotProgressIndicator {
+                anchors.right: parent.right
+                progress: backendManager.attr("inferenceProgress").val
             }
         }
     }
