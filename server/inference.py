@@ -45,7 +45,8 @@ class NeuralNetwork(object):
                 ey = min(y + 256, img.shape[2])
                 patch = img.data[:, x:ex, y:ey]
                 if patch.shape != (3, 256, 256):
-                    patch.resize((3, 256, 256))
+                    patch = torch.zeros(3, 256, 256)
+                    patch[:, :ex-x, :ey-y] = img.data[:, x:ex, y:ey]
 
                 try:
                     p, prediction, b = self.learn.predict(patch)
