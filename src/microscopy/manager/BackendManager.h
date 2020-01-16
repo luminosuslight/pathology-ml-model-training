@@ -20,8 +20,11 @@ public:
 signals:
 
 public slots:
+    QObject* attr(QString name);
+
     void updateVersion();
     void updateInferenceProgress();
+    void updateTrainingProgress();
 
     void checkFile(QString hash, std::function<void(bool)> onSuccess);
 
@@ -29,7 +32,9 @@ public slots:
     void downloadFile(QString hash, std::function<void(double)> onProgress, std::function<void(QByteArray)> onSuccess);
     void removeFile(QString hash, std::function<void(void)> onSuccess);
 
-    void runInference(QString hash, std::function<void(QCborMap)> onSuccess);
+    void runInference(QString imageHash, QString modelId, std::function<void(QCborMap)> onSuccess);
+
+    void train(QString modelName, QString baseModel, int epochs, QString trainHash, QString valHash, std::function<void(QString)> onSuccess);
 
 protected:
     CoreController* const m_controller;
@@ -40,6 +45,7 @@ protected:
     // runtime:
     StringAttribute m_version;
     DoubleAttribute m_inferenceProgress;
+    DoubleAttribute m_trainingProgress;
 };
 
 #endif // BACKENDMANAGER_H

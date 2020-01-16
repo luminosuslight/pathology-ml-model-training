@@ -2,6 +2,7 @@
 
 #include "core/CoreController.h"
 #include "core/manager/UpdateManager.h"
+#include "core/helpers/qstring_literal.h"
 
 #include <QQmlApplicationEngine>
 
@@ -14,10 +15,22 @@ BackendManager::BackendManager(CoreController* controller)
     , m_serverUrl(this, "serverUrl", "http://192.168.178.83:5000")
     , m_version(this, "version", "", /*persistent*/ false)
     , m_inferenceProgress(this, "inferenceProgress", 0.0, 0.0, 1.0, /*persistent*/ false)
+    , m_trainingProgress(this, "trainingProgress", 0.0, 0.0, 1.0, /*persistent*/ false)
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 
     updateVersion();
+
+    QTimer* updateProgressTimer = new QTimer();
+    updateProgressTimer->setInterval(500);
+    updateProgressTimer->setSingleShot(false);
+    connect(updateProgressTimer, &QTimer::timeout, this, &BackendManager::updateInferenceProgress);
+    connect(updateProgressTimer, &QTimer::timeout, this, &BackendManager::updateTrainingProgress);
+    updateProgressTimer->start();
+}
+
+QObject* BackendManager::attr(QString name) {
+    return ObjectWithAttributes::attr(name);
 }
 
 void BackendManager::updateVersion() {
@@ -26,18 +39,33 @@ void BackendManager::updateVersion() {
     auto reply = m_nam->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         m_version = reply->readAll();
-        qDebug() << "Backend server found, version" << m_version;
+        if (!m_version.getValue().isEmpty()) {
+            qDebug() << "Backend server found, version" << m_version;
+        } else {
+            qDebug() << "No backend server found.";
+        }
         reply->deleteLater();
     });
 }
 
 void BackendManager::updateInferenceProgress() {
     QNetworkRequest request;
-    request.setUrl(QUrl(m_serverUrl + "/progress"));
+    request.setUrl(QUrl(m_serverUrl + "/inference_progress"));
     auto reply = m_nam->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         QString val = reply->readAll();
         m_inferenceProgress = val.toDouble();
+        reply->deleteLater();
+    });
+}
+
+void BackendManager::updateTrainingProgress() {
+    QNetworkRequest request;
+    request.setUrl(QUrl(m_serverUrl + "/training_progress"));
+    auto reply = m_nam->get(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        QString val = reply->readAll();
+        m_trainingProgress = val.toDouble();
         reply->deleteLater();
     });
 }
@@ -94,14 +122,33 @@ void BackendManager::removeFile(QString hash, std::function<void ()> onSuccess) 
     });
 }
 
-void BackendManager::runInference(QString hash, std::function<void (QCborMap)> onSuccess) {
+void BackendManager::runInference(QString imageHash, QString modelId, std::function<void (QCborMap)> onSuccess) {
     QNetworkRequest request;
-    request.setUrl(QUrl(m_serverUrl + "/model/default/prediction/" + hash));
+    request.setUrl(QUrl(m_serverUrl + "/model/" + modelId + "/prediction/" + imageHash));
     auto reply = m_nam->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply, onSuccess]() {
         m_inferenceProgress = 0.0;
-        auto cbor = QCborValue::fromCbor(reply->readAll()).toMap();
-        onSuccess(cbor);
+        auto result = QCborValue::fromCbor(reply->readAll()).toMap();
+        onSuccess(result);
+        reply->deleteLater();
+    });
+}
+
+void BackendManager::train(QString modelName, QString baseModel, int epochs, QString trainHash, QString validHash, std::function<void (QString)> onSuccess) {
+    QCborMap params;
+    params["modelName"_q] = modelName;
+    params["baseModel"_q] = baseModel;
+    params["epochs"_q] = epochs;
+    params["trainDataHash"_q] = trainHash;
+    params["validDataHash"_q] = validHash;
+    QNetworkRequest request;
+    request.setUrl(QUrl(m_serverUrl + "/model"));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/cbor");
+    auto reply = m_nam->post(request, params.toCborValue().toCbor());
+    connect(reply, &QNetworkReply::finished, this, [this, reply, onSuccess]() {
+        m_inferenceProgress = 0.0;
+        QString modelId = QString::fromUtf8(reply->readAll());
+        onSuccess(modelId);
         reply->deleteLater();
     });
 }
