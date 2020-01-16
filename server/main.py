@@ -9,7 +9,7 @@ import sys
 import threading
 
 from inference import NeuralNetwork
-from train import unpack_data_and_train
+from train import unpack_data_and_train, training_tracker
 
 print("Python version:", sys.version)
 
@@ -104,6 +104,11 @@ def train():
     thread.start()
 
     return model_id, 200
+
+
+@app.route('/train_progress', methods=['GET'])
+def train_progress():
+    return str(training_tracker.progress), 200
 
 
 # @app.route('/model/<model_id>', methods=['GET'])
