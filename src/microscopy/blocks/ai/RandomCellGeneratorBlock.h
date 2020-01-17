@@ -38,8 +38,10 @@ protected:
     QPointer<NodeBase> m_examplesNode;
 
     IntegerAttribute m_areaSize;
-    IntegerAttribute m_count;
-    DoubleAttribute m_distance;
+    DoubleAttribute m_density;
+    IntegerAttribute m_minCellRadius;
+    IntegerAttribute m_maxCellRadius;
+    IntegerAttribute m_twinCount;
 
     // runtime:
 

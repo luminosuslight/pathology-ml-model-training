@@ -47,7 +47,7 @@ BlockBase {
                 node: block.node("inputNode")
             }
             StretchText {
-                text: "Train Data"
+                text: "Training Data"
             }
         }
 
@@ -56,7 +56,7 @@ BlockBase {
                 node: block.node("valData")
             }
             StretchText {
-                text: "Val. Data"
+                text: "Validation Data"
             }
         }
 

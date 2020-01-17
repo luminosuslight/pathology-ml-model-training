@@ -50,7 +50,7 @@ Item {
             }
             onTouchMove: {
                 if (currentMode === DataView.Mode.Add) {
-                    const imageRadius = Math.sqrt(Math.pow(touch.itemX - touch.itemOriginX, 2) + Math.pow(touch.itemY - touch.itemOriginY, 2)) / view.attr("scale").val
+                    const imageRadius = Math.sqrt(Math.pow(touch.itemX - touch.itemOriginX, 2) + Math.pow(touch.itemY - touch.itemOriginY, 2)) / view.attr("xScale").val
                     newNuclei.width = imageRadius
                     newNucleiCircle.radii = view.getShapeEstimationAtRadius(newNuclei.x, newNuclei.y, imageRadius)
                 }

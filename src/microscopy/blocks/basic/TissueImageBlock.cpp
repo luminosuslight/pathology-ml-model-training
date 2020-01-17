@@ -56,7 +56,7 @@ TissueImageBlock::TissueImageBlock(CoreController* controller, QString uid)
         if (locallyAvailable()) {
             if (!m_uiFilePath.getValue().isEmpty()) {
                 if (QDir().exists(m_controller->dao()->withoutFilePrefix(m_uiFilePath))) {
-                    m_image = QImage(m_uiFilePath);
+                    m_image = QImage(m_controller->dao()->withoutFilePrefix(m_uiFilePath));
                 } else {
                     // -> ui file was deleted, try to recreate it:
                     loadImageData();
@@ -250,7 +250,7 @@ void TissueImageBlock::loadImageData() {
             m_blackLevel = std::pow(minValue / double(256*256-1), 0.5);
             m_whiteLevel = maxValue / double(256*256-1);
         } else {
-            m_image = QImage(convertedFilePath);
+            m_image = QImage(m_controller->dao()->withoutFilePrefix(convertedFilePath));
         }
         m_interpretAs16Bit = true;
         m_uiFilePath = convertedFilePath;

@@ -7,7 +7,7 @@ import "qrc:/core/ui/controls"
 BlockBase {
     id: root
     width: 170*dp
-    height: 7*30*dp
+    height: 8*30*dp
 
     StretchColumn {
         anchors.fill: parent
@@ -34,25 +34,46 @@ BlockBase {
         BlockRow {
             leftMargin: 5*dp
             StretchText {
-                text: "Count:"
+                text: "Density:"
             }
-            AttributeNumericInput {
-                width: 60*dp
+            AttributeDotSlider {
+                width: 30*dp
                 implicitWidth: 0
-                attr: block.attr("count")
+                attr: block.attr("density")
             }
         }
 
         BlockRow {
             leftMargin: 5*dp
             StretchText {
-                text: "Distance:"
+                text: "Radius:"
+            }
+            AttributeNumericInput {
+                width: 30*dp
+                implicitWidth: 0
+                attr: block.attr("minCellRadius")
+            }
+            Text {
+                width: 10*dp
+                text: "-"
+            }
+
+            AttributeNumericInput {
+                width: 30*dp
+                implicitWidth: 0
+                attr: block.attr("maxCellRadius")
+            }
+        }
+
+        BlockRow {
+            leftMargin: 5*dp
+            StretchText {
+                text: "Twins:"
             }
             AttributeNumericInput {
                 width: 50*dp
                 implicitWidth: 0
-                attr: block.attr("distance")
-                decimals: 2
+                attr: block.attr("twinCount")
             }
         }
 
