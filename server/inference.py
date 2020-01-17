@@ -63,6 +63,9 @@ class NeuralNetwork(object):
                     result.data[:, x:ex, y:ey] = 0.0
         return result
 
+    def destroy(self):
+        self.learn.destroy()
+
 
 def get_cell_centers(image_buffer):
     print("Finding cell centers...")

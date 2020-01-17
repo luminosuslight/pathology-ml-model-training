@@ -119,10 +119,9 @@ def training_progress():
 
 @app.route('/model/<model_id>/prediction/<img_hash>', methods=['GET'])
 def predict(model_id, img_hash):
+    model = default_network
     if model_id != "default":
-        # TODO: implement usage of other models
-        print("Only default model is supported.")
-        abort(404)
+        model = NeuralNetwork('models/' + model_id + '/input')
 
     path = os.path.join(app.config['UPLOAD_FOLDER'], img_hash)
     if not os.path.isfile(path):
@@ -131,7 +130,10 @@ def predict(model_id, img_hash):
 
     print(f"Doing inference with model '{model_id}' and file {img_hash}...")
 
-    output_img_data, centers = default_network.get_output_and_centers(path)
+    output_img_data, centers = model.get_output_and_centers(path)
+
+    if model_id != "default":
+        model.destroy()
 
     print(f"Inference complete, now storing result and sending it back...")
 
