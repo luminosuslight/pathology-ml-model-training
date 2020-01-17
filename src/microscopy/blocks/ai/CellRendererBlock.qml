@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import CustomElements 1.0
+import CustomStyle 1.0
 import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
 
@@ -7,10 +8,12 @@ import "qrc:/core/ui/controls"
 BlockBase {
     id: root
     width: 200*dp
-    height: 200*dp + 2*30*dp
+    height: mainCol.implicitHeight
 
     StretchColumn {
+        id: mainCol
         anchors.fill: parent
+        defaultSize: 30*dp
 
         Item {
             id: imageArea
@@ -27,11 +30,12 @@ BlockBase {
         BlockRow {
             ComboBox2 {
                 id: renderTypeCombobox
-                texts: ["Mask", "Center", "Type", "DAPI", "LAMI"]
+                texts: ["Mask", "Center", "Type", "Elongated", "DAPI", "LAMI"]
                 values: [
                     "qrc:/microscopy/blocks/ai/MaskRenderer.qml",
                     "qrc:/microscopy/blocks/ai/CenterRenderer.qml",
                     "qrc:/microscopy/blocks/ai/TypeRenderer.qml",
+                    "qrc:/microscopy/blocks/ai/ElongatedRenderer.qml",
                     "qrc:/microscopy/blocks/ai/DapiRenderer.qml",
                     "qrc:/microscopy/blocks/ai/LamiRenderer.qml",
                 ]
@@ -51,11 +55,36 @@ BlockBase {
                 allUpperCase: false
                 onPress: {
                     loader.item.grabToImage(function(result) {
-                        const filename = "/Users/tim/Masterarbeit/artificial_data/%1.tiff".arg(renderTypeCombobox.texts[renderTypeCombobox.currentIndex])
-                        result.saveToFile(filename)
-                        block.addImageBlock(filename)
+                        block.saveRenderedImage(result.image, renderTypeCombobox.texts[renderTypeCombobox.currentIndex])
                     });
                 }
+            }
+        }
+
+        BlockRow {
+            visible: (renderTypeCombobox.texts[renderTypeCombobox.currentIndex] === "DAPI"
+                      || renderTypeCombobox.texts[renderTypeCombobox.currentIndex] === "LAMI")
+            leftMargin: 5*dp
+            StretchText {
+                text: "Bubbles:"
+            }
+            AttributeCheckbox {
+                width: 30*dp
+                attr: block.attr("largeNoise")
+            }
+            onVisibleChanged: block.positionChanged()
+        }
+
+        BlockRow {
+            visible: (renderTypeCombobox.texts[renderTypeCombobox.currentIndex] === "DAPI"
+                      || renderTypeCombobox.texts[renderTypeCombobox.currentIndex] === "LAMI")
+            leftMargin: 5*dp
+            StretchText {
+                text: "Small Noise:"
+            }
+            AttributeCheckbox {
+                width: 30*dp
+                attr: block.attr("smallNoise")
             }
         }
 

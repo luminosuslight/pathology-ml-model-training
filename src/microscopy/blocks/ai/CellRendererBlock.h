@@ -3,6 +3,8 @@
 
 #include "core/block_basics/OneInputBlock.h"
 
+#include <QImage>
+
 #include <random>
 
 
@@ -17,7 +19,8 @@ public:
         static BlockInfo info;
         info.typeName = "Cell Renderer";
         info.category << "Microscopy" << "AI";
-        info.helpText = "";
+        info.helpText = "Draws the given cells on an image to either simulate an "
+                        "input or the targeted output of a neural network.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/CellRendererBlock.qml";
         info.orderHint = 1000 + 400 + 6;
         info.complete<CellRendererBlock>();
@@ -35,13 +38,16 @@ public slots:
     QVariantList indexes() const;
     QObject* dbQml() const;
 
-    void addImageBlock(QString filename);
+    void saveRenderedImage(QImage image, QString type);
 
     QVector<double> randomRadii(float ellipseFactor, float variance) const;
 
 protected:
     std::random_device m_rd;
     mutable std::default_random_engine m_engine;
+
+    BoolAttribute m_largeNoise;
+    BoolAttribute m_smallNoise;
 
 };
 

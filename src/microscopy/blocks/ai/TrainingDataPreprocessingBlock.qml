@@ -71,8 +71,8 @@ BlockBase {
                 implicitWidth: -1
                 InputDataPreprocessing {
                     id: inputImageArea
-                    width: 256 / Screen.devicePixelRatio
-                    height: 256 / Screen.devicePixelRatio
+                    width: 256
+                    height: 256
                     anchors.centerIn: parent
                     clip: true
                     xOffset: root.xOffset
@@ -87,8 +87,8 @@ BlockBase {
                 implicitWidth: -1
                 TargetDataPreprocessing {
                     id: targetImageArea
-                    width: 256 / Screen.devicePixelRatio
-                    height: 256 / Screen.devicePixelRatio
+                    width: 256
+                    height: 256
                     anchors.centerIn: parent
                     clip: true
                     xOffset: root.xOffset

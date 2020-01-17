@@ -20,7 +20,7 @@ namespace TissueImageBlockConstants {
 }
 
 
-QString md5(QByteArray input) {
+inline QString md5(QByteArray input) {
     QString result = QString(QCryptographicHash::hash(input, QCryptographicHash::Md5).toHex());
     return result;
 }
@@ -38,6 +38,7 @@ TissueImageBlock::TissueImageBlock(CoreController* controller, QString uid)
     , m_uiFilePath(this, "uiFilePath", "")
     , m_interpretAs16Bit(this, "interpretAs16Bit", false)
     , m_interactiveWatershed(this, "interactiveWatershed", false)
+    , m_ownsFile(this, "ownsFile", false)
     , m_blackLevel(this, "blackLevel", 0.0, 0.0, 0.99)
     , m_whiteLevel(this, "whiteLevel", 1.0, 0.0001, 1.0)
     , m_gamma(this, "gamma", 1.0, 0.0, 3.0)
@@ -55,8 +56,8 @@ TissueImageBlock::TissueImageBlock(CoreController* controller, QString uid)
         updateRemoteAvailability();
         if (locallyAvailable()) {
             if (!m_uiFilePath.getValue().isEmpty()) {
-                if (QDir().exists(m_controller->dao()->withoutFilePrefix(m_uiFilePath))) {
-                    m_image = QImage(m_controller->dao()->withoutFilePrefix(m_uiFilePath));
+                if (QDir().exists(m_uiFilePath)) {
+                    m_image = QImage(m_uiFilePath);
                 } else {
                     // -> ui file was deleted, try to recreate it:
                     loadImageData();
@@ -81,6 +82,18 @@ void TissueImageBlock::onCreatedByUser() {
     if (!views.isEmpty()) {
         assignView(views.first()->getUid());
     }
+}
+
+void TissueImageBlock::deletedByUser() {
+    if (m_ownsFile) {
+        if (!m_imageDataPath.getValue().isEmpty()) {
+            m_controller->dao()->deleteLocalFile(m_imageDataPath);
+        }
+        if (!m_uiFilePath.getValue().isEmpty()) {
+            m_controller->dao()->deleteLocalFile(m_uiFilePath);
+        }
+    }
+    OneOutputBlock::deletedByUser();
 }
 
 float TissueImageBlock::pixelValue(int x, int y) const {
@@ -216,7 +229,7 @@ void TissueImageBlock::loadImageData() {
         // this is either a color image or a grayscale image stored as RGB
         // -> we can show it directly:
         m_image = image;
-        m_uiFilePath = filePath;
+        m_uiFilePath = m_controller->dao()->withoutFilePrefix(filePath);
         m_interpretAs16Bit = false;
     } else if (image.format() == QImage::Format_Grayscale16) {
         // We will convert this grascale 16 bit image to ARGB32
@@ -253,7 +266,7 @@ void TissueImageBlock::loadImageData() {
             m_image = QImage(m_controller->dao()->withoutFilePrefix(convertedFilePath));
         }
         m_interpretAs16Bit = true;
-        m_uiFilePath = convertedFilePath;
+        m_uiFilePath = m_controller->dao()->withoutFilePrefix(convertedFilePath);
     } else {
         qWarning() << "Image format not supported:" << image.format();
         m_uiFilePath = "";

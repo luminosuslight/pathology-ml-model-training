@@ -41,6 +41,8 @@ signals:
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
 
+    virtual void deletedByUser() override;
+
     float pixelValue(int x, int y) const;
 
     QString filePath() const { return m_selectedFilePath; }
@@ -74,6 +76,7 @@ protected:
     StringAttribute m_uiFilePath;
     BoolAttribute m_interpretAs16Bit;
     BoolAttribute m_interactiveWatershed;
+    BoolAttribute m_ownsFile;
 
     DoubleAttribute m_blackLevel;
     DoubleAttribute m_whiteLevel;
