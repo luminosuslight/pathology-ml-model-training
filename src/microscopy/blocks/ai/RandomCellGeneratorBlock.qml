@@ -7,7 +7,7 @@ import "qrc:/core/ui/controls"
 BlockBase {
     id: root
     width: 170*dp
-    height: 8*30*dp
+    height: 9*30*dp
 
     StretchColumn {
         anchors.fill: parent
@@ -62,6 +62,18 @@ BlockBase {
                 width: 30*dp
                 implicitWidth: 0
                 attr: block.attr("maxCellRadius")
+            }
+        }
+
+        BlockRow {
+            leftMargin: 5*dp
+            StretchText {
+                text: "Elongated:"
+            }
+            AttributeDotSlider {
+                width: 30*dp
+                implicitWidth: 0
+                attr: block.attr("elongated")
             }
         }
 

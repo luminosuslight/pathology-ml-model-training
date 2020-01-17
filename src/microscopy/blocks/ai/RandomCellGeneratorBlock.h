@@ -42,6 +42,7 @@ protected:
     IntegerAttribute m_minCellRadius;
     IntegerAttribute m_maxCellRadius;
     IntegerAttribute m_twinCount;
+    DoubleAttribute m_elongated;
 
     // runtime:
 

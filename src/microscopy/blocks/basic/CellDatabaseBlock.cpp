@@ -104,6 +104,7 @@ void CellDatabaseBlock::clear() {
     getOrCreateFeatureId("x");
     getOrCreateFeatureId("y");
     getOrCreateFeatureId("radius");
+    emit existingDataChanged();
 }
 
 void CellDatabaseBlock::importNNResult(QString positionsFilePath, QString maskFilePath) {
