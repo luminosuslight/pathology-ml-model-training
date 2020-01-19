@@ -39,7 +39,7 @@ BlockBase {
                 yOffset: 0.5
                 contentRotation: 0
                 noise: 0
-                brightness: 0
+                brightness: 1.0
             }
         }
 

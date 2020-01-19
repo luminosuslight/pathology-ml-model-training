@@ -15,7 +15,7 @@ BlockBase {
     property real yOffset: 0.5
     property real contentRotation: 0.0
     property real noise: 0.0
-    property real brightness: 0.0
+    property real brightness: 1.0
 
     property int alreadyGenerated: 0
 
@@ -25,12 +25,16 @@ BlockBase {
         refresh()
     }
 
-    function refresh() {
+    function setNewRandomValues() {
         xOffset = Math.random()
         yOffset = Math.random()
         contentRotation = Math.random()
         noise = Math.random() * 0.6 * block.attr("noise").val
-        brightness = Math.random() * 0.6 * block.attr("brightness").val
+        brightness =  1 - (Math.random() * 1.3 - 0.3) * block.attr("brightness").val
+    }
+
+    function refresh() {
+        setNewRandomValues()
         waitForRenderingTimer.start()
     }
 
@@ -119,13 +123,7 @@ BlockBase {
             ButtonBottomLine {
                 text: "Refresh"
                 allUpperCase: false
-                onPress: {
-                    xOffset = Math.random()
-                    yOffset = Math.random()
-                    contentRotation = Math.random()
-                    noise = Math.random() * 0.6 * block.attr("noise").val
-                    brightness = Math.random()
-                }
+                onPress: setNewRandomValues()
             }
 
             ButtonBottomLine {

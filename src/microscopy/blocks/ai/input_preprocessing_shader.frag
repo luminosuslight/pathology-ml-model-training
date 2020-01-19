@@ -19,6 +19,6 @@ void main() {
     tex.r = texture2D(src1, coord).r;
     tex.g = texture2D(src2, coord).g;
     tex.b = texture2D(src3, coord).b;
-    tex.rgb = tex.rgb + rand(coord) * noise;
+    tex.rgb = tex.rgb * brightness + rand(coord) * noise;
     gl_FragColor = tex * qt_Opacity;
 }

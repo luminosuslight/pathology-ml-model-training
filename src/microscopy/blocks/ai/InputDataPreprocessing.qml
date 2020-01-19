@@ -14,7 +14,7 @@ Rectangle {
     property real yOffset: 0.0
     property real contentRotation: 0.0
     property real noise: 0.0
-    property real brightness: 0.0
+    property real brightness: 1.0
 
     Loader {
         id: image1
