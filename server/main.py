@@ -91,8 +91,9 @@ def train():
     params = cbor2.loads(raw_data)
     print(params)
 
-    if params['baseModel']:
-        model_id = f"{params['baseModel']}-{params['trainDataHash']}"
+    base_model = params['baseModel']
+    if base_model:
+        model_id = f"{base_model}-{params['trainDataHash']}"
     else:
         model_id = params['trainDataHash']
 
@@ -100,7 +101,7 @@ def train():
     valid_data = cbor2.loads(get_upload(params['validDataHash']))
 
     thread = threading.Thread(target=unpack_data_and_train,
-                              args=(params, model_id, train_data, valid_data))
+                              args=(params, model_id, base_model, train_data, valid_data))
     thread.start()
 
     return model_id, 200
