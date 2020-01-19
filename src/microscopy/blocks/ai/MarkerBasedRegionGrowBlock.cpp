@@ -31,6 +31,7 @@ void MarkerBasedRegionGrowBlock::run() {
         if (!m_maskNode->isConnected()) return;
         TissueImageBlock* imageBlock = qobject_cast<TissueImageBlock*>(m_maskNode->getConnectedNodes().at(0)->getBlock());
         if (!imageBlock) return;
+        imageBlock->preparePixelAccess();
 
         const int maxSize = 200;
         m_radiiIntermediate.clear();

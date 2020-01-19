@@ -25,6 +25,7 @@ void CellAreaAverageBlock::fillInMidpointValues() {
     if (!m_channelNode->isConnected()) return;
     TissueImageBlock* imageBlock = qobject_cast<TissueImageBlock*>(m_channelNode->getConnectedNodes().at(0)->getBlock());
     if (!imageBlock) return;
+    imageBlock->preparePixelAccess();
 
     const StringAttribute* label = qobject_cast<StringAttribute*>(imageBlock->attr("label"));
     const QString featureName = label->getValue().isEmpty() ? imageBlock->filename() : label->getValue();
@@ -47,6 +48,7 @@ void CellAreaAverageBlock::fillInAverageValues() {
     if (!m_channelNode->isConnected()) return;
     TissueImageBlock* imageBlock = qobject_cast<TissueImageBlock*>(m_channelNode->getConnectedNodes().at(0)->getBlock());
     if (!imageBlock) return;
+    imageBlock->preparePixelAccess();
 
     const int radiiCount = CellDatabaseConstants::RADII_COUNT;
     const StringAttribute* label = qobject_cast<StringAttribute*>(imageBlock->attr("label"));

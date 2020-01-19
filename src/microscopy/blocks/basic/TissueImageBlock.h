@@ -43,6 +43,7 @@ public slots:
 
     virtual void deletedByUser() override;
 
+    void preparePixelAccess();
     float pixelValue(int x, int y) const;
 
     QString filePath() const { return m_selectedFilePath; }

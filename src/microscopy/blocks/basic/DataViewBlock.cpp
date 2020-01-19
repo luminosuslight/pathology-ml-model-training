@@ -200,6 +200,7 @@ QPair<CellShape, float> DataViewBlock::getShapeEstimationAndScore(int x, int y, 
     for (auto channel: m_channelBlocks) {
         if (channel->interactiveWatershed()) {
             interactiveWatershedChannels.append(channel);
+            channel->preparePixelAccess();
         }
     }
     if (interactiveWatershedChannels.isEmpty()) {

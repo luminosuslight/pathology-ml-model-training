@@ -56,9 +56,7 @@ TissueImageBlock::TissueImageBlock(CoreController* controller, QString uid)
         updateRemoteAvailability();
         if (locallyAvailable()) {
             if (!m_uiFilePath.getValue().isEmpty()) {
-                if (QDir().exists(m_uiFilePath)) {
-                    m_image = QImage(m_uiFilePath);
-                } else {
+                if (!QDir().exists(m_uiFilePath)) {
                     // -> ui file was deleted, try to recreate it:
                     loadImageData();
                 }
@@ -94,6 +92,15 @@ void TissueImageBlock::deletedByUser() {
         }
     }
     OneOutputBlock::deletedByUser();
+}
+
+void TissueImageBlock::preparePixelAccess() {
+    if (QDir().exists(m_uiFilePath)) {
+        m_image = QImage(m_uiFilePath);
+    } else {
+        // -> ui file was deleted, try to recreate it:
+        loadImageData();
+    }
 }
 
 float TissueImageBlock::pixelValue(int x, int y) const {
