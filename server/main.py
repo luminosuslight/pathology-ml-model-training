@@ -131,8 +131,9 @@ def training_progress():
 #    return model_metadata
 
 
-@app.route('/model/<model_id>/prediction/<img_hash>', methods=['GET'])
-def predict(model_id, img_hash):
+@app.route('/model/<model_id>/prediction/<img_hash>/<left>/<top>/<right>/<bottom>', methods=['GET'])
+def predict(model_id, img_hash, left, top, right, bottom):
+    left, top, right, bottom = map(int, (left, top, right, bottom))
     model = default_network
     if model_id != "default":
         model = NeuralNetwork('models/' + model_id + '/input')
@@ -144,7 +145,7 @@ def predict(model_id, img_hash):
 
     print(f"Doing inference with model '{model_id}' and file {img_hash}...")
 
-    output_img_data, centers = model.get_output_and_centers(path)
+    output_img_data, centers = model.get_output_and_centers(path, left, top, right, bottom)
 
     if model_id != "default":
         model.destroy()

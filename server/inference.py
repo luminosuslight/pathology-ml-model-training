@@ -22,15 +22,16 @@ class NeuralNetwork(object):
         self.learn = load_learner(model_path)
         self.progress = 0.0
 
-    def get_output_and_centers(self, img_path):
+    def get_output_and_centers(self, img_path, left, top, right, bottom):
         img = open_image(img_path)
         print("Input image:", img)
-        output_img_raw_data = img_to_buffer(self.predict_image(img))
+        output_img_raw_data = img_to_buffer(self.predict_image(img, left, top, right, bottom))
         centers = get_cell_centers(output_img_raw_data)
         self.progress = 0.0
         return output_img_raw_data, centers
 
-    def predict_image(self, img):
+    def predict_image(self, img, left, top, right, bottom):
+        area_given = any((left, top, right, bottom))
         result = deepcopy(img)
         x_patches = math.ceil(img.shape[1] / 128)
         y_patches = math.ceil(img.shape[2] / 128)
@@ -43,6 +44,11 @@ class NeuralNetwork(object):
                 y = py * 128
                 ex = min(x + 256, img.shape[1])
                 ey = min(y + 256, img.shape[2])
+                if area_given and (ex < left or ey < top or x > right or y > bottom):
+                    # outside of relevant area
+                    result.data[:, x:ex, y:ey] = 0.0
+                    continue
+
                 patch = img.data[:, x:ex, y:ey]
                 if patch.shape != (3, 256, 256):
                     patch = torch.zeros(3, 256, 256)
