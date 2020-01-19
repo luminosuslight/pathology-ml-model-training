@@ -71,7 +71,8 @@ def train_unet(path, base_model_weights, epochs):
 
     if base_model_weights:
         print("Loading weights of base model...", base_model_weights)
-        learn.load(base_model_weights)
+        with open(base_model_weights, 'rb') as file:
+            learn.load(file)
 
     print(learn.summary())
 
@@ -84,7 +85,8 @@ def train_unet(path, base_model_weights, epochs):
     learn.unfreeze()
     learn.fit_one_cycle(1, max_lr=slice(1e-6, 1e-4))
     print("Saving...")
-    learn.save(path/"trained_model.pth")  # save for later finetuning
+    with open(path/'trained_model.pth', 'wb') as file:
+        learn.save(file)  # save for later finetuning
     learn.export()  # export for simple inference
     training_tracker.progress = 0.0
     print("Finished training and exported the model.")
