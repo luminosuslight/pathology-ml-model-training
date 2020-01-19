@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import request, abort
+from werkzeug import serving
 import cbor2
 
 from hashlib import md5
@@ -22,6 +23,18 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
+def log_request(self, *args, **kwargs):
+    # don't log progress requests:
+    filters = ['training_progress', 'inference_progress']
+    if any(filter in self.requestline for filter in filters):
+        return
+    _log_request(self, *args, **kwargs)
+
+
+_log_request = serving.WSGIRequestHandler.log_request
+serving.WSGIRequestHandler.log_request = log_request
 
 
 def secure_filename(filename):
