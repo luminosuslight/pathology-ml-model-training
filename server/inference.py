@@ -44,7 +44,8 @@ class NeuralNetwork(object):
                 y = py * 128
                 ex = min(x + 256, img.shape[1])
                 ey = min(y + 256, img.shape[2])
-                if area_given and (ex < left or ey < top or x > right or y > bottom):
+                # Note: x and y are swapped here:
+                if area_given and (ey < left or ex < top or y > right or x > bottom):
                     # outside of relevant area
                     result.data[:, x:ex, y:ey] = 0.0
                     continue
