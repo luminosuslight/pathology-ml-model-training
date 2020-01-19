@@ -54,6 +54,13 @@ def train_unet(path, base_model_weights, epochs):
     item_list = ImageImageList.from_folder(path/'input')
     item_lists = item_list.split_by_valid_func(lambda x: x.name.startswith('valid_'))
     label_lists = item_lists.label_from_func(lambda x: path/'target'/x.name)
+    tfms = [dihedral(),
+            squish(scale=(0.6, 1.4)),
+            zoom(scale=(1.0, 1.15)),
+            cutout(n_holes=(0, 3), length=(1, 30))]
+    # Note: lighting and noise augmentation is done by the client while creating
+    # the dataset
+    label_lists = label_lists.transform(tfms, tfm_y=True)
     databunch = label_lists.databunch(bs=1)
     databunch.c = 3
 
