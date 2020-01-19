@@ -91,7 +91,7 @@ void TrainingDataPreprocessingBlock::addInputImage(QImage image) {
     QByteArray pngData;
     QBuffer buffer(&pngData);
     buffer.open(QIODevice::WriteOnly);
-    image.save(&buffer, "PNG", 100);
+    image.save(&buffer, "PNG", 80);
     m_inputImages.append(pngData);
 }
 
@@ -99,7 +99,7 @@ void TrainingDataPreprocessingBlock::addTargetImage(QImage image) {
     QByteArray pngData;
     QBuffer buffer(&pngData);
     buffer.open(QIODevice::WriteOnly);
-    image.save(&buffer, "PNG", 100);
+    image.save(&buffer, "PNG", 80);
     m_targetImages.append(pngData);
 }
 
