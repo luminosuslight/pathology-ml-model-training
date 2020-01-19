@@ -44,7 +44,7 @@ void RandomCellGeneratorBlock::run() {
     const int elongatedFeature = db->getOrCreateFeatureId("elongated");
     qDebug() << elongatedFeature;
 
-    const int count = int(m_areaSize * m_density * 2);
+    const int count = int(std::pow(m_areaSize / 100, 2) * m_density * 10);
     for (int i = 0; i < count; ++i) {
         const double x = positionDist(m_engine);
         const double y = positionDist(m_engine);
