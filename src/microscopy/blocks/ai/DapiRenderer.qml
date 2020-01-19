@@ -22,7 +22,6 @@ Rectangle {
             model: Math.round(root.width / 200)
 
             IrregularCircle {
-                property int idx: index
                 visible: block.attr("largeNoise").val
                 width: 150 + Math.random() * 400
                 height: width
@@ -40,13 +39,14 @@ Rectangle {
 
             IrregularCircle {
                 property int idx: modelData
+                property bool inverse: Math.random() > 0.5  // aka coffee stain
                 width: db.getFeature(2, idx) * 2
                 height: width
                 x: db.getFeature(0, idx) - width / 2
                 y: db.getFeature(1, idx) - width / 2
                 radii: db.getShapeVector(idx)
-                outerColor: Qt.hsva(0, 0, 0.2 + Math.random() * 0.9, 0.8)
-                innerColor: Qt.hsva(0, 0, Math.min(0.4 + Math.random() * 0.8, 1), 1.0)
+                outerColor: Qt.hsva(0, 0, inverse ? Math.min(0.5 + Math.random() * 0.8, 1) : 0.1 + Math.random() * 0.9, 0.8)
+                innerColor: Qt.hsva(0, 0, inverse ? Math.random() * 0.4 : Math.min(0.4 + Math.random() * 0.8, 1), 1.0)
             }
         }
 
@@ -54,7 +54,6 @@ Rectangle {
             model: Math.round(root.width / 10)
 
             IrregularCircle {
-                property int idx: index
                 visible: block.attr("smallNoise").val
                 width: Math.random() * 5
                 height: width
@@ -63,6 +62,21 @@ Rectangle {
                 radii: block.randomRadii(0.9, 0.8)
                 outerColor: Qt.hsva(0, 0, Math.random(), 1)
                 innerColor: Qt.hsva(0, 0, 0.5 + Math.random() * 0.5, 1)
+            }
+        }
+
+        Repeater {  // cutouts / black spots
+            model: Math.round(root.width / 20)
+
+            IrregularCircle {
+                visible: block.attr("smallNoise").val
+                width: Math.random() * 8
+                height: width
+                x: Math.random() * root.width
+                y: Math.random() * root.width
+                radii: block.randomRadii(0.9, 0.8)
+                outerColor: "black"
+                innerColor: "black"
             }
         }
     }
