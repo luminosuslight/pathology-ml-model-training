@@ -26,7 +26,7 @@ BlockBase {
             }
             OutputNodeRect {
                 node: block.node("featuresOut")
-                suggestions: ["Plot Selection", "CSV Export", "Cell Feature Visualization"]
+                suggestions: ["CSV Export", "Cell Feature Visualization"]
             }
         }
 

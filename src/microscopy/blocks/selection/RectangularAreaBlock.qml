@@ -70,7 +70,7 @@ BlockBase {
 
             OutputNodeCommand {
                 node: block.node("outputNode")
-                suggestions: ["Cell Visualization", "Plot Selection"]
+                suggestions: ["Cell Visualization"]
             }
         }
     }

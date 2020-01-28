@@ -27,7 +27,7 @@ BlockBase {
             }
             OutputNodeRect {
                 node: block.node("featuresOut")
-                suggestions: ["Plot Selection", "Clustering"]
+                suggestions: ["Clustering"]
             }
         }
 
