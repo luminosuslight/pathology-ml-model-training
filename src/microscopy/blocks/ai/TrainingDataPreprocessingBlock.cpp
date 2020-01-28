@@ -38,15 +38,6 @@ TrainingDataPreprocessingBlock::TrainingDataPreprocessingBlock(CoreController* c
     connect(m_target3Node, &NodeBase::connectionChanged, this, &TrainingDataPreprocessingBlock::updateSources);
 }
 
-void TrainingDataPreprocessingBlock::run() {
-    auto* block = m_controller->blockManager()->addNewBlock<TrainingDataBlock>();
-    if (!block) {
-        qWarning() << "Could not create TrainingDataBlock.";
-        return;
-    }
-    block->focus();
-}
-
 void TrainingDataPreprocessingBlock::updateSources() {
     m_inputSources->clear();
     for (NodeBase* node: {m_input1Node, m_input2Node, m_input3Node}) {

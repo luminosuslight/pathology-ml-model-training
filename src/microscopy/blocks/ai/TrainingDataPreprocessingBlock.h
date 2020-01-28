@@ -33,8 +33,6 @@ signals:
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
 
-    void run();
-
     void updateSources();
 
     void createNewDataFile(QString filename);
