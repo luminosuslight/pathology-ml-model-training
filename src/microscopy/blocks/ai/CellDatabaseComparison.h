@@ -13,7 +13,7 @@ public:
     static bool s_registered;
     static BlockInfo info() {
         static BlockInfo info;
-        info.typeName = "Cell Database Comparison";
+        info.typeName = "Dataset Comparison";
         info.nameInUi = "Benchmark";
         info.category << "Microscopy" << "Neural Network";
         info.helpText = "[Not implemented yet]<br>"

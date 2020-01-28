@@ -33,7 +33,7 @@ public:
                         "There can be multiple of this block, for example one containing the ground "
                         "truth and another containing the result of a new segmentation model.<br><br>"
                         "The information within this block can be displayed in a <i>View</i> "
-                        "by connecting a <i>Data Visualization</i> block.";
+                        "by connecting a <i>Visualization</i> block.";
         info.qmlFile = "qrc:/microscopy/blocks/basic/CellDatabaseBlock.qml";
         info.orderHint = 1000 + 3;
         info.complete<CellDatabaseBlock>();

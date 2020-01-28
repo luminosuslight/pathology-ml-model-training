@@ -25,7 +25,7 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Cell Visualization";
-        info.nameInUi = "Data Visualization";
+        info.nameInUi = "Visualization";
         info.category << "Microscopy";
         info.helpText = "Visualizes the incoming data in a <i>View</i> and "
                         "allows the manual selection of cells.<br><br>"

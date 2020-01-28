@@ -104,7 +104,7 @@ BlockBase {
                 suggestions: ["Cell Database"]
             }
             StretchText {
-                text: "New Database"
+                text: "New Dataset"
             }
         }
 

@@ -29,7 +29,7 @@ public:
                         "multi-channel tissue image) or RGB colored (for example the result of a "
                         "neural network).<br><br>"
                         "You can also drag'n'drop image files onto the application to easily "
-                        "create one of this blocks.";
+                        "create one of these blocks.";
         info.qmlFile = "qrc:/microscopy/blocks/basic/TissueImageBlock.qml";
         info.orderHint = 1000 + 2;
         info.complete<TissueImageBlock>();

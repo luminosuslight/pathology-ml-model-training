@@ -31,7 +31,7 @@ BlockBase {
                 node: block.node("inputNode")
             }
             StretchText {
-                text: "Database"
+                text: "Dataset"
             }
         }
 
