@@ -22,10 +22,16 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Tissue Image";
-        info.category << "Microscopy" << "Basic";
-        info.helpText = "";
+        info.nameInUi = "Image";
+        info.category << "Microscopy";
+        info.helpText = "An image that can be displayed in a view and / or used for calculations.\n\n"
+                        "It can be grayscale (8 or 16bit, for example one channel of a "
+                        "multi-channel tissue image) or RGB colored (for example the result of a "
+                        "neural network).\n\n"
+                        "You can also drag'n'drop image files onto the application to easily "
+                        "create one of this blocks.";
         info.qmlFile = "qrc:/microscopy/blocks/basic/TissueImageBlock.qml";
-        info.orderHint = 1000 + 100 + 2;
+        info.orderHint = 1000 + 2;
         info.complete<TissueImageBlock>();
         return info;
     }

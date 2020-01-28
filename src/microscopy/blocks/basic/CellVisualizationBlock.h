@@ -25,11 +25,19 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Cell Visualization";
-        info.category << "Microscopy" << "Basic";
-        info.helpText = "Shows cells in the selected view.\n\n"
-                        "Output the selected cells.";
+        info.nameInUi = "Data Visualization";
+        info.category << "Microscopy";
+        info.helpText = "Visualizes the incoming data in a <i>View</i> and "
+                        "allows the manual selection of cells.\n\n"
+                        "If the View's dimensions are set to x and y it will display the "
+                        "shape of the incoming cells, otherwise it will draw dots for each "
+                        "data point.\n\n"
+                        "The color can either be the same for each cell ('Solid') or you can choose "
+                        "a cell feature that will be visualizes on a scale between two colors.\n\n"
+                        "Cells can be selected by clicking on them. The set of selected cells can "
+                        "then be used by using the output node.";
         info.qmlFile = "qrc:/microscopy/blocks/basic/CellVisualizationBlock.qml";
-        info.orderHint = 1000 + 100 + 4;
+        info.orderHint = 1000 + 4;
         info.complete<CellVisualizationBlock>();
         return info;
     }

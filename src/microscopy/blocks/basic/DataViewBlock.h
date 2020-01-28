@@ -27,10 +27,13 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Data View";
-        info.category << "Microscopy" << "Basic";
-        info.helpText = "";
+        info.nameInUi = "View";
+        info.category << "Microscopy";
+        info.helpText = "Represents a view on cell data and images. Stores the viewport "
+                        "position, zoom and chosen dimensions.\n\n"
+                        "Add multiple blocks of this type to create a split view.";
         info.qmlFile = "qrc:/microscopy/blocks/basic/DataViewBlock.qml";
-        info.orderHint = 1000 + 100 + 1;
+        info.orderHint = 1000 + 1;
         info.complete<DataViewBlock>();
         return info;
     }

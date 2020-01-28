@@ -24,10 +24,18 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Cell Database";
-        info.category << "Microscopy" << "Basic";
-        info.helpText = "";
+        info.nameInUi = "Dataset";
+        info.category << "Microscopy";
+        info.helpText = "Stores information about cells. By default it only contains their "
+                        "position and shape, but by using other blocks more information per "
+                        "cell can be added. The <i>Cell Area Average</i> block for example adds "
+                        "information about the average pixel color within a cell as a feature.\n\n"
+                        "There can be multiple of this block, for example one containing the ground "
+                        "truth and another containing the result of a new segmentation model.\n\n"
+                        "The information within this block can be displayed in a <i>View</i> "
+                        "by connecting a <i>Data Visualization</i> block.";
         info.qmlFile = "qrc:/microscopy/blocks/basic/CellDatabaseBlock.qml";
-        info.orderHint = 1000 + 100 + 3;
+        info.orderHint = 1000 + 3;
         info.complete<CellDatabaseBlock>();
         return info;
     }
