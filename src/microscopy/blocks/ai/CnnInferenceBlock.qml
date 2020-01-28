@@ -8,7 +8,7 @@ import "qrc:/core/ui/controls"
 BlockBase {
     id: root
     width: 150*dp
-    height: 6*30*dp + 150*dp
+    height: 7*30*dp + 150*dp
 
     function captureInput() {
         inputImageArea.width = inputImageArea.implicitWidth
@@ -82,6 +82,15 @@ BlockBase {
             }
             StretchText {
                 text: "Input 3 (Blue)"
+            }
+        }
+
+        BlockRow {
+            InputNode {
+                node: block.node("area")
+            }
+            StretchText {
+                text: "Area"
             }
         }
 

@@ -77,3 +77,7 @@ void RectangularAreaBlock::update() {
     data.setReferenceObject(m_inputNode->constData().referenceObject());
     m_outputNode->dataWasModifiedByBlock();
 }
+
+QRect RectangularAreaBlock::area() const {
+    return QRectF(m_left, m_top, m_right - m_left, m_bottom - m_top).toRect();
+}

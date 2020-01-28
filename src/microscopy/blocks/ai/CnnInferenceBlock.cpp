@@ -8,6 +8,7 @@
 #include "microscopy/manager/BackendManager.h"
 #include "microscopy/blocks/basic/CellDatabaseBlock.h"
 #include "microscopy/blocks/basic/TissueImageBlock.h"
+#include "microscopy/blocks/selection/RectangularAreaBlock.h"
 #include "microscopy/blocks/ai/CnnModelBlock.h"
 
 #include "core/helpers/utils.h"
@@ -28,6 +29,8 @@ CnnInferenceBlock::CnnInferenceBlock(CoreController* controller, QString uid)
     m_input1Node = createInputNode("input1");
     m_input2Node = createInputNode("input2");
     m_input3Node = createInputNode("input3");
+
+    m_areaNode = createInputNode("area");
 
     connect(m_input1Node, &NodeBase::connectionChanged, this, &CnnInferenceBlock::updateSources);
     connect(m_input2Node, &NodeBase::connectionChanged, this, &CnnInferenceBlock::updateSources);
@@ -83,8 +86,15 @@ void CnnInferenceBlock::doInference(QByteArray imageData) {
                 modelId = modelBlock->modelId();
             }
         }
+        QRect area(0, 0, 0, 0);
+        if (m_areaNode->isConnected()) {
+            RectangularAreaBlock* areaBlock = qobject_cast<RectangularAreaBlock*>(m_areaNode->getConnectedNodes().at(0)->getBlock());
+            if (areaBlock) {
+                area = areaBlock->area();
+            }
+        }
 
-        m_backend->runInference(serverHash, modelId, [this](QCborMap cbor) {
+        m_backend->runInference(serverHash, area, modelId, [this](QCborMap cbor) {
             m_running = false;
 
             QString resultHash = cbor["outputImageHash"_q].toString();

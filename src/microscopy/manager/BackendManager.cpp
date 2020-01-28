@@ -122,9 +122,16 @@ void BackendManager::removeFile(QString hash, std::function<void ()> onSuccess) 
     });
 }
 
-void BackendManager::runInference(QString imageHash, QString modelId, std::function<void (QCborMap)> onSuccess) {
+void BackendManager::runInference(QString imageHash, QRect area, QString modelId, std::function<void (QCborMap)> onSuccess) {
     QNetworkRequest request;
-    request.setUrl(QUrl(m_serverUrl + "/model/" + modelId + "/prediction/" + imageHash));
+    QString url = "%1/model/%2/prediction/%3/%4/%5/%6/%7";
+    url = url.arg(m_serverUrl).arg(modelId).arg(imageHash);
+    if (area.width() > 0 && area.height() > 0) {
+        url = url.arg(area.left()).arg(area.top()).arg(area.right()).arg(area.bottom());
+    } else {
+        url = url.arg(0).arg(0).arg(0).arg(0);
+    }
+    request.setUrl(QUrl(url));
     auto reply = m_nam->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply, onSuccess]() {
         m_inferenceProgress = 0.0;

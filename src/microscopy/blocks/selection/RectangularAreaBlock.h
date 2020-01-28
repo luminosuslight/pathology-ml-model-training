@@ -37,6 +37,8 @@ public slots:
 
     void update();
 
+    QRect area() const;
+
 protected:
     RgbAttribute m_color;
     DoubleAttribute m_left;

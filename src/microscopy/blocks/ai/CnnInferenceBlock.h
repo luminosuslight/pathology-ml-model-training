@@ -4,6 +4,7 @@
 #include "core/block_basics/InOutBlock.h"
 
 #include <QImage>
+#include <QRect>
 
 class BackendManager;
 
@@ -46,6 +47,7 @@ protected:
     QPointer<NodeBase> m_input1Node;
     QPointer<NodeBase> m_input2Node;
     QPointer<NodeBase> m_input3Node;
+    QPointer<NodeBase> m_areaNode;
 
     // runtime:
     VariantListAttribute m_inputSources;

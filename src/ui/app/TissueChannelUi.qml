@@ -11,7 +11,7 @@ Item {
         width: sourceSize.width
         height: sourceSize.height
         autoTransform: true
-        source: "file://" + imageBlock.attr("uiFilePath").val
+        source: imageBlock.attr("uiFilePath").val ? "file://" + imageBlock.attr("uiFilePath").val : ""
         asynchronous: true
         smooth: false
         visible: false

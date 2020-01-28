@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QCborMap>
+#include <QRect>
 
 class CoreController;
 
@@ -32,7 +33,7 @@ public slots:
     void downloadFile(QString hash, std::function<void(double)> onProgress, std::function<void(QByteArray)> onSuccess);
     void removeFile(QString hash, std::function<void(void)> onSuccess);
 
-    void runInference(QString imageHash, QString modelId, std::function<void(QCborMap)> onSuccess);
+    void runInference(QString imageHash, QRect area, QString modelId, std::function<void(QCborMap)> onSuccess);
 
     void train(QString modelName, QString baseModel, int epochs, QString trainHash, QString valHash, std::function<void(QString)> onSuccess);
 
