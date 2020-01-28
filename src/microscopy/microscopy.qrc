@@ -20,7 +20,6 @@
         <file>blocks/ai/TrainingDataBlock.qml</file>
         <file>blocks/ai/TrainingDataPreprocessingBlock.qml</file>
         <file>blocks/basic/CellDatabaseBlock.qml</file>
-        <file>blocks/basic/CellFeatureVisualizationBlock.qml</file>
         <file>blocks/basic/TissueImageBlock.qml</file>
         <file>blocks/basic/DataViewBlock.qml</file>
         <file>blocks/selection/AreaSelectionFreeformBlock.qml</file>

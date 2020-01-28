@@ -21,7 +21,6 @@ HEADERS += \
     $$PWD/blocks/ai/TrainingDataBlock.h \
     $$PWD/blocks/ai/TrainingDataPreprocessingBlock.h \
     $$PWD/blocks/basic/CellDatabaseBlock.h \
-    $$PWD/blocks/basic/CellFeatureVisualizationBlock.h \
     $$PWD/blocks/basic/CellVisualizationBlock.h \
     $$PWD/blocks/basic/DataViewBlock.h \
     $$PWD/blocks/basic/TissueImageBlock.h \
@@ -49,7 +48,6 @@ SOURCES += \
     $$PWD/blocks/ai/TrainingDataBlock.cpp \
     $$PWD/blocks/ai/TrainingDataPreprocessingBlock.cpp \
     $$PWD/blocks/basic/CellDatabaseBlock.cpp \
-    $$PWD/blocks/basic/CellFeatureVisualizationBlock.cpp \
     $$PWD/blocks/basic/CellVisualizationBlock.cpp \
     $$PWD/blocks/basic/DataViewBlock.cpp \
     $$PWD/blocks/basic/TissueImageBlock.cpp \
