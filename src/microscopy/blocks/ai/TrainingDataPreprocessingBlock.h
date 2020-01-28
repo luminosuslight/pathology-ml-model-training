@@ -17,11 +17,12 @@ public:
         static BlockInfo info;
         info.typeName = "Training Data Preprocessing";
         info.nameInUi = "Train Data Preproc.";
-        info.category << "Microscopy" << "AI";
-        info.helpText = "Splits input images in random patches, augments them and stores them "
-                        "in a .cbor file, ready to be used to train a network.";
+        info.category << "Microscopy" << "Neural Network";
+        info.helpText = "Splits input images and their corresponding target images in random "
+                        "patches, augments them and stores them in a .cbor file, ready to be "
+                        "used to train a network.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/TrainingDataPreprocessingBlock.qml";
-        info.orderHint = 1000 + 400 + 4;
+        info.orderHint = 1000 + 200 + 4;
         info.complete<TrainingDataPreprocessingBlock>();
         return info;
     }

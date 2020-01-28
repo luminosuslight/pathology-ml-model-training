@@ -14,12 +14,13 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Find Centers";
-        info.nameInUi = "Find Centers";
-        info.category << "Microscopy" << "AI";
-        info.helpText = "Finds nuclei centers by looking for connected components in the "
-                        "provided image and storing their centroids in the cell database.";
+        info.nameInUi = "Dot Finder";
+        info.category << "Microscopy" << "Actions";
+        info.helpText = "[Not implemented yet]<br>"
+                        "Finds nuclei centers by looking for connected components in the "
+                        "provided image and stores their centroids in connected dataset.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/FindCentersBlock.qml";
-        info.orderHint = 1000 + 400 + 8;
+        info.orderHint = 1000 + 100 + 3;
         info.complete<FindCentersBlock>();
         return info;
     }

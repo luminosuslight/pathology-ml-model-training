@@ -16,10 +16,18 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "CNN Training";
-        info.category << "Microscopy" << "AI";
-        info.helpText = "";
+        info.category << "Microscopy" << "Neural Network";
+        info.helpText = "Allows the training of a new neural network model.<br><br>"
+                        "The epoch count is the maximum before stopping the training process. "
+                        "If the validation loss increases before that, the training is stopped "
+                        "anyway.<br><br>"
+                        "Both, training data and validation data, must be provided. They can be "
+                        "created using the <i>Training Data Preprocessing</i> block."
+                        "If a base model is specified, it will be used to intialize the weights. "
+                        "A new model will be created for the retrained and finetuned model, the "
+                        "existing model will not be changed.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/CnnTrainingBlock.qml";
-        info.orderHint = 1000 + 400 + 2;
+        info.orderHint = 1000 + 200 + 5;
         info.complete<CnnTrainingBlock>();
         return info;
     }

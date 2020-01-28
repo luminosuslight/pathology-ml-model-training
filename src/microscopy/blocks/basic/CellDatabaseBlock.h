@@ -29,9 +29,9 @@ public:
         info.helpText = "Stores information about cells. By default it only contains their "
                         "position and shape, but by using other blocks more information per "
                         "cell can be added. The <i>Cell Area Average</i> block for example adds "
-                        "information about the average pixel color within a cell as a feature.\n\n"
+                        "information about the average pixel color within a cell as a feature.<br><br>"
                         "There can be multiple of this block, for example one containing the ground "
-                        "truth and another containing the result of a new segmentation model.\n\n"
+                        "truth and another containing the result of a new segmentation model.<br><br>"
                         "The information within this block can be displayed in a <i>View</i> "
                         "by connecting a <i>Data Visualization</i> block.";
         info.qmlFile = "qrc:/microscopy/blocks/basic/CellDatabaseBlock.qml";

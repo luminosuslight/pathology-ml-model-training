@@ -24,10 +24,10 @@ public:
         info.typeName = "Tissue Image";
         info.nameInUi = "Image";
         info.category << "Microscopy";
-        info.helpText = "An image that can be displayed in a view and / or used for calculations.\n\n"
+        info.helpText = "An image that can be displayed in a view and / or used for calculations.<br><br>"
                         "It can be grayscale (8 or 16bit, for example one channel of a "
                         "multi-channel tissue image) or RGB colored (for example the result of a "
-                        "neural network).\n\n"
+                        "neural network).<br><br>"
                         "You can also drag'n'drop image files onto the application to easily "
                         "create one of this blocks.";
         info.qmlFile = "qrc:/microscopy/blocks/basic/TissueImageBlock.qml";

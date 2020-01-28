@@ -15,9 +15,11 @@ public:
         static BlockInfo info;
         info.typeName = "Feature Setter";
         info.category << "Microscopy" << "Actions";
-        info.helpText = "Sets a feature for the provided cells to a specific value.";
+        info.helpText = "Sets a certain feature of the incoming cells to a specific value. "
+                        "If the features already exists it will be overwritten, otherwise it "
+                        "will be created.";
         info.qmlFile = "qrc:/microscopy/blocks/actions/FeatureSetterBlock.qml";
-        info.orderHint = 1000 + 300 + 4;
+        info.orderHint = 1000 + 100 + 1;
         info.complete<FeatureSetterBlock>();
         return info;
     }

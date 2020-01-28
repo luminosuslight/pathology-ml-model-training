@@ -46,7 +46,7 @@ BlockBase {
         }
 
         DragArea {
-            text: "Cell Database"
+            text: "Dataset"
         }
     }
 

@@ -14,11 +14,10 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Training Data";
-        info.category << "Microscopy" << "AI";
+        info.category << "Microscopy" << "Neural Network";
         info.helpText = "Points to a .cbor file that contains the input and target images "
                         "to train a CNN.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/TrainingDataBlock.qml";
-        info.orderHint = 1000 + 400 + 5;
         info.visibilityRequirements << VisibilityRequirement::InvisibleBlock;
         info.complete<TrainingDataBlock>();
         return info;

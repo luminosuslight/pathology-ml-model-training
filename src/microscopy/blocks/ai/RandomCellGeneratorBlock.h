@@ -17,10 +17,20 @@ public:
         static BlockInfo info;
         info.typeName = "Random Cell Generator";
         info.nameInUi = "Random Cells";
-        info.category << "Microscopy" << "AI";
-        info.helpText = "";
+        info.category << "Microscopy" << "Neural Network";
+        info.helpText = "Generates random cell positions and shapes and stores them "
+                        "in the connected dataset.<br><br>"
+                        "This can then be rendered using the <i>Cell Renderer</i> and used as "
+                        "artifical training data for a neural network.<br><br>"
+                        "The area property defines a rectangular area where the cells will be "
+                        "created. The density determines the count of the cells in this area. The "
+                        "min and max radius can be specified or alternatively a small example "
+                        "dataset can be provided that will be used to calculate the min and max "
+                        "radius. 'Elongated' specifies how many percent of the cells will be "
+                        "elongated. 'Twins' is the maximum amount of twin cells that will be "
+                        "generated per cell.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/RandomCellGeneratorBlock.qml";
-        info.orderHint = 1000 + 400 + 7;
+        info.orderHint = 1000 + 200 + 2;
         info.complete<RandomCellGeneratorBlock>();
         return info;
     }

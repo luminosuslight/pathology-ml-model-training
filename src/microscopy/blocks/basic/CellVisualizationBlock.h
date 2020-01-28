@@ -28,12 +28,12 @@ public:
         info.nameInUi = "Data Visualization";
         info.category << "Microscopy";
         info.helpText = "Visualizes the incoming data in a <i>View</i> and "
-                        "allows the manual selection of cells.\n\n"
+                        "allows the manual selection of cells.<br><br>"
                         "If the View's dimensions are set to x and y it will display the "
                         "shape of the incoming cells, otherwise it will draw dots for each "
-                        "data point.\n\n"
+                        "data point.<br><br>"
                         "The color can either be the same for each cell ('Solid') or you can choose "
-                        "a cell feature that will be visualizes on a scale between two colors.\n\n"
+                        "a cell feature that will be visualizes on a scale between two colors.<br><br>"
                         "Cells can be selected by clicking on them. The set of selected cells can "
                         "then be used by using the output node.";
         info.qmlFile = "qrc:/microscopy/blocks/basic/CellVisualizationBlock.qml";

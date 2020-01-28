@@ -30,7 +30,7 @@ public:
         info.nameInUi = "View";
         info.category << "Microscopy";
         info.helpText = "Represents a view on cell data and images. Stores the viewport "
-                        "position, zoom and chosen dimensions.\n\n"
+                        "position, zoom and chosen dimensions.<br><br>"
                         "Add multiple blocks of this type to create a split view.";
         info.qmlFile = "qrc:/microscopy/blocks/basic/DataViewBlock.qml";
         info.orderHint = 1000 + 1;

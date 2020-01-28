@@ -18,6 +18,7 @@ public:
         info.helpText = "";
         info.qmlFile = "qrc:/microscopy/blocks/selection/FeatureSelectionBlock.qml";
         info.orderHint = 1000 + 200 + 1;
+        info.visibilityRequirements << VisibilityRequirement::InvisibleBlock;
         info.complete<FeatureSelectionBlock>();
         return info;
     }

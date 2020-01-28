@@ -14,11 +14,15 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Cell Area Average";
-        info.category << "Microscopy" << "AI";
-        info.helpText = "Stores the average value of the pixels in the "
-                        "area of the cell as a new feature.";
+        info.nameInUi = "Cell Pixel Values";
+        info.category << "Microscopy" << "Actions";
+        info.helpText = "Stores the average pixel values in the cell's area or the center "
+                        "pixel value of each cell as a new feature to the connected dataset.<br><br>"
+                        "Helpful to analyse the intensity of cells in different image channels or "
+                        "to analyze the confidence of a neural network by applying it to its "
+                        "result";
         info.qmlFile = "qrc:/microscopy/blocks/ai/CellAreaAverageBlock.qml";
-        info.orderHint = 1000 + 400 + 9;
+        info.orderHint = 1000 + 100 + 2;
         info.complete<CellAreaAverageBlock>();
         return info;
     }

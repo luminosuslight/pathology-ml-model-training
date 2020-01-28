@@ -15,9 +15,12 @@ public:
         static BlockInfo info;
         info.typeName = "Clustering";
         info.category << "Microscopy" << "Actions";
-        info.helpText = "";
+        info.helpText = "[Not implmeneted yet]<br>"
+                        "Applies a clustering algorithm to the incoming cells and the selected "
+                        "features. Stores the resulting clusters as a new feature back into "
+                        "the connected dataset.";
         info.qmlFile = "qrc:/microscopy/blocks/actions/ClusteringBlock.qml";
-        info.orderHint = 1000 + 300 + 2;
+        info.orderHint = 1000 + 100 + 6;
         info.complete<ClusteringBlock>();
         return info;
     }

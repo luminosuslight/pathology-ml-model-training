@@ -14,10 +14,15 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Dimensionality Reduction";
+        info.nameInUi = "Dim. Reduction";
         info.category << "Microscopy" << "Actions";
-        info.helpText = "";
+        info.helpText = "[Not implemented yet]<br>"
+                        "Applies a dimensionality reduction algorithm to the selected features "
+                        "of the incoming cells. Stores the resulting two dimensions back into "
+                        "the connected dataset.<br><br>"
+                        "The result can then either be display or used for clustering.";
         info.qmlFile = "qrc:/microscopy/blocks/actions/DimensionalityReductionBlock.qml";
-        info.orderHint = 1000 + 300 + 1;
+        info.orderHint = 1000 + 100 + 5;
         info.complete<DimensionalityReductionBlock>();
         return info;
     }

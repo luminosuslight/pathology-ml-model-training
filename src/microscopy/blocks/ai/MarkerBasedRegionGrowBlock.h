@@ -19,12 +19,12 @@ public:
         static BlockInfo info;
         info.typeName = "Marker-Based Region Grow";
         info.nameInUi = "Region Grow";
-        info.category << "Microscopy" << "AI";
-        info.helpText = "Applies a region growing algorithm and stores the new area for the selected "
-                        "cells back into the cell database.\n\n"
-                        "If the cells already have an area it is overwritten.";
+        info.category << "Microscopy" << "Actions";
+        info.helpText = "Applies a region growing algorithm and stores the new shape for the "
+                        "selected cells back into the connected dataset.<br><br>"
+                        "If the cells already have a shape it is overwritten.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/MarkerBasedRegionGrowBlock.qml";
-        info.orderHint = 1000 + 400 + 9;
+        info.orderHint = 1000 + 100 + 4;
         info.complete<MarkerBasedRegionGrowBlock>();
         return info;
     }
