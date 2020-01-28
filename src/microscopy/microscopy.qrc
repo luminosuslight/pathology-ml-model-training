@@ -4,13 +4,6 @@
         <file>ui/grayscale16_tissue_shader_alpha_blended.frag</file>
         <file>ui/grayscale16_tissue_shader.frag</file>
         <file>ui/noise_shader.frag</file>
-        <file>blocks/ArtificialTrainingDataBlock.qml</file>
-        <file>blocks/NucleiDataBlock.qml</file>
-        <file>blocks/NucleiPlotBlock.qml</file>
-        <file>blocks/TissueViewerBlock.qml</file>
-        <file>blocks/TissueChannelBlock.qml</file>
-        <file>blocks/NucleiVisualizationBlock.qml</file>
-        <file>blocks/TrainingDataBlock.qml</file>
         <file>ui/rgb8_tissue_shader_alpha_blended.frag</file>
         <file>ui/rgb8_tissue_shader.frag</file>
         <file>blocks/actions/ClusteringBlock.qml</file>

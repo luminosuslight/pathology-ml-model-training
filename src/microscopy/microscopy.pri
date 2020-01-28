@@ -4,13 +4,6 @@
 QML_IMPORT_PATH = ../core/ui
 
 HEADERS += \
-    $$PWD/blocks/ArtificialTrainingDataBlock.h \
-    $$PWD/blocks/NucleiDataBlock.h \
-    $$PWD/blocks/NucleiPlotBlock.h \
-    $$PWD/blocks/NucleiVisualizationBlock.h \
-    $$PWD/blocks/TissueChannelBlock.h \
-    $$PWD/blocks/TissueViewerBlock.h \
-    $$PWD/blocks/TrainingDataOldBlock.h \
     $$PWD/blocks/actions/ClusteringBlock.h \
     $$PWD/blocks/actions/CsvExportBlock.h \
     $$PWD/blocks/actions/DimensionalityReductionBlock.h \
@@ -39,13 +32,6 @@ HEADERS += \
     $$PWD/manager/ViewManager.h
 
 SOURCES += \
-    $$PWD/blocks/ArtificialTrainingDataBlock.cpp \
-    $$PWD/blocks/NucleiDataBlock.cpp \
-    $$PWD/blocks/NucleiPlotBlock.cpp \
-    $$PWD/blocks/NucleiVisualizationBlock.cpp \
-    $$PWD/blocks/TissueChannelBlock.cpp \
-    $$PWD/blocks/TissueViewerBlock.cpp \
-    $$PWD/blocks/TrainingDataOldBlock.cpp \
     $$PWD/blocks/actions/ClusteringBlock.cpp \
     $$PWD/blocks/actions/CsvExportBlock.cpp \
     $$PWD/blocks/actions/DimensionalityReductionBlock.cpp \
