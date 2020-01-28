@@ -32,6 +32,7 @@ public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
 
     StringAttribute& path() { return m_path; }
+    const StringAttribute& path() const { return m_path; }
 
 protected:
     StringAttribute m_path;

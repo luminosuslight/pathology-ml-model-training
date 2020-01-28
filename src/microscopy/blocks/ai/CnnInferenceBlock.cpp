@@ -59,15 +59,8 @@ void CnnInferenceBlock::runInference(QImage image) {
 void CnnInferenceBlock::updateSources() {
     m_inputSources->clear();
     for (NodeBase* node: {m_input1Node, m_input2Node, m_input3Node}) {
-        TissueImageBlock* block = nullptr;
-        if (node->isConnected()) {
-            block = qobject_cast<TissueImageBlock*>(node->getConnectedNodes().first()->getBlock());
-        }
-        if (block) {
-            m_inputSources->append(QVariant::fromValue(block));
-        } else {
-            m_inputSources->append(QVariant());
-        }
+        auto* block = node->getConnectedBlock<TissueImageBlock>();
+        m_inputSources->append(block ? QVariant::fromValue(block) : QVariant());
     }
     m_inputSources.valueChanged();
 }
@@ -81,14 +74,14 @@ void CnnInferenceBlock::doInference(QByteArray imageData) {
 
         QString modelId = "default";
         if (m_inputNode->isConnected()) {
-            CnnModelBlock* modelBlock = qobject_cast<CnnModelBlock*>(m_inputNode->getConnectedNodes().at(0)->getBlock());
+            const auto* modelBlock = m_areaNode->getConnectedBlock<CnnModelBlock>();
             if (modelBlock) {
                 modelId = modelBlock->modelId();
             }
         }
         QRect area(0, 0, 0, 0);
         if (m_areaNode->isConnected()) {
-            RectangularAreaBlock* areaBlock = qobject_cast<RectangularAreaBlock*>(m_areaNode->getConnectedNodes().at(0)->getBlock());
+            const auto* areaBlock = m_areaNode->getConnectedBlock<RectangularAreaBlock>();
             if (areaBlock) {
                 area = areaBlock->area();
             }
@@ -98,7 +91,7 @@ void CnnInferenceBlock::doInference(QByteArray imageData) {
             m_running = false;
 
             QString resultHash = cbor["outputImageHash"_q].toString();
-            TissueImageBlock* block = qobject_cast<TissueImageBlock*>(m_controller->blockManager()->addNewBlock(TissueImageBlock::info().typeName));
+            auto* block = m_controller->blockManager()->addNewBlock<TissueImageBlock>();
             if (!block) {
                 qWarning() << "Could not create TissueImageBlock.";
                 return;
@@ -109,7 +102,7 @@ void CnnInferenceBlock::doInference(QByteArray imageData) {
             block->loadRemoteFile(resultHash);
 
             auto centers = cbor["cellCenters"_q].toMap();
-            CellDatabaseBlock* database = qobject_cast<CellDatabaseBlock*>(m_controller->blockManager()->addNewBlock(CellDatabaseBlock::info().typeName));
+            auto* database = m_controller->blockManager()->addNewBlock<CellDatabaseBlock>();
             if (!database) {
                 qWarning() << "Could not create CellDatabaseBlock.";
                 return;

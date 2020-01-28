@@ -25,13 +25,11 @@ CnnTrainingBlock::CnnTrainingBlock(CoreController* controller, QString uid)
 }
 
 void CnnTrainingBlock::run() {
-    if (!m_inputNode->isConnected()) return;
-    TrainingDataBlock* trainDataBlock = qobject_cast<TrainingDataBlock*>(m_inputNode->getConnectedNodes().at(0)->getBlock());
+    const auto* trainDataBlock = m_inputNode->getConnectedBlock<TrainingDataBlock>();
     if (!trainDataBlock) return;
     QString trainDataPath = m_controller->dao()->withoutFilePrefix(trainDataBlock->path());
     if (trainDataPath.isEmpty()) return;
-    if (!m_valDataNode->isConnected()) return;
-    TrainingDataBlock* validDataBlock = qobject_cast<TrainingDataBlock*>(m_valDataNode->getConnectedNodes().at(0)->getBlock());
+    const auto* validDataBlock = m_valDataNode->getConnectedBlock<TrainingDataBlock>();
     if (!validDataBlock) return;
     QString evalDataPath = m_controller->dao()->withoutFilePrefix(validDataBlock->path());
     if (trainDataPath.isEmpty()) return;
@@ -50,14 +48,14 @@ void CnnTrainingBlock::run() {
 
             QString baseModel = "";
             if (m_baseModelNode->isConnected()) {
-                CnnModelBlock* baseModelBlock = qobject_cast<CnnModelBlock*>(m_baseModelNode->getConnectedNodes().at(0)->getBlock());
+                const auto* baseModelBlock = m_baseModelNode->getConnectedBlock<CnnModelBlock>();
                 if (baseModelBlock) {
                     baseModel = baseModelBlock->modelId();
                 }
             }
 
             m_backend->train(m_modelName, baseModel, m_epochs, trainDataHash, validDataHash, [this](QString modelId) {
-                CnnModelBlock* block = qobject_cast<CnnModelBlock*>(m_controller->blockManager()->addNewBlock(CnnModelBlock::info().typeName));
+                auto* block = m_controller->blockManager()->addNewBlock<CnnModelBlock>();
                 if (!block) {
                     qWarning() << "Could not create CnnModelBlock.";
                     return;

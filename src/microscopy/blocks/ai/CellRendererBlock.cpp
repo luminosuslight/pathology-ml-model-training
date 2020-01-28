@@ -64,7 +64,7 @@ void CellRendererBlock::saveRenderedImage(QImage image, QString type) {
     QString hash = md5(imageData);
     QString path = m_controller->dao()->saveFile("renderedImages", hash + ".png", imageData);
 
-    TissueImageBlock* block = qobject_cast<TissueImageBlock*>(m_controller->blockManager()->addNewBlock(TissueImageBlock::info().typeName));
+    auto* block = m_controller->blockManager()->addNewBlock<TissueImageBlock>();
     if (!block) {
         qWarning() << "Could not create TissueImageBlock.";
         return;

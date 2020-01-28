@@ -22,8 +22,7 @@ void CellAreaAverageBlock::fillInMidpointValues() {
     if (cells.isEmpty()) return;
     CellDatabaseBlock* db = m_inputNode->constData().referenceObject<CellDatabaseBlock>();
     if (!db) return;
-    if (!m_channelNode->isConnected()) return;
-    TissueImageBlock* imageBlock = qobject_cast<TissueImageBlock*>(m_channelNode->getConnectedNodes().at(0)->getBlock());
+    auto* imageBlock = m_channelNode->getConnectedBlock<TissueImageBlock>();
     if (!imageBlock) return;
     imageBlock->preparePixelAccess();
 
@@ -45,8 +44,7 @@ void CellAreaAverageBlock::fillInAverageValues() {
     if (cells.isEmpty()) return;
     CellDatabaseBlock* db = m_inputNode->constData().referenceObject<CellDatabaseBlock>();
     if (!db) return;
-    if (!m_channelNode->isConnected()) return;
-    TissueImageBlock* imageBlock = qobject_cast<TissueImageBlock*>(m_channelNode->getConnectedNodes().at(0)->getBlock());
+    auto* imageBlock = m_channelNode->getConnectedBlock<TissueImageBlock>();
     if (!imageBlock) return;
     imageBlock->preparePixelAccess();
 

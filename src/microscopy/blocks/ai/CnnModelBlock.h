@@ -32,6 +32,7 @@ public slots:
 
     StringAttribute& modelName() { return m_modelName; }
     StringAttribute& modelId() { return m_modelId; }
+    const StringAttribute& modelId() const { return m_modelId; }
 
 protected:
     StringAttribute m_modelName;

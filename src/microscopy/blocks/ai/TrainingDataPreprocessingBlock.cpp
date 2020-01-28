@@ -39,7 +39,7 @@ TrainingDataPreprocessingBlock::TrainingDataPreprocessingBlock(CoreController* c
 }
 
 void TrainingDataPreprocessingBlock::run() {
-    TrainingDataBlock* block = qobject_cast<TrainingDataBlock*>(m_controller->blockManager()->addNewBlock(TrainingDataBlock::info().typeName));
+    auto* block = m_controller->blockManager()->addNewBlock<TrainingDataBlock>();
     if (!block) {
         qWarning() << "Could not create TrainingDataBlock.";
         return;
@@ -50,28 +50,14 @@ void TrainingDataPreprocessingBlock::run() {
 void TrainingDataPreprocessingBlock::updateSources() {
     m_inputSources->clear();
     for (NodeBase* node: {m_input1Node, m_input2Node, m_input3Node}) {
-        TissueImageBlock* block = nullptr;
-        if (node->isConnected()) {
-            block = qobject_cast<TissueImageBlock*>(node->getConnectedNodes().first()->getBlock());
-        }
-        if (block) {
-            m_inputSources->append(QVariant::fromValue(block));
-        } else {
-            m_inputSources->append(QVariant());
-        }
+        auto* block = node->getConnectedBlock<TissueImageBlock>();
+        m_inputSources->append(block ? QVariant::fromValue(block) : QVariant());
     }
     m_inputSources.valueChanged();
     m_targetSources->clear();
     for (NodeBase* node: {m_target1Node, m_target2Node, m_target3Node}) {
-        TissueImageBlock* block = nullptr;
-        if (node->isConnected()) {
-            block = qobject_cast<TissueImageBlock*>(node->getConnectedNodes().first()->getBlock());
-        }
-        if (block) {
-            m_targetSources->append(QVariant::fromValue(block));
-        } else {
-            m_targetSources->append(QVariant());
-        }
+        auto* block = node->getConnectedBlock<TissueImageBlock>();
+        m_targetSources->append(block ? QVariant::fromValue(block) : QVariant());
     }
     m_targetSources.valueChanged();
 }
@@ -113,7 +99,7 @@ void TrainingDataPreprocessingBlock::writeDataFile() {
     m_inputImages.clear();
     m_targetImages.clear();
 
-    TrainingDataBlock* block = qobject_cast<TrainingDataBlock*>(m_controller->blockManager()->addNewBlock(TrainingDataBlock::info().typeName));
+    auto* block = m_controller->blockManager()->addNewBlock<TrainingDataBlock>();
     if (!block) {
         qWarning() << "Could not create TrainingDataBlock.";
         return;

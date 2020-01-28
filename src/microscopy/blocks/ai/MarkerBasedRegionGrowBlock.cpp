@@ -28,8 +28,7 @@ void MarkerBasedRegionGrowBlock::run() {
         if (cells.isEmpty()) return;
         CellDatabaseBlock* db = m_inputNode->constData().referenceObject<CellDatabaseBlock>();
         if (!db) return;
-        if (!m_maskNode->isConnected()) return;
-        TissueImageBlock* imageBlock = qobject_cast<TissueImageBlock*>(m_maskNode->getConnectedNodes().at(0)->getBlock());
+        auto* imageBlock = m_maskNode->getConnectedBlock<TissueImageBlock>();
         if (!imageBlock) return;
         imageBlock->preparePixelAccess();
 

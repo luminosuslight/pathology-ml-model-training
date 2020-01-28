@@ -16,7 +16,7 @@ AutoAiSegmentationBlock::AutoAiSegmentationBlock(CoreController* controller, QSt
 }
 
 void AutoAiSegmentationBlock::run() {
-    CellDatabaseBlock* block = qobject_cast<CellDatabaseBlock*>(m_controller->blockManager()->addNewBlock(CellDatabaseBlock::info().typeName));
+    auto* block = m_controller->blockManager()->addNewBlock<CellDatabaseBlock>();
     if (!block) {
         qWarning() << "Could not create Cell Database Block.";
         return;
