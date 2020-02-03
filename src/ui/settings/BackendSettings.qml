@@ -34,12 +34,13 @@ StretchColumn {
     }
 
     BlockRow {
-        StretchText {
+        Text {
             text: "Status:"
+            width: 70*dp
         }
         StretchText {
-            text: isConnected ? "Connected ✓ " : "Not connected"
-            color: isConnected ? "lightgreen" : "red"
+            text: isConnected ? (backendManager.attr("secureConnection").val ? "Secure Connection ✓" : "Insecure Connection") : "Not connected"
+            color: isConnected ? (backendManager.attr("secureConnection").val ? "lightgreen" : "orange") : "red"
             hAlign: Text.AlignRight
         }
     }
