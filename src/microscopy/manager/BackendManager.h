@@ -45,6 +45,7 @@ protected:
 
     // runtime:
     StringAttribute m_version;
+    BoolAttribute m_secureConnection;
     DoubleAttribute m_inferenceProgress;
     DoubleAttribute m_trainingProgress;
 };

@@ -14,10 +14,33 @@ BackendManager::BackendManager(CoreController* controller)
     , m_nam(m_controller->updateManager()->nam())
     , m_serverUrl(this, "serverUrl", "")
     , m_version(this, "version", "", /*persistent*/ false)
+    , m_secureConnection(this, "secureConnection", false, /*persistent*/ false)
     , m_inferenceProgress(this, "inferenceProgress", 0.0, 0.0, 1.0, /*persistent*/ false)
     , m_trainingProgress(this, "trainingProgress", 0.0, 0.0, 1.0, /*persistent*/ false)
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
+
+    QSslConfiguration sslConfiguration = QSslConfiguration::defaultConfiguration();
+    QFile certFile(QStringLiteral(":/core/data/luminosus_websocket.cert"));
+    certFile.open(QIODevice::ReadOnly);
+    QSslCertificate certificate(&certFile, QSsl::Pem);
+    certFile.close();
+
+    QSslConfiguration clientSslConfiguration = QSslConfiguration::defaultConfiguration();
+    clientSslConfiguration.setCaCertificates({certificate});
+#ifdef Q_OS_MAC
+    clientSslConfiguration.setPeerVerifyMode(QSslSocket::VerifyNone);
+#endif
+    QSslConfiguration::setDefaultConfiguration(clientSslConfiguration);
+
+    connect(m_nam, &QNetworkAccessManager::sslErrors, this, [certificate](QNetworkReply *reply, const QList<QSslError> &errors) {
+        for (auto error: errors) {
+            if (error.error() != QSslError::HostNameMismatch) {
+                qWarning() << "SSL Error:" << error;
+            }
+        }
+        reply->ignoreSslErrors({QSslError(QSslError::HostNameMismatch, certificate)});
+    });
 
     connect(&m_serverUrl, &StringAttribute::valueChanged, this, &BackendManager::updateVersion);
 
@@ -35,6 +58,7 @@ QObject* BackendManager::attr(QString name) {
 
 void BackendManager::updateVersion() {
     m_version = "";
+    m_secureConnection = false;
     QNetworkRequest request;
     request.setUrl(QUrl(m_serverUrl + "/version"));
     auto reply = m_nam->get(request);
@@ -42,7 +66,10 @@ void BackendManager::updateVersion() {
         QString version = reply->readAll();
         if (!version.isEmpty()) {
             m_version = version;
-            qDebug() << "Backend server found, version" << m_version;
+            if (!reply->sslConfiguration().peerCertificate().isNull()) {
+                m_secureConnection = true;
+            }
+            qDebug() << "Backend server found, version" << m_version  << "Secure:" << m_secureConnection;
         } else {
             qDebug() << "No backend server found.";
         }
