@@ -4,3 +4,4 @@ cbor2
 opencv-python
 flask
 fastai>=1.0 
+pyopenssl
