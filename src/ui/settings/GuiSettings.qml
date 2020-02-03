@@ -159,9 +159,13 @@ StretchColumn {
             width: parent.width / 2
             values: [1, 2, 3]
             texts: ["Low", "Mid", "High"]
-            Component.onCompleted: setValue(GRAPHICAL_EFFECTS_LEVEL)
+            property bool initialized: false
+            Component.onCompleted: {
+                setValue(GRAPHICAL_EFFECTS_LEVEL)
+                initialized = true
+            }
             onValueChanged: {
-                if (value !== GRAPHICAL_EFFECTS_LEVEL) {
+                if (initialized && value !== GRAPHICAL_EFFECTS_LEVEL) {
                     guiManager.setGraphicsLevel(value)
                 }
             }
