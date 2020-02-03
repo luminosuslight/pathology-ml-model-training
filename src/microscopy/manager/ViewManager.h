@@ -1,6 +1,7 @@
 #ifndef VIEWMANAGER_H
 #define VIEWMANAGER_H
 
+#include "core/helpers/ObjectWithAttributes.h"
 #include <QObject>
 #include <QQmlApplicationEngine>
 #include <QTimer>
@@ -10,7 +11,7 @@
 class CoreController;
 class DataViewBlock;
 
-class ViewManager : public QObject {
+class ViewManager : public QObject, public ObjectWithAttributes {
 
     Q_OBJECT
 

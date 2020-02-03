@@ -7,6 +7,7 @@
 
 ViewManager::ViewManager(CoreController* controller)
     : QObject(controller)
+    , ObjectWithAttributes(this)
     , m_controller(controller)
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
