@@ -17,17 +17,29 @@ VerticalScrollView {
 		defaultSize: 30*dp
 		// height will be minimum height for all fixed sized items
 
-		HorizontalDivider {  // ------------------------------------------------------
-			visible: false
+        HorizontalDivider {  // ------------------------------------------------------
+            visible: false
         }
 
         SettingsCategory {
-            name: "Websocket"
+            name: "Backend"
 
-            WebsocketSettings {
+            BackendSettings {
                 visible: !parent.collapsed
             }
         }
+
+//		HorizontalDivider {  // ------------------------------------------------------
+//			visible: false
+//        }
+
+//        SettingsCategory {
+//            name: "Websocket"
+
+//            WebsocketSettings {
+//                visible: !parent.collapsed
+//            }
+//        }
 
 		HorizontalDivider {  // ------------------------------------------------------
         }

@@ -24,5 +24,6 @@
         <file>ui/app/RectangularAreaUi.qml</file>
         <file>ui/app/CellVisualizationUi.qml</file>
         <file>ui/app/TissueChannelUi.qml</file>
+        <file>ui/settings/BackendSettings.qml</file>
     </qresource>
 </RCC>

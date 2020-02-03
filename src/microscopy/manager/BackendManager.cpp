@@ -12,15 +12,14 @@ BackendManager::BackendManager(CoreController* controller)
     , ObjectWithAttributes(this)
     , m_controller(controller)
     , m_nam(m_controller->updateManager()->nam())
-    , m_serverUrl(this, "serverUrl", "http://82.207.239.170:5000")  // 2001:16B8:C24A:9900:ADF2:C8E:35FF:198E
-//    , m_serverUrl(this, "serverUrl", "http://192.168.178.83:5000")
+    , m_serverUrl(this, "serverUrl", "")
     , m_version(this, "version", "", /*persistent*/ false)
     , m_inferenceProgress(this, "inferenceProgress", 0.0, 0.0, 1.0, /*persistent*/ false)
     , m_trainingProgress(this, "trainingProgress", 0.0, 0.0, 1.0, /*persistent*/ false)
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 
-    updateVersion();
+    connect(&m_serverUrl, &StringAttribute::valueChanged, this, &BackendManager::updateVersion);
 
     QTimer* updateProgressTimer = new QTimer();
     updateProgressTimer->setInterval(500);
@@ -35,12 +34,14 @@ QObject* BackendManager::attr(QString name) {
 }
 
 void BackendManager::updateVersion() {
+    m_version = "";
     QNetworkRequest request;
     request.setUrl(QUrl(m_serverUrl + "/version"));
     auto reply = m_nam->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
-        m_version = reply->readAll();
-        if (!m_version.getValue().isEmpty()) {
+        QString version = reply->readAll();
+        if (!version.isEmpty()) {
+            m_version = version;
             qDebug() << "Backend server found, version" << m_version;
         } else {
             qDebug() << "No backend server found.";
