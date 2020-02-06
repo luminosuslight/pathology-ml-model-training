@@ -95,6 +95,7 @@ void TissueImageBlock::deletedByUser() {
 }
 
 void TissueImageBlock::preparePixelAccess() {
+    if (!m_image.isNull()) return;
     if (QDir().exists(m_uiFilePath)) {
         m_image = QImage(m_uiFilePath);
     } else {
@@ -191,6 +192,7 @@ void TissueImageBlock::loadLocalFile(QString filePath) {
 
     m_selectedFilePath = filePath;
     m_imageDataPath = filePath;
+    m_image = QImage();
 
     QtConcurrent::run([this](){
         loadImageData();
@@ -199,6 +201,7 @@ void TissueImageBlock::loadLocalFile(QString filePath) {
 
 void TissueImageBlock::loadRemoteFile(QString hash) {
     m_selectedFilePath = "";
+    m_image = QImage();
     m_hashOfSelectedFile = hash;
     download();
 }

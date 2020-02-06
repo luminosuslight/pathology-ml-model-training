@@ -73,6 +73,7 @@ BlockBase {
 
             OutputNode {
                 node: block.node("outputNode")
+                suggestions: ["Marker-Based Region Grow"]
             }
         }
     }
