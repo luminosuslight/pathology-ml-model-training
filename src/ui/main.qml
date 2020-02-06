@@ -5,6 +5,7 @@ import QtQuick.Controls 2.14 as Controls2
 import QtGraphicalEffects 1.0
 import CustomGeometry 1.0
 import CustomElements 1.0
+import CustomStyle 1.0
 import "qrc:/ui/app"
 import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
@@ -502,40 +503,50 @@ Window {
 
     Rectangle {
         property bool toastIsWarning: false
+        property bool open: false
         id: toast
         objectName: "toast"
-        width: Math.max(toastText.implicitWidth + 20*dp, 100*dp)
-        height: Math.max(toastText.implicitHeight + 20*dp, 30*dp)
-        color: toastIsWarning ? Qt.rgba(0.15, 0, 0, 0.8) : Qt.rgba(0, 0, 0, 0.8)
+        width: Math.max(toastText.implicitWidth + 40*dp, 100*dp)
+        height: Math.max(toastText.implicitHeight + 10*dp, 30*dp)
+        color: toastIsWarning ? Qt.rgba(0.3, 0, 0, 1) : "#333"
+        border.width: 1*dp
+        border.color: Qt.lighter(color, 1.8)
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 60*dp
-        opacity: 0
+        anchors.bottomMargin: open ? -1*dp : -height
+
+        Behavior on anchors.bottomMargin {
+            NumberAnimation {
+                duration: 300
+                easing.type: Easing.OutCubic
+            }
+        }
+
+        Text {
+            width: 30*dp
+            horizontalAlignment: Text.AlignHCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            text: toast.toastIsWarning ? "⚠️" :  "ⓘ"
+        }
         Text {
             id: toastText
             text: "Test toast"
             anchors.centerIn: parent
+            anchors.horizontalCenterOffset: 15*dp
             horizontalAlignment: Text.AlignHCenter
         }
-        OpacityAnimator on opacity {
-            id: toastHideAnimation
-            from: 1
-            to: 0
-            running: false
-            duration: 300
-        }
-
         Timer {
             id: hideTimer
             interval: 4000
-            onTriggered: toastHideAnimation.start()
+            onTriggered: toast.open = false
         }
         function displayToast(text, isWarning) {
             if (!controller.anchorManager()) return;
             if (controller.anchorManager().presentationMode && !isWarning) return;
             toastText.text = text
-            toast.opacity = 1
-            toastIsWarning = isWarning
+            toast.open = true
+            toast.toastIsWarning = isWarning
             hideTimer.start()
         }
     }
