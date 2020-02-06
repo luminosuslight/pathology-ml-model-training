@@ -2,6 +2,7 @@
 
 #include "core/CoreController.h"
 #include "core/manager/BlockList.h"
+#include "core/manager/GuiManager.h"
 #include "core/connections/Nodes.h"
 
 #include "microscopy/blocks/basic/CellDatabaseBlock.h"
@@ -36,6 +37,7 @@ void CellAreaAverageBlock::fillInMidpointValues() {
         const double value = double(imageBlock->pixelValue(centerX, centerY) * 255.0f);
         db->setFeature(featureId, nucleusIdx, value);
     }
+    m_controller->guiManager()->showToast("Midpoint values added ✓");
 }
 
 void CellAreaAverageBlock::fillInAverageValues() {
@@ -80,4 +82,5 @@ void CellAreaAverageBlock::fillInAverageValues() {
             db->setFeature(featureId, nucleusIdx, value);
         }
     }
+    m_controller->guiManager()->showToast("Cell area average values added ✓");
 }
