@@ -86,8 +86,9 @@ BlockBase {
         }
 
         BlockRow {
-            InputNode {
+            InputNodeCommand {
                 node: block.node("area")
+                suggestions: ["Rectangular Area"]
             }
             StretchText {
                 text: "Area"

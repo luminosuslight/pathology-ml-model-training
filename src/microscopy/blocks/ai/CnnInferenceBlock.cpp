@@ -74,7 +74,7 @@ void CnnInferenceBlock::doInference(QByteArray imageData) {
 
         QString modelId = "default";
         if (m_inputNode->isConnected()) {
-            const auto* modelBlock = m_areaNode->getConnectedBlock<CnnModelBlock>();
+            const auto* modelBlock = m_inputNode->getConnectedBlock<CnnModelBlock>();
             if (modelBlock) {
                 modelId = modelBlock->modelId();
             }
