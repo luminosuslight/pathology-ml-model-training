@@ -2,6 +2,7 @@
 
 #include "core/CoreController.h"
 #include "core/manager/UpdateManager.h"
+#include "core/manager/GuiManager.h"
 #include "core/helpers/qstring_literal.h"
 
 #include <QQmlApplicationEngine>
@@ -12,7 +13,7 @@ BackendManager::BackendManager(CoreController* controller)
     , ObjectWithAttributes(this)
     , m_controller(controller)
     , m_nam(m_controller->updateManager()->nam())
-    , m_serverUrl(this, "serverUrl", "https://microscopy.dynv6.net:55712")
+    , m_serverUrl(this, "serverUrl", "?")
     , m_version(this, "version", "", /*persistent*/ false)
     , m_secureConnection(this, "secureConnection", false, /*persistent*/ false)
     , m_inferenceProgress(this, "inferenceProgress", 0.0, 0.0, 1.0, /*persistent*/ false)
@@ -42,6 +43,11 @@ BackendManager::BackendManager(CoreController* controller)
         reply->ignoreSslErrors({QSslError(QSslError::HostNameMismatch, certificate)});
     });
 
+    connect(m_controller, &CoreController::managersInitialized, this, [this]() {
+        if (m_serverUrl.getValue() == "?") {
+            m_serverUrl = "https://microscopy.dynv6.net:55712";
+        }
+    });
     connect(&m_serverUrl, &StringAttribute::valueChanged, this, &BackendManager::updateVersion);
 
     QTimer* updateProgressTimer = new QTimer();
@@ -71,7 +77,8 @@ void BackendManager::updateVersion() {
             }
             qDebug() << "Backend server found, version" << m_version  << "Secure:" << m_secureConnection;
         } else {
-            qDebug() << "No backend server found.";
+            qWarning() << "Backend server not available.";
+            m_controller->guiManager()->showToast("Backend server is not available.", true);
         }
         reply->deleteLater();
     });
