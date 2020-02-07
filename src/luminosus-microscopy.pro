@@ -7,7 +7,9 @@ include(qsyncable/qsyncable.pri)
 
 CONFIG += c++17
 
-CONFIG(debug, debug|release) {
+QT += quickcontrols2
+
+CONFIG(debug, debug|release):!emscripten {
     LIBS += -lasan
     QMAKE_CXXFLAGS += -fsanitize=address
 }

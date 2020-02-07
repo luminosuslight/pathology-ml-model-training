@@ -5,7 +5,9 @@
 #include "core/connections/Nodes.h"
 #include "microscopy/blocks/basic/TissueImageBlock.h"
 
+#ifdef THREADS_ENABLED
 #include <QtConcurrent>
+#endif
 
 
 bool MarkerBasedRegionGrowBlock::s_registered = BlockList::getInstance().addBlock(MarkerBasedRegionGrowBlock::info());
@@ -22,6 +24,7 @@ void MarkerBasedRegionGrowBlock::run() {
 
     // TODO: this is dangerous and definitely not thread safe
 
+#ifdef THREADS_ENABLED
     QtConcurrent::run([this]() {
         if (!m_inputNode->isConnected()) return;
         const auto& cells = m_inputNode->constData().ids();
@@ -46,6 +49,7 @@ void MarkerBasedRegionGrowBlock::run() {
         qDebug() << "Watershed" << HighResTime::getElapsedSecAndUpdate(begin);
         m_isRunning = false;
     });
+#endif
 }
 
 int MarkerBasedRegionGrowBlock::regionGrowStep(int watershedStep, const QVector<int>& cells, CellDatabaseBlock* db, TissueImageBlock* imageBlock) {

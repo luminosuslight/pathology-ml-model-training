@@ -7,6 +7,8 @@
 
 #include <QQmlApplicationEngine>
 
+#include <functional>
+
 
 BackendManager::BackendManager(CoreController* controller)
     : QObject(controller)
@@ -21,6 +23,7 @@ BackendManager::BackendManager(CoreController* controller)
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 
+#ifdef SSL_ENABLED
     QSslConfiguration sslConfiguration = QSslConfiguration::defaultConfiguration();
     QFile certFile(QStringLiteral(":/core/data/luminosus_websocket.cert"));
     certFile.open(QIODevice::ReadOnly);
@@ -34,7 +37,7 @@ BackendManager::BackendManager(CoreController* controller)
 #endif
     QSslConfiguration::setDefaultConfiguration(clientSslConfiguration);
 
-    connect(m_nam, &QNetworkAccessManager::sslErrors, this, [certificate](QNetworkReply *reply, const QList<QSslError> &errors) {
+    connect(m_nam, &QNetworkAccessManager::sslErrors, this, [certificate](QNetworkReply* reply, const QList<QSslError>& errors) {
         for (auto error: errors) {
             if (error.error() != QSslError::HostNameMismatch) {
                 qWarning() << "SSL Error:" << error;
@@ -42,6 +45,7 @@ BackendManager::BackendManager(CoreController* controller)
         }
         reply->ignoreSslErrors({QSslError(QSslError::HostNameMismatch, certificate)});
     });
+#endif
 
     connect(m_controller, &CoreController::managersInitialized, this, [this]() {
         if (m_serverUrl.getValue() == "?") {
@@ -72,9 +76,11 @@ void BackendManager::updateVersion() {
         QString version = reply->readAll();
         if (!version.isEmpty()) {
             m_version = version;
+#ifdef SSL_ENABLED
             if (!reply->sslConfiguration().peerCertificate().isNull()) {
                 m_secureConnection = true;
             }
+#endif
             qDebug() << "Backend server found, version" << m_version  << "Secure:" << m_secureConnection;
         } else {
             qWarning() << "Backend server not available.";

@@ -1,3 +1,4 @@
+precision mediump float;
 varying highp vec2 coord;
 uniform sampler2D src;
 uniform lowp float qt_Opacity;

@@ -14,7 +14,10 @@
 #include "core/helpers/utils.h"
 
 #include <QBuffer>
+
+#ifdef THREADS_ENABLED
 #include <QtConcurrent>
+#endif
 
 
 bool CnnInferenceBlock::s_registered = BlockList::getInstance().addBlock(CnnInferenceBlock::info());
@@ -38,6 +41,7 @@ CnnInferenceBlock::CnnInferenceBlock(CoreController* controller, QString uid)
 }
 
 void CnnInferenceBlock::runInference(QImage image) {
+#ifdef THREADS_ENABLED
     QtConcurrent::run([this, image]() {
         qDebug() << "runInference";
         auto begin = HighResTime::now();
@@ -54,6 +58,7 @@ void CnnInferenceBlock::runInference(QImage image) {
                                   Qt::QueuedConnection,
                                   Q_ARG(const QByteArray&, imageData));
     });
+#endif
 }
 
 void CnnInferenceBlock::updateSources() {

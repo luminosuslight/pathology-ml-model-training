@@ -12,8 +12,12 @@
 #include "microscopy/manager/BackendManager.h"
 #include "microscopy/blocks/basic/DataViewBlock.h"
 
-#include <QtConcurrent>
 #include <QCryptographicHash>
+#include <QDir>
+
+#ifdef THREADS_ENABLED
+#include <QtConcurrent>
+#endif
 
 namespace TissueImageBlockConstants {
     static const QString converted16BitSuffix = ".16bit_as_argb.tif";
@@ -194,9 +198,11 @@ void TissueImageBlock::loadLocalFile(QString filePath) {
     m_imageDataPath = filePath;
     m_image = QImage();
 
+#ifdef THREADS_ENABLED
     QtConcurrent::run([this](){
         loadImageData();
     });
+#endif
 }
 
 void TissueImageBlock::loadRemoteFile(QString hash) {
