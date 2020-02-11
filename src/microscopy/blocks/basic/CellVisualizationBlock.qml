@@ -1,5 +1,4 @@
 import QtQuick 2.5
-import QtQuick.Dialogs 1.2
 import CustomElements 1.0
 import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
