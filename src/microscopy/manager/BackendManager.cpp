@@ -148,7 +148,7 @@ void BackendManager::downloadFile(QString hash, std::function<void (double)> onP
     QNetworkRequest request;
     request.setUrl(QUrl(m_serverUrl + "/data/" + hash));
     auto reply = m_nam->get(request);
-    connect(reply, &QNetworkReply::uploadProgress, this, [onProgress](qint64 bytesSent, qint64 bytesTotal) {
+    connect(reply, &QNetworkReply::downloadProgress, this, [onProgress](qint64 bytesSent, qint64 bytesTotal) {
         double progress = bytesTotal ? (double(bytesSent) / bytesTotal) : 0.0;
         onProgress(progress);
     });
