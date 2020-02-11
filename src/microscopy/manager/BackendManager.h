@@ -37,6 +37,8 @@ public slots:
 
     void train(QString modelName, QString baseModel, int epochs, QString trainHash, QString valHash, std::function<void(QString)> onSuccess);
 
+    void loadRemoteProject(QString name);
+
 protected:
     CoreController* const m_controller;
     QNetworkAccessManager* m_nam;

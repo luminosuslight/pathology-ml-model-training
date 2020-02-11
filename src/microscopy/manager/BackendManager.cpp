@@ -3,6 +3,8 @@
 #include "core/CoreController.h"
 #include "core/manager/UpdateManager.h"
 #include "core/manager/GuiManager.h"
+#include "core/manager/FileSystemManager.h"
+#include "core/manager/ProjectManager.h"
 #include "core/helpers/qstring_literal.h"
 
 #include <QQmlApplicationEngine>
@@ -49,7 +51,9 @@ BackendManager::BackendManager(CoreController* controller)
 
     connect(m_controller, &CoreController::managersInitialized, this, [this]() {
         if (m_serverUrl.getValue() == "?") {
-            m_serverUrl = "https://microscopy.dynv6.net:55712";
+            m_serverUrl = "http://microscopy.dynv6.net:55712";
+
+            loadRemoteProject("Example Project");
         }
     });
     connect(&m_serverUrl, &StringAttribute::valueChanged, this, &BackendManager::updateVersion);
@@ -199,5 +203,21 @@ void BackendManager::train(QString modelName, QString baseModel, int epochs, QSt
         QString modelId = QString::fromUtf8(reply->readAll());
         onSuccess(modelId);
         reply->deleteLater();
+    });
+}
+
+void BackendManager::loadRemoteProject(QString name) {
+    qDebug() << "Loading remote project:" << name;
+    QNetworkRequest request;
+    request.setUrl(QUrl(m_serverUrl + "/projects/" + name + ".lpr"));
+    auto reply = m_nam->get(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply, name]() {
+        qDebug() << "Remote project received";
+        m_controller->dao()->saveFile("projects", name + ".lpr", reply->readAll());
+        qDebug() << "Remote project save";
+        QTimer::singleShot(2000, this, [this, name]() {
+            m_controller->projectManager()->setCurrentProject(name);
+            qDebug() << "Remote project loaded";
+        });
     });
 }
