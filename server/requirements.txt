@@ -1,3 +1,4 @@
+werkzeug
 Pillow
 numpy
 cbor2
@@ -5,3 +6,4 @@ opencv-python
 flask
 fastai>=1.0 
 pyopenssl
+flask_cors

@@ -1,6 +1,7 @@
 from flask import Flask
-from flask import request, abort
+from flask import request, abort, send_from_directory
 from werkzeug import serving
+from flask_cors import CORS
 import cbor2
 
 from hashlib import md5
@@ -22,6 +23,7 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 app = Flask(__name__)
+CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
@@ -44,6 +46,16 @@ def secure_filename(filename):
 @app.route('/version', methods=['GET'])
 def version():
     return "1.0", 200
+
+
+@app.route('/wasm/<path:path>', methods=['GET'])
+def wasm(path):
+    return send_from_directory('wasm', path), 200
+
+
+@app.route('/projects/<path:path>', methods=['GET'])
+def projects(path):
+    return send_from_directory('projects', path), 200
 
 
 def store_in_uploads(raw_data):
