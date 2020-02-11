@@ -1,6 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Dialogs 1.2
+import QtQuick.Controls 2.14 as Controls2
 import QtGraphicalEffects 1.0
 import CustomGeometry 1.0
 import CustomElements 1.0
@@ -18,17 +19,46 @@ Window {
 
     // flags: Qt.platform.os === "ios" ? Qt.MaximizeUsingFullscreenGeometryHint : 0
 
-    StretchColumn {
+    Controls2.SplitView {
         id: content
         anchors.fill: parent
+        orientation: Qt.Vertical
         layer.enabled: GRAPHICAL_EFFECTS_LEVEL >= 3
         layer.smooth: false
         layer.mipmap: false
 
+        handle: Rectangle {
+            implicitHeight: 12*dp
+            color: Controls2.SplitHandle.pressed ? Qt.darker("#555", 1.3)
+                                                 : (Controls2.SplitHandle.hovered ? Qt.darker("#555", 1.1) : "#555")
+
+            RectangularGlow {
+                anchors.fill: parent
+                z: -1
+                visible: GRAPHICAL_EFFECTS_LEVEL >=2
+                glowRadius: 6*dp
+                cornerRadius: glowRadius
+                spread: 0.03
+                color: Qt.rgba(0, 0, 0, 0.4)
+            }
+
+            Repeater {
+                model: [-2*dp, 2*dp]
+                Rectangle {
+                    height: 1*dp
+                    width: 20*dp
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.verticalCenterOffset: modelData
+                    color: "#888"
+                }
+            }
+        }
+
         // -------------------------------- Tissue Views ---------------------------------
 
         DataViewLoader {
-            implicitHeight: -1
+            Controls2.SplitView.preferredHeight: 400*dp
             visible: viewManager.visibleViews.length
             z: 2  // draw on top of node view
         }
@@ -37,7 +67,7 @@ Window {
 
         Item {
             id: nodeView
-            implicitHeight: -1
+            Controls2.SplitView.fillHeight: true
             z: 1  // draw below data views, no need for clipping
 
             Loader {
