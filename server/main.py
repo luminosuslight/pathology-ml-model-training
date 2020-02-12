@@ -48,8 +48,8 @@ def version():
     return "1.0", 200
 
 
-@app.route('/wasm/<path:path>', methods=['GET'])
-def wasm(path):
+@app.route('/<path:path>', methods=['GET'])
+def static_wasm_files(path):
     return send_from_directory('wasm', path), 200
 
 
