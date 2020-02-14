@@ -51,7 +51,7 @@ BackendManager::BackendManager(CoreController* controller)
 
     connect(m_controller, &CoreController::managersInitialized, this, [this]() {
         if (m_serverUrl.getValue() == "?") {
-            m_serverUrl = "http://microscopy.dynv6.net:55712";
+            m_serverUrl = "http://www.luminosus.org:55712";
 
             loadRemoteProject("Example Project");
         }
