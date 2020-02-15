@@ -105,6 +105,9 @@ void TissueImageBlock::preparePixelAccess() {
     } else {
         // -> ui file was deleted, try to recreate it:
         loadImageData();
+        if (QDir().exists(m_uiFilePath)) {
+            m_image = QImage(m_uiFilePath);
+        }
     }
 }
 
@@ -244,7 +247,6 @@ void TissueImageBlock::loadImageData() {
             || image.format() == QImage::Format_ARGB32_Premultiplied) {
         // this is either a color image or a grayscale image stored as RGB
         // -> we can show it directly:
-        m_image = image;
         m_uiFilePath = m_controller->dao()->withoutFilePrefix(filePath);
         m_interpretAs16Bit = false;
     } else if (image.format() == QImage::Format_Grayscale16) {
@@ -261,7 +263,7 @@ void TissueImageBlock::loadImageData() {
             // convert the image:
             quint16 minValue = std::numeric_limits<quint16>::max();
             quint16 maxValue = std::numeric_limits<quint16>::min();
-            m_image = QImage(image.size(), QImage::Format_ARGB32_Premultiplied);
+            QImage newImage(image.size(), QImage::Format_ARGB32_Premultiplied);
 
             for (int y = 0; y < image.height(); ++y) {
                 const uchar * s = image.constScanLine(y);
@@ -269,17 +271,15 @@ void TissueImageBlock::loadImageData() {
                     quint16 value = quint16(reinterpret_cast<const quint16 *>(s)[x]);
                     minValue = std::min(minValue, value);
                     maxValue = std::max(maxValue, value);
-                    m_image.setPixel(x, y, qRgba(value / 256, value % 256, 0, 255));
+                    newImage.setPixel(x, y, qRgba(value / 256, value % 256, 0, 255));
                 }
             }
-            m_image.save(m_controller->dao()->withoutFilePrefix(convertedFilePath));
+            newImage.save(m_controller->dao()->withoutFilePrefix(convertedFilePath));
 
             // while we are at it, we will at the same time normalize the image
             // by setting black- and whiteLevel to the min and max value of the image:
             m_blackLevel = std::pow(minValue / double(256*256-1), 0.5);
             m_whiteLevel = maxValue / double(256*256-1);
-        } else {
-            m_image = QImage(m_controller->dao()->withoutFilePrefix(convertedFilePath));
         }
         m_interpretAs16Bit = true;
         m_uiFilePath = m_controller->dao()->withoutFilePrefix(convertedFilePath);
