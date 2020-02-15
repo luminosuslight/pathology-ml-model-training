@@ -242,9 +242,10 @@ BlockBase {
                 anchors.fill: parent
                 InputNodeCommand {
                     node: block.node("inputNode")
+                    suggestions: ["Rectangular Area"]
                 }
                 StretchText {
-                    text: "Area (TODO)"
+                    text: "Area"
                 }
             }
         }

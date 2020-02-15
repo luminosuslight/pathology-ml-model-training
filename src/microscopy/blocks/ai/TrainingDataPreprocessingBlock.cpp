@@ -8,6 +8,7 @@
 
 #include "microscopy/blocks/ai/TrainingDataBlock.h"
 #include "microscopy/blocks/basic/TissueImageBlock.h"
+#include "microscopy/blocks/selection/RectangularAreaBlock.h"
 
 #include <QBuffer>
 #include <QImageWriter>
@@ -97,4 +98,15 @@ void TrainingDataPreprocessingBlock::writeDataFile() {
     }
     block->focus();
     block->path().setValue(filename);
+}
+
+QRect TrainingDataPreprocessingBlock::area() const {
+    QRect area(0, 0, std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
+    if (m_inputNode->isConnected()) {
+        const auto* areaBlock = m_inputNode->getConnectedBlock<RectangularAreaBlock>();
+        if (areaBlock) {
+            area = areaBlock->area();
+        }
+    }
+    return area;
 }

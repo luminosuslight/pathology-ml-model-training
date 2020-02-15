@@ -71,8 +71,8 @@ Rectangle {
         id: shaderEffect
         width: Math.max(image1.width, image2.width, image3.width)
         height: Math.max(image1.height, image2.height, image3.height)
-        x: (width - root.width) * xOffset * -1
-        y: (height - root.height) * yOffset * -1
+        x: (block.area().x + (Math.min(block.area().width, width) - root.width) * xOffset) * -1
+        y: (block.area().y + (Math.min(block.area().height, height) - root.height) * yOffset) * -1
         property variant src1: source1
         property variant src2: source2
         property variant src3: source3

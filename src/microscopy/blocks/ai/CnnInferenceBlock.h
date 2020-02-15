@@ -45,6 +45,8 @@ public slots:
 
     void updateSources();
 
+    QRect area() const;
+
 protected slots:
     void doInference(QByteArray imageData);
 

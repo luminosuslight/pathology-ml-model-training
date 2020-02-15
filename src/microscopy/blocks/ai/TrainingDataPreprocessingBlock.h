@@ -43,6 +43,8 @@ public slots:
 
     void writeDataFile();
 
+    QRect area() const;
+
 protected:
     QPointer<NodeBase> m_input1Node;
     QPointer<NodeBase> m_input2Node;

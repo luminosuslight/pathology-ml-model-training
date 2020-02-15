@@ -70,6 +70,12 @@ void CnnInferenceBlock::updateSources() {
     m_inputSources.valueChanged();
 }
 
+QRect CnnInferenceBlock::area() const {
+    // for compatibility with TrainingDataPreprocessingBlock and shader code
+    QRect area(0, 0, std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
+    return area;
+}
+
 void CnnInferenceBlock::doInference(QByteArray imageData) {
     m_backend->uploadFile(imageData, [this](double progress) {
         m_networkProgress = progress;
