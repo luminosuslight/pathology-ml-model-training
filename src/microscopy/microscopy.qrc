@@ -38,5 +38,6 @@
         <file>blocks/ai/target_preprocessing_shader.frag</file>
         <file>blocks/actions/FeatureSetterBlock.qml</file>
         <file>blocks/ai/ElongatedRenderer.qml</file>
+        <file>blocks/formats/FolderViewBlock.qml</file>
     </qresource>
 </RCC>
