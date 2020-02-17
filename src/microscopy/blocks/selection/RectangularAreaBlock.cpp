@@ -10,12 +10,14 @@
 #include "microscopy/blocks/basic/CellDatabaseBlock.h"
 #include "microscopy/blocks/basic/DataViewBlock.h"
 
+#include <QRandomGenerator>
+
 
 bool RectangularAreaBlock::s_registered = BlockList::getInstance().addBlock(RectangularAreaBlock::info());
 
 RectangularAreaBlock::RectangularAreaBlock(CoreController* controller, QString uid)
     : InOutBlock(controller, uid)
-    , m_color(this, "color", {0, 1, 0})
+    , m_color(this, "color", {QRandomGenerator::global()->generateDouble(), 1, 1})
     , m_left(this, "left", 0.0, -999999, 999999)
     , m_top(this, "top", 0.0, -999999, 999999)
     , m_right(this, "right", 200.0, -999999, 999999)

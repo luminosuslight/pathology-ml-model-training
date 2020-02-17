@@ -47,7 +47,7 @@ public slots:
     QRect area() const;
 
 protected:
-    RgbAttribute m_color;
+    HsvAttribute m_color;
     DoubleAttribute m_left;
     DoubleAttribute m_top;
     DoubleAttribute m_right;

@@ -6,7 +6,7 @@ import "qrc:/core/ui/controls"
 
 BlockBase {
     id: root
-    width: 150*dp
+    width: 130*dp
     height: 3*20*dp + 30*dp
     settingsComponent: settings
 
