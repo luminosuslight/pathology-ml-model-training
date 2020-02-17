@@ -28,7 +28,8 @@ Rectangle {
     }
     ShaderEffectSource {
         id: source1
-        anchors.fill: image1
+        anchors.fill: shaderEffect
+        sourceRect: Qt.rect(0, 0, shaderEffect.width, shaderEffect.height)
         sourceItem: image1
         visible: false  // used by shaderEffect below
     }
@@ -45,7 +46,8 @@ Rectangle {
     }
     ShaderEffectSource {
         id: source2
-        anchors.fill: image2
+        anchors.fill: shaderEffect
+        sourceRect: Qt.rect(0, 0, shaderEffect.width, shaderEffect.height)
         sourceItem: image2
         visible: false  // used by shaderEffect below
     }
@@ -62,7 +64,8 @@ Rectangle {
     }
     ShaderEffectSource {
         id: source3
-        anchors.fill: image3
+        anchors.fill: shaderEffect
+        sourceRect: Qt.rect(0, 0, shaderEffect.width, shaderEffect.height)
         sourceItem: image3
         visible: false  // used by shaderEffect below
     }
