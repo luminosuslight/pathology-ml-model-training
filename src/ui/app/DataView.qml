@@ -75,6 +75,13 @@ Item {
         height: 1
         color: "#333"
         y: view.attr("contentY").val
+
+        Text {
+            text: view.attr("xDimension").val + " →"
+            font.pixelSize: 14*dp
+            color: "#777"
+            x: view.attr("contentX").val + 22*dp
+        }
     }
 
     Rectangle {
@@ -82,6 +89,16 @@ Item {
         height: parent.height
         color: "#333"
         x: view.attr("contentX").val
+
+        Text {
+            text: view.attr("yDimension").val + " →"
+            font.pixelSize: 14*dp
+            color: "#777"
+            x: 3*dp
+            y: view.attr("contentY").val + 8*dp
+            rotation: 90
+            transformOrigin: Item.BottomLeft
+        }
     }
 
     Item {
@@ -151,6 +168,7 @@ Item {
         anchors.leftMargin: 5*dp
         anchors.top: parent.top
         anchors.topMargin: 2*dp
+        visible: view.attr("contentX").val !== 0.0 || view.attr("contentY").val !== 0.0
         color: "#777"
         font.pixelSize: 12*dp
         font.family: "Courier"
