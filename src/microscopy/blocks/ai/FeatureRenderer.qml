@@ -12,6 +12,7 @@ Rectangle {
     anchors.centerIn: parent
 
     property QtObject db: block.dbQml()
+    property int featureId: db.getOrCreateFeatureId(block.attr("feature").val)
 
     Repeater {
         id: cellRepeater
@@ -24,8 +25,8 @@ Rectangle {
             x: db.getFeature(0, idx) - width / 2
             y: db.getFeature(1, idx) - width / 2
             radii: db.getShapeVector(idx)
-            outerColor: "white"
-            innerColor: "white"
+            outerColor: Qt.hsva(0, 0, db.getFeature(featureId, idx) / block.attr("maxFeatureValue").val, 1.0)
+            innerColor: outerColor
         }
     }
 }

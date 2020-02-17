@@ -10,6 +10,15 @@ BlockBase {
     width: 200*dp
     height: mainCol.implicitHeight
 
+    property var renderTypes: {
+        "Mask": "qrc:/microscopy/blocks/ai/MaskRenderer.qml",
+        "Center": "qrc:/microscopy/blocks/ai/CenterRenderer.qml",
+        "Feature": "qrc:/microscopy/blocks/ai/FeatureRenderer.qml",
+        "Elongated": "qrc:/microscopy/blocks/ai/ElongatedRenderer.qml",
+        "DAPI": "qrc:/microscopy/blocks/ai/DapiRenderer.qml",
+        "LAMI": "qrc:/microscopy/blocks/ai/LamiRenderer.qml",
+    }
+
     StretchColumn {
         id: mainCol
         anchors.fill: parent
@@ -23,22 +32,15 @@ BlockBase {
 
             Loader {
                 id: loader
-                source: renderTypeCombobox.values[renderTypeCombobox.currentIndex]
+                source: renderTypes[block.attr("renderType").val]
             }
         }
 
         BlockRow {
-            ComboBox2 {
-                id: renderTypeCombobox
-                texts: ["Mask", "Center", "Type", "Elongated", "DAPI", "LAMI"]
-                values: [
-                    "qrc:/microscopy/blocks/ai/MaskRenderer.qml",
-                    "qrc:/microscopy/blocks/ai/CenterRenderer.qml",
-                    "qrc:/microscopy/blocks/ai/TypeRenderer.qml",
-                    "qrc:/microscopy/blocks/ai/ElongatedRenderer.qml",
-                    "qrc:/microscopy/blocks/ai/DapiRenderer.qml",
-                    "qrc:/microscopy/blocks/ai/LamiRenderer.qml",
-                ]
+            AttributeOptionPicker {
+                attr: block.attr("renderType")
+                optionListGetter: function () { return Object.keys(renderTypes) }
+                openToLeft: true
             }
 
             ButtonBottomLine {
@@ -54,16 +56,26 @@ BlockBase {
                 text: "Save ▻"
                 allUpperCase: false
                 onPress: {
+                    block.updateFeatureMax()
                     loader.item.grabToImage(function(result) {
-                        block.saveRenderedImage(result.image, renderTypeCombobox.texts[renderTypeCombobox.currentIndex])
+                        block.saveRenderedImage(result.image, block.attr("renderType").val)
                     });
                 }
             }
         }
 
         BlockRow {
-            visible: (renderTypeCombobox.texts[renderTypeCombobox.currentIndex] === "DAPI"
-                      || renderTypeCombobox.texts[renderTypeCombobox.currentIndex] === "LAMI")
+            visible: (block.attr("renderType").val === "Feature")
+            AttributeOptionPicker {
+                attr: block.attr("feature")
+                optionListGetter: function () { return block.availableFeatures() }
+            }
+            onVisibleChanged: block.positionChanged()
+        }
+
+        BlockRow {
+            visible: (block.attr("renderType").val === "DAPI"
+                      || block.attr("renderType").val === "LAMI")
             leftMargin: 5*dp
             StretchText {
                 text: "Bubbles:"
@@ -76,8 +88,8 @@ BlockBase {
         }
 
         BlockRow {
-            visible: (renderTypeCombobox.texts[renderTypeCombobox.currentIndex] === "DAPI"
-                      || renderTypeCombobox.texts[renderTypeCombobox.currentIndex] === "LAMI")
+            visible: (block.attr("renderType").val === "DAPI"
+                      || block.attr("renderType").val === "LAMI")
             leftMargin: 5*dp
             StretchText {
                 text: "Small Noise:"

@@ -8,6 +8,7 @@
 
 #include "microscopy/blocks/basic/TissueImageBlock.h"
 #include "microscopy/blocks/basic/CellDatabaseBlock.h"
+#include "microscopy/manager/ViewManager.h"
 
 #include <QBuffer>
 #include <QCryptographicHash>
@@ -23,9 +24,13 @@ bool CellRendererBlock::s_registered = BlockList::getInstance().addBlock(CellRen
 CellRendererBlock::CellRendererBlock(CoreController* controller, QString uid)
     : OneInputBlock(controller, uid)
     , m_engine(m_rd())
+    , m_renderType(this, "renderType", "DAPI")
     , m_largeNoise(this, "largeNoise", true)
     , m_smallNoise(this, "smallNoise", true)
+    , m_feature(this, "feature", "x")
+    , m_maxFeatureValue(this, "maxFeatureValue", 1.0, 0.000001, std::numeric_limits<double>::max(), /*persistent*/ false)
 {
+    connect(&m_feature, &StringAttribute::valueChanged, this, &CellRendererBlock::updateFeatureMax);
 }
 
 double CellRendererBlock::areaSize() const {
@@ -92,4 +97,25 @@ QVector<double> CellRendererBlock::randomRadii(float ellipseFactor, float varian
         radii[j] = double(ellipseRadius * sizeVarianceDist(m_engine));
     }
     return radii;
+}
+
+QStringList CellRendererBlock::availableFeatures() const {
+    QStringList features = m_controller->manager<ViewManager>("viewManager")->availableFeatures();
+    if (!features.contains(m_feature)) {
+        features << m_feature;
+    }
+    return features;
+}
+
+void CellRendererBlock::updateFeatureMax() {
+    if (m_feature.getValue().isEmpty()) return;
+    CellDatabaseBlock* db = m_inputNode->constData().referenceObject<CellDatabaseBlock>();
+    if (!db) return;
+
+    const int featureId = db->getOrCreateFeatureId(m_feature);
+    m_maxFeatureValue = db->featureMax(featureId);
+    if (m_maxFeatureValue == 0.0) {
+        m_maxFeatureValue = 1.0;
+    }
+    qDebug() << m_feature << m_maxFeatureValue;
 }

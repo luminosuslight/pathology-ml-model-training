@@ -42,13 +42,20 @@ public slots:
 
     QVector<double> randomRadii(float ellipseFactor, float variance) const;
 
+    QStringList availableFeatures() const;
+    void updateFeatureMax();
+
 protected:
     std::random_device m_rd;
     mutable std::default_random_engine m_engine;
 
+    StringAttribute m_renderType;
     BoolAttribute m_largeNoise;
     BoolAttribute m_smallNoise;
+    StringAttribute m_feature;
 
+    // runtime:
+    DoubleAttribute m_maxFeatureValue;
 };
 
 #endif // CELLRENDERERBLOCK_H

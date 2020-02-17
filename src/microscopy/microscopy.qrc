@@ -30,7 +30,7 @@
         <file>blocks/ai/DapiRenderer.qml</file>
         <file>blocks/ai/MaskRenderer.qml</file>
         <file>blocks/ai/CenterRenderer.qml</file>
-        <file>blocks/ai/TypeRenderer.qml</file>
+        <file>blocks/ai/FeatureRenderer.qml</file>
         <file>blocks/ai/LamiRenderer.qml</file>
         <file>blocks/ai/InputDataPreprocessing.qml</file>
         <file>blocks/ai/TargetDataPreprocessing.qml</file>
