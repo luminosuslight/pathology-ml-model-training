@@ -7,7 +7,8 @@ import CustomElements 1.0
 import "qrc:/core/ui/controls"
 import "qrc:/core/ui/items"
 
-Item {
+MouseArea {
+    cursorShape: Qt.ArrowCursor
 
     Rectangle {  // left border
         width: 1
