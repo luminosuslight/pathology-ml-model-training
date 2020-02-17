@@ -157,7 +157,7 @@ void CellVisualizationBlock::clearSelection() {
 QStringList CellVisualizationBlock::availableFeatures() const {
     QStringList features = m_controller->manager<ViewManager>("viewManager")->availableFeatures();
     if (!features.contains("Solid")) {
-        features << "Solid";
+        features.prepend("Solid");
     }
     if (!features.contains(m_colorFeature.getValue())) {
         features << m_colorFeature.getValue();

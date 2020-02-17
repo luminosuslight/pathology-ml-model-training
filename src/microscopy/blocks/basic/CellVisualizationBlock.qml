@@ -14,10 +14,10 @@ BlockBase {
         width: parent.width
 
         BlockRow {
-            AttributeCombobox {
+            AttributeOptionPicker {
                 attr: block.attr("colorFeature")
-                values: block.availableFeatures()
-                onClick: values = block.availableFeatures()
+                optionListGetter: function () { return block.availableFeatures() }
+                openToLeft: true
             }
 
             AttributeDotColorPicker {

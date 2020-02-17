@@ -6,25 +6,12 @@ import "qrc:/core/ui/controls"
 
 BlockBase {
     id: root
-    width: 120*dp
-    height: 8*30*dp
+    width: 160*dp
+    height: 4*30*dp
+    settingsComponent: settings
 
     StretchColumn {
         anchors.fill: parent
-
-        BlockRow {
-            leftMargin: 5*dp
-            StretchText {
-                text: "Cell Sets: " + block.visualizeBlocks.length
-            }
-        }
-
-        BlockRow {
-            leftMargin: 5*dp
-            StretchText {
-                text: "Channels: " + block.channelBlocks.length
-            }
-        }
 
         BlockRow {
             leftMargin: 5*dp
@@ -32,10 +19,9 @@ BlockBase {
                 width: 30*dp
                 text: "x:"
             }
-            AttributeCombobox {
+            AttributeOptionPicker {
                 attr: block.attr("xDimension")
-                values: block.availableFeatures()
-                onClick: values = block.availableFeatures()
+                optionListGetter: function () { return block.availableFeatures() }
             }
         }
 
@@ -45,34 +31,9 @@ BlockBase {
                 width: 30*dp
                 text: "y:"
             }
-            AttributeCombobox {
+            AttributeOptionPicker {
                 attr: block.attr("yDimension")
-                values: block.availableFeatures()
-                onClick: values = block.availableFeatures()
-            }
-        }
-
-        BlockRow {
-            leftMargin: 5*dp
-            Text {
-                width: 40*dp
-                text: "x S.:"
-            }
-            AttributeNumericInput {
-                attr: block.attr("xScale")
-                decimals: 1
-            }
-        }
-
-        BlockRow {
-            leftMargin: 5*dp
-            Text {
-                width: 40*dp
-                text: "y S.:"
-            }
-            AttributeNumericInput {
-                attr: block.attr("yScale")
-                decimals: 1
+                optionListGetter: function () { return block.availableFeatures() }
             }
         }
 
@@ -89,6 +50,63 @@ BlockBase {
 
         DragArea {
             text: "View"
+        }
+    }
+
+    // -------------------------- Settings ----------------------------
+
+    Component {
+        id: settings
+        StretchColumn {
+            leftMargin: 15*dp
+            rightMargin: 15*dp
+            defaultSize: 30*dp
+
+            BlockRow {
+                StretchText {
+                    text: "Cell Sets:"
+                }
+                Text {
+                    text: block.visualizeBlocks.length
+                    horizontalAlignment: Text.AlignRight
+                }
+            }
+
+            BlockRow {
+                StretchText {
+                    text: "Channels:"
+                }
+                Text {
+                    text: block.channelBlocks.length
+                    horizontalAlignment: Text.AlignRight
+                }
+            }
+
+            BlockRow {
+                StretchText {
+                    text: "x Scale:"
+                }
+                AttributeNumericInput {
+                    width: 50*dp
+                    implicitWidth: 0
+                    attr: block.attr("xScale")
+                    decimals: 1
+                    suffix: "x"
+                }
+            }
+
+            BlockRow {
+                StretchText {
+                    text: "y Scale:"
+                }
+                AttributeNumericInput {
+                    width: 50*dp
+                    implicitWidth: 0
+                    attr: block.attr("yScale")
+                    decimals: 1
+                    suffix: "x"
+                }
+            }
         }
     }
 }
