@@ -51,6 +51,7 @@ public slots:
 
     void preparePixelAccess();
     float pixelValue(int x, int y) const;
+    float pixelValueColorMultiplied(int x, int y, float r, float g, float b) const;
 
     QString filePath() const { return m_selectedFilePath; }
     bool interactiveWatershed() const { return m_interactiveWatershed; }

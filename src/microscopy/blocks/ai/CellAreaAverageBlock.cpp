@@ -26,6 +26,10 @@ void CellAreaAverageBlock::fillInMidpointValues() {
     auto* imageBlock = m_channelNode->getConnectedBlock<TissueImageBlock>();
     if (!imageBlock) return;
     imageBlock->preparePixelAccess();
+    const QColor color = static_cast<HsvAttribute*>(imageBlock->attr("color"))->getQColor();
+    const float r = float(color.redF());
+    const float g = float(color.greenF());
+    const float b = float(color.blueF());
 
     const StringAttribute* label = qobject_cast<StringAttribute*>(imageBlock->attr("label"));
     const QString featureName = label->getValue().isEmpty() ? imageBlock->filename() : label->getValue();
@@ -34,7 +38,7 @@ void CellAreaAverageBlock::fillInMidpointValues() {
     for (int nucleusIdx: cells) {
         const int centerX = int(db->getFeature(CellDatabaseConstants::X_POS, nucleusIdx));
         const int centerY = int(db->getFeature(CellDatabaseConstants::Y_POS, nucleusIdx));
-        const double value = double(imageBlock->pixelValue(centerX, centerY) * 255.0f);
+        const double value = double(imageBlock->pixelValueColorMultiplied(centerX, centerY, r, g, b) * 255.0f);
         db->setFeature(featureId, nucleusIdx, value);
     }
     m_controller->guiManager()->showToast("Midpoint values added ✓");
@@ -49,6 +53,10 @@ void CellAreaAverageBlock::fillInAverageValues() {
     auto* imageBlock = m_channelNode->getConnectedBlock<TissueImageBlock>();
     if (!imageBlock) return;
     imageBlock->preparePixelAccess();
+    const QColor color = static_cast<HsvAttribute*>(imageBlock->attr("color"))->getQColor();
+    const float r = float(color.redF());
+    const float g = float(color.greenF());
+    const float b = float(color.blueF());
 
     const int radiiCount = CellDatabaseConstants::RADII_COUNT;
     const StringAttribute* label = qobject_cast<StringAttribute*>(imageBlock->attr("label"));
@@ -72,7 +80,7 @@ void CellAreaAverageBlock::fillInAverageValues() {
                 const int radiusLength = int(shape[radiusIdx] * radius);
                 const int distanceFromPointToCenter = int(std::sqrt(std::pow(dx, 2) + std::pow(dy, 2)));
                 if (radiusLength >= distanceFromPointToCenter) {
-                    valueSum += imageBlock->pixelValue(x, y);
+                    valueSum += imageBlock->pixelValueColorMultiplied(x, y, r, g, b);
                     pixelCount++;
                 }
             }

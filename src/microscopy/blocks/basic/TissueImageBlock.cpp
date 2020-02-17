@@ -133,6 +133,28 @@ float TissueImageBlock::pixelValue(int x, int y) const {
     return std::max(std::min((value - blackLevel) / (float(m_whiteLevel) - blackLevel), 1.0f), 0.0f);
 }
 
+float TissueImageBlock::pixelValueColorMultiplied(int x, int y, float r, float g, float b) const {
+    float value = 0.0f;
+    if (m_image.format() == QImage::Format_Grayscale16) {
+        if (x < 0 || x >= m_image.width() || y < 0 || y >= m_image.height()) {
+            return 0.0f;
+        }
+        const uchar * s = m_image.constScanLine(y);
+        quint16 v = reinterpret_cast<const quint16 *>(s)[x];
+        value = v / float(256*256 - 1);
+    } else if (m_interpretAs16Bit) {
+        // red channel contains MSB part of 16 bit value and green channel LSB part
+        QRgb rgb = m_image.pixel(x, y);
+        value = float(qRed(rgb) * 256 + qGreen(rgb)) / float(256 * 256 - 1);
+    } else {
+        QRgb rgb = m_image.pixel(x, y);
+        value = std::max(std::max(qRed(rgb) * r, qGreen(rgb) * b), qBlue(rgb) * b) / 255.0f;
+    }
+    float blackLevel = float(std::pow(m_blackLevel, 2.0));
+    // TODO: apply gamma?
+    return std::max(std::min((value - blackLevel) / (float(m_whiteLevel) - blackLevel), 1.0f), 0.0f);
+}
+
 bool TissueImageBlock::isAssignedTo(QString uid) const {
     return m_assignedViews->contains(uid);
 }
