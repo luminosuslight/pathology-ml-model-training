@@ -84,7 +84,7 @@ def get_cell_centers(image_buffer):
     connectivity = 8  # You need to choose 4 or 8 for connectivity type
     num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(center_binary, connectivity, cv2.CV_32S)
     print("Nucleus Count: ", num_labels)
-    nuclei_data = {'xPositions': tuple(centroids[:, 0]), 'yPositions': tuple(centroids[:, 1])}
+    nuclei_data = {'xPositions': tuple(centroids[1:, 0]), 'yPositions': tuple(centroids[1:, 1])}
     return nuclei_data
 
 
