@@ -31,8 +31,29 @@ signals:
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
 
+    void update();
+
 protected:
     QPointer<NodeBase> m_groundTruthNode;
+    QPointer<NodeBase> m_truePositivesNode;
+    QPointer<NodeBase> m_falseNegativesNode;
+    QPointer<NodeBase> m_falsePositivesNode;
+
+    QTimer m_updateTimer;
+
+    IntegerAttribute m_instanceCountDifference;
+    IntegerAttribute m_truePositives;
+    IntegerAttribute m_falsePositives;
+    IntegerAttribute m_falseNegatives;
+
+    DoubleAttribute m_accuracy;
+    DoubleAttribute m_precision;
+    DoubleAttribute m_recall;
+    DoubleAttribute m_f1;
+
+    DoubleAttribute m_meanSquarePositionError;
+    DoubleAttribute m_meanSquareRadiusError;
+    DoubleAttribute m_meanSquareShapeError;
 
 };
 

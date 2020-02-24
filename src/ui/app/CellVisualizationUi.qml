@@ -5,6 +5,8 @@ import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
 
 Item {
+    property bool showDotsAdditionally: view.attr("xScale").val > 2.5
+
     ColoredPoints {
         width: 1
         height: 1
@@ -69,7 +71,7 @@ Item {
                     height: width
                     anchors.centerIn: parent
                     color: visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
-                    visible: visBlock.database.getFeature(2, idx) < 1.0
+                    visible: visBlock.database.getFeature(2, idx) < 1.0 || showDotsAdditionally
                 }
 
                 CustomTouchArea {
