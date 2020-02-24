@@ -54,8 +54,6 @@ void CellDatabaseComparison::update() {
     CellDatabaseBlock* candidateDb = m_inputNode->constData().referenceObject<CellDatabaseBlock>();
     if (!candidateDb) return;
 
-    const auto begin = HighResTime::now();
-
     m_instanceCountDifference = candidateCells.size() - gtCells.size();
 
     QVector<int> truePositives;
@@ -141,6 +139,4 @@ void CellDatabaseComparison::update() {
     m_falsePositivesNode->data().setReferenceObject(candidateDb);
     m_falsePositivesNode->data().setIds(falsePositives);
     m_falsePositivesNode->dataWasModifiedByBlock();
-
-    qDebug() << "Benchmark Runtime:" << HighResTime::elapsedSecSince(begin);
 }
