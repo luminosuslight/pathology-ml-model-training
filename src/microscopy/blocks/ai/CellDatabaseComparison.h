@@ -3,6 +3,8 @@
 
 #include "core/block_basics/OneInputBlock.h"
 
+#include <QMutex>
+
 
 class CellDatabaseComparison : public OneInputBlock {
 
@@ -55,6 +57,7 @@ protected:
     DoubleAttribute m_meanSquareRadiusError;
     DoubleAttribute m_meanSquareShapeError;
 
+    QMutex m_updateMutex;
 };
 
 #endif // CELLDATABASECOMPARISON_H

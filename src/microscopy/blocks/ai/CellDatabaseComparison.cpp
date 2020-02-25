@@ -30,10 +30,13 @@ CellDatabaseComparison::CellDatabaseComparison(CoreController* controller, QStri
     m_falsePositivesNode = createOutputNode("falsePositives");
 
     m_updateTimer.setSingleShot(true);
-    m_updateTimer.setInterval(100);
-    connect(&m_updateTimer, &QTimer::timeout, this, [this](){
+    m_updateTimer.setInterval(200);
+    connect(&m_updateTimer, &QTimer::timeout, this, [this]() {
+        const bool locked = m_updateMutex.tryLock();
+        if (!locked) return;
         QtConcurrent::run([this](){
             update();
+            m_updateMutex.unlock();
         });
     });
 
@@ -46,11 +49,11 @@ CellDatabaseComparison::CellDatabaseComparison(CoreController* controller, QStri
 void CellDatabaseComparison::update() {
     if (!m_groundTruthNode->isConnected() || !m_inputNode->isConnected()) return;
 
-    const auto& gtCells = m_groundTruthNode->constData().ids();
+    const QVector<int> gtCells = m_groundTruthNode->constData().ids();
     CellDatabaseBlock* gtDb = m_groundTruthNode->constData().referenceObject<CellDatabaseBlock>();
     if (!gtDb) return;
 
-    const auto& candidateCells = m_inputNode->constData().ids();
+    const QVector<int> candidateCells = m_inputNode->constData().ids();
     CellDatabaseBlock* candidateDb = m_inputNode->constData().referenceObject<CellDatabaseBlock>();
     if (!candidateDb) return;
 
