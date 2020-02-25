@@ -355,8 +355,11 @@ void CellDatabaseBlock::setShapePoint(int index, double dx, double dy) {
     // dx and dy is distance from center in pixels
     auto& shape = m_shapes[index];
     const int radiiCount = CellDatabaseConstants::RADII_COUNT;
-    const double radius = getFeature(CellDatabaseConstants::RADIUS, index);
-
+    double radius = getFeature(CellDatabaseConstants::RADIUS, index);
+    if (radius <= 0.0) {
+        radius = 20;
+        setFeature(CellDatabaseConstants::RADIUS, index, radius);
+    }
     // angle from center to point, between 0 and 2*pi
     const float angle = realMod(float(std::atan2(dx, dy)), float(2*M_PI));
     const std::size_t radiusIdx = int(std::round((angle / float(2*M_PI)) * radiiCount)) % radiiCount;

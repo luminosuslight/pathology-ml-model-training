@@ -92,6 +92,7 @@ Item {
                     onTouchMove: {
                         if (!touch.isAtOrigin()) {
                             visBlock.database.setShapePoint(idx, touch.itemX - width / 2, touch.itemY - height / 2)
+                            cellOutline.width = visBlock.database.getFeature(2, idx) * 2
                             cellOutline.radii = visBlock.database.getShapeVector(idx)
                             shapeChanged = true
                         }
