@@ -82,6 +82,25 @@ Item {
                         if (currentMode === DataView.Mode.View
                                 || touch.modifiers & Qt.ControlModifier) {
                             touch.accepted = false
+                        } else {
+                            touch.accepted = true
+                        }
+                    }
+
+                    property bool shapeChanged: false
+
+                    onTouchMove: {
+                        if (!touch.isAtOrigin()) {
+                            visBlock.database.setShapePoint(idx, touch.itemX - width / 2, touch.itemY - height / 2)
+                            cellOutline.radii = visBlock.database.getShapeVector(idx)
+                            shapeChanged = true
+                        }
+                    }
+
+                    onTouchUp: {
+                        if (shapeChanged) {
+                            visBlock.database.finishShapeModification(idx)
+                            shapeChanged = false
                         }
                     }
 

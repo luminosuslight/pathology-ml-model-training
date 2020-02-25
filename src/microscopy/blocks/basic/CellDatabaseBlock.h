@@ -79,6 +79,9 @@ public slots:
     const CellShape& getShape(int index) const;
     QVector<double> getShapeVector(int index) const;
 
+    void setShapePoint(int index, double dx, double dy);
+    void finishShapeModification(int index);
+
     int getCount() const { return m_count; }
 
     void dataWasModified();

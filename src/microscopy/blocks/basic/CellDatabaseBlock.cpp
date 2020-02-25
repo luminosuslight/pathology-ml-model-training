@@ -351,6 +351,33 @@ QVector<double> CellDatabaseBlock::getShapeVector(int index) const {
     return QVector<double>(shape.begin(), shape.end());
 }
 
+void CellDatabaseBlock::setShapePoint(int index, double dx, double dy) {
+    // dx and dy is distance from center in pixels
+    auto& shape = m_shapes[index];
+    const int radiiCount = CellDatabaseConstants::RADII_COUNT;
+    const double radius = getFeature(CellDatabaseConstants::RADIUS, index);
+
+    // angle from center to point, between 0 and 2*pi
+    const float angle = realMod(float(std::atan2(dx, dy)), float(2*M_PI));
+    const std::size_t radiusIdx = int(std::round((angle / float(2*M_PI)) * radiiCount)) % radiiCount;
+    const double distance = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
+    shape[radiusIdx] = float(distance / radius);
+}
+
+void CellDatabaseBlock::finishShapeModification(int index) {
+    auto& shape = m_shapes[index];
+    // normalize shape values to 0.0-1.0:
+    const float maxShapeValue = *std::max_element(shape.begin(), shape.end());
+    const double radius = getFeature(CellDatabaseConstants::RADIUS, index);
+    setFeature(CellDatabaseConstants::RADIUS, index, radius * double(maxShapeValue));
+    if (maxShapeValue > 0.0f) {
+        for (std::size_t i = 0; i < shape.size(); ++i) {
+            shape[i] = shape[i] / maxShapeValue;
+        }
+    }
+    emit existingDataChanged();
+}
+
 void CellDatabaseBlock::dataWasModified() {
     m_outputNode->dataWasModifiedByBlock();
 }
