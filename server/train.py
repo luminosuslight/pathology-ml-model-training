@@ -81,24 +81,28 @@ def train_unet(path, base_model_weights, epochs):
         with open(base_model_weights, 'rb') as file:
             learn.load(file)
 
-    print(learn.summary())
+    print(learn.summary())  # TODO: save this to a file
 
     learning_rate = 1e-3
     print("Training...")
     # at this point, the early layers are frozen and only the last layers are trained
     learn.fit_one_cycle(epochs, learning_rate)
+    learn.recorder.plot(return_fig=True).savefig(path/'lr_vs_loss.png')
+    learn.recorder.plot_losses(return_fig=True).savefig(path/'losses.png')
+    learn.recorder.plot_lr(return_fig=True).savefig(path/'learning_rate.png')
+    #learn.recorder.plot_metrics(return_fig=True).savefig(path/'metrics.png')
     print("Finetuning...")
     # here we will also train the first layers with a small learning rate to finetune the result
     learn.unfreeze()
     learn.fit_one_cycle(1, max_lr=slice(1e-6, 1e-4))
+    learn.recorder.plot(return_fig=True).savefig(path/'lr_vs_loss_fine.png')
+    learn.recorder.plot_losses(return_fig=True).savefig(path/'losses_fine.png')
+    learn.recorder.plot_lr(return_fig=True).savefig(path/'learning_rate_fine.png')
+    #learn.recorder.plot_metrics(return_fig=True).savefig(path/'metrics_fine.png')
     print("Saving...")
     with open(path/'trained_model.pth', 'wb') as file:
         learn.save(file)  # save for later finetuning
     learn.export()  # export for simple inference
-    learn.recorder.plot().savefig(path/'lr_vs_loss.png')
-    learn.recorder.plot_losses().savefig(path/'losses.png')
-    learn.recorder.plot_lr().savefig(path/'learning_rate.png')
-    learn.recorder.plot_metrics().savefig(path/'metrics.png')
     training_tracker.progress = 0.0
     print("Finished training and exported the model.")
 
