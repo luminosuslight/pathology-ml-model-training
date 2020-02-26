@@ -175,7 +175,7 @@ def predict(model_id, img_hash, left, top, right, bottom):
 
 @app.route('/inference_progress', methods=['GET'])
 def inference_progress():
-    return str(default_network.progress), 200
+    return str(NeuralNetwork.progress), 200
 
 # @app.route('/model/train/<data_hash>', methods=['GET'])
 # def train(data_hash):

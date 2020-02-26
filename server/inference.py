@@ -15,20 +15,20 @@ print("OpenCV:", cv2.__version__)
 
 
 class NeuralNetwork(object):
+    progress = 0.0
 
     def __init__(self, model_path: str) -> object:
         """
         :param model_path: the path containing the 'export.pkl' file
         """
         self.learn = load_learner(model_path)
-        self.progress = 0.0
 
     def get_output_and_centers(self, img_path, left, top, right, bottom):
         img = open_image(img_path)
         print("Input image:", img)
         output_img_raw_data = img_to_buffer(self.predict_image(img, left, top, right, bottom))
         centers = get_cell_centers(output_img_raw_data)
-        self.progress = 0.0
+        NeuralNetwork.progress = 0.0
         return output_img_raw_data, centers
 
     def predict_image(self, img, left, top, right, bottom):
@@ -42,8 +42,8 @@ class NeuralNetwork(object):
         start = time.time()
         print(f"Predicting full image by splitting it up into {x_patches * y_patches} patches...")
         for px in range(x_patches):
-            self.progress = px / x_patches
-            print(f"Progress: {int(self.progress * 100)}%")
+            NeuralNetwork.progress = px / x_patches
+            print(f"Progress: {int(NeuralNetwork.progress * 100)}%")
             for py in range(y_patches):
                 x = px * stride
                 y = py * stride
