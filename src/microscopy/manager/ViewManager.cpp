@@ -9,6 +9,7 @@ ViewManager::ViewManager(CoreController* controller)
     : QObject(controller)
     , ObjectWithAttributes(this)
     , m_controller(controller)
+    , m_dataViewHeight(this, "dataViewHeight", 400, 0, std::numeric_limits<int>::max())
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
     qmlRegisterType<DataViewBlock>();
@@ -19,6 +20,10 @@ ViewManager::ViewManager(CoreController* controller)
     connect(this, &ViewManager::viewsChanged,
             this, &ViewManager::visibleViewsChanged);
     updateViews();
+}
+
+QObject* ViewManager::attr(QString name) {
+    return ObjectWithAttributes::attr(name);
 }
 
 const QList<DataViewBlock*>& ViewManager::views() const {

@@ -2,6 +2,7 @@
 #define VIEWMANAGER_H
 
 #include "core/helpers/ObjectWithAttributes.h"
+#include "core/helpers/SmartAttribute.h"
 #include <QObject>
 #include <QQmlApplicationEngine>
 #include <QTimer>
@@ -29,6 +30,8 @@ signals:
     void areaAssignmentChanged();
 
 public slots:
+    QObject* attr(QString name);
+
     const QList<DataViewBlock*>& views() const;
     QList<QObject*> viewsQml() const;
     QList<QObject*> visibleViewsQml() const;
@@ -42,6 +45,8 @@ protected:
     CoreController* const m_controller;
 
     QList<DataViewBlock*> m_views;
+
+    IntegerAttribute m_dataViewHeight;
 };
 
 #endif // VIEWMANAGER_H

@@ -57,7 +57,8 @@ Window {
         // -------------------------------- Tissue Views ---------------------------------
 
         DataViewLoader {
-            Controls2.SplitView.preferredHeight: 400*dp
+            Controls2.SplitView.preferredHeight: viewManager.attr("dataViewHeight").val * dp
+            onHeightChanged: viewManager.attr("dataViewHeight").val = height / dp
             visible: viewManager.visibleViews.length
             z: 2  // draw on top of node view
         }
