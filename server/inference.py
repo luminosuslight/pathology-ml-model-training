@@ -8,6 +8,7 @@ import numpy as np
 import math
 import io
 from copy import deepcopy
+import time
 
 print("Fast.ai:", fastai.version.__version__)
 print("OpenCV:", cv2.__version__)
@@ -34,9 +35,11 @@ class NeuralNetwork(object):
         area_given = any((left, top, right, bottom))
         result = deepcopy(img)
         patch_size = 256
-        stride = patch_size / 2
+        overlap = 0.25
+        stride = int(patch_size * (1 - overlap))
         x_patches = math.ceil(img.shape[1] / stride)
         y_patches = math.ceil(img.shape[2] / stride)
+        start = time.time()
         print(f"Predicting full image by splitting it up into {x_patches * y_patches} patches...")
         for px in range(x_patches):
             self.progress = px / x_patches
@@ -65,11 +68,13 @@ class NeuralNetwork(object):
                         result.data[:, x:ex, y:ey] = prediction[:, :ex-x, :ey-y]
                     else:
                         # use only middle part to avoid border artifacts:
-                        result.data[:, x + (patch_size * 0.25):x + (patch_size * 0.75), y + (patch_size * 0.25):y + (patch_size * 0.75)] = prediction[:, (patch_size * 0.25):(patch_size * 0.75),
-                                                                                                                                           (patch_size * 0.25):(patch_size * 0.75)]
+                        b = int((patch_size - stride) / 2)
+                        e = int(patch_size - b)
+                        result.data[:, x + b:x + e, y + b:y + e] = prediction[:, b:e, b:e]
                 except RuntimeError:
                     print("An error occurred during prediction of patch at", x, y, ex, ey)
                     result.data[:, x:ex, y:ey] = 0.0
+        print("Prediction Time: ", time.time() - start)
         return result
 
     def destroy(self):
