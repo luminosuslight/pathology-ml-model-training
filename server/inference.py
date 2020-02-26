@@ -33,17 +33,19 @@ class NeuralNetwork(object):
     def predict_image(self, img, left, top, right, bottom):
         area_given = any((left, top, right, bottom))
         result = deepcopy(img)
-        x_patches = math.ceil(img.shape[1] / 128)
-        y_patches = math.ceil(img.shape[2] / 128)
+        patch_size = 256
+        stride = patch_size / 2
+        x_patches = math.ceil(img.shape[1] / stride)
+        y_patches = math.ceil(img.shape[2] / stride)
         print(f"Predicting full image by splitting it up into {x_patches * y_patches} patches...")
         for px in range(x_patches):
             self.progress = px / x_patches
             print(f"Progress: {int(self.progress * 100)}%")
             for py in range(y_patches):
-                x = px * 128
-                y = py * 128
-                ex = min(x + 256, img.shape[1])
-                ey = min(y + 256, img.shape[2])
+                x = px * stride
+                y = py * stride
+                ex = min(x + patch_size, img.shape[1])
+                ey = min(y + patch_size, img.shape[2])
                 # Note: x and y are swapped here:
                 if area_given and (ey < left or ex < top or y > right or x > bottom):
                     # outside of relevant area
@@ -51,20 +53,20 @@ class NeuralNetwork(object):
                     continue
 
                 patch = img.data[:, x:ex, y:ey]
-                if patch.shape != (3, 256, 256):
-                    patch = torch.zeros(3, 256, 256)
+                if patch.shape != (3, patch_size, patch_size):
+                    patch = torch.zeros(3, patch_size, patch_size)
                     patch[:, :ex-x, :ey-y] = img.data[:, x:ex, y:ey]
 
                 try:
                     p, prediction, b = self.learn.predict(patch)
-                    if x < 128 or ex == img.shape[1] or y < 128 or ey == img.shape[2]:
+                    if x < stride or ex == img.shape[1] or y < stride or ey == img.shape[2]:
                         # this is at the border, use full prediction:
-                        # FIXME: there will be a border 256px from the left and bottom
+                        # FIXME: there will be a border patch_size px from the left and bottom
                         result.data[:, x:ex, y:ey] = prediction[:, :ex-x, :ey-y]
                     else:
                         # use only middle part to avoid border artifacts:
-                        result.data[:, x + 64:x + 64 + 128, y + 64:y + 64 + 128] = prediction[:, 64:64 + 128,
-                                                                                              64:64 + 128]
+                        result.data[:, x + (patch_size * 0.25):x + (patch_size * 0.75), y + (patch_size * 0.25):y + (patch_size * 0.75)] = prediction[:, (patch_size * 0.25):(patch_size * 0.75),
+                                                                                                                                           (patch_size * 0.25):(patch_size * 0.75)]
                 except RuntimeError:
                     print("An error occurred during prediction of patch at", x, y, ex, ey)
                     result.data[:, x:ex, y:ey] = 0.0
