@@ -1,4 +1,5 @@
-from unet_autoencoder import unet_autoencoder_learner
+#from unet_autoencoder import unet_autoencoder_learner
+from vae_resnet18_autoencoder import VAE
 from train import training_tracker
 
 from fastai.vision import *
@@ -62,9 +63,13 @@ def train_unet_autoencoder(path, base_model_weights, databunch, epochs):
     loss_gen = MSELossFlat()
 
     arch = models.resnet18
-    learn = unet_autoencoder_learner(databunch, arch, pretrained=True, wd=wd, blur=False, norm_type=NormType.Weight,
-                         self_attention=True, y_range=None, last_cross=False, loss_func=loss_gen, callbacks=[training_tracker],
-                         callback_fns=[CSVLogger, partial(EarlyStoppingCallback, monitor='valid_loss', min_delta=0.01, patience=2)])
+    # learn = unet_autoencoder_learner(databunch, arch, pretrained=True, wd=wd, blur=False, norm_type=NormType.Weight,
+    #                      self_attention=True, y_range=None, last_cross=False, loss_func=loss_gen, callbacks=[training_tracker],
+    #                      callback_fns=[CSVLogger, partial(EarlyStoppingCallback, monitor='valid_loss', min_delta=0.01, patience=2)])
+    model = VAE(512)
+    learn = Learner(databunch, model, loss_func=loss_gen, callbacks=[training_tracker],
+                          callback_fns=[CSVLogger, partial(EarlyStoppingCallback, monitor='valid_loss', min_delta=0.01, patience=2)])
+    apply_init(model, nn.init.kaiming_normal_)
     # learn = learn.to_fp16()  # to save memory?
 
     if base_model_weights:
