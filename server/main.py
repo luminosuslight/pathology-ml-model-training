@@ -140,13 +140,12 @@ def train():
 def train_autoencoder():
     raw_data = request.get_data()
     params = cbor2.loads(raw_data)
-    print(params)
 
     base_model = params['baseModel']
     if base_model:
-        model_id = f"{base_model}-{uuid.uuid1()}"
+        model_id = f"{base_model}-{uuid.uuid1().hex}"
     else:
-        model_id = uuid.uuid1()
+        model_id = uuid.uuid1().hex
 
     img_path = os.path.join(app.config['UPLOAD_FOLDER'], params['imgHash'])
     if not os.path.isfile(img_path):
