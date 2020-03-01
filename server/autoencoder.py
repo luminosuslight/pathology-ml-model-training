@@ -10,6 +10,27 @@ import os
 import shutil
 
 
+class Autoencoder(nn.Module):
+    def __init__(self):
+        super(Autoencoder, self).__init__()
+
+        self.encoder = nn.Sequential(
+            nn.Conv2d(3, 6, kernel_size=5),
+            nn.ReLU(True),
+            nn.Conv2d(6, 16, kernel_size=5),
+            nn.ReLU(True))
+        self.decoder = nn.Sequential(
+            nn.ConvTranspose2d(16, 6, kernel_size=5),
+            nn.ReLU(True),
+            nn.ConvTranspose2d(6, 3, kernel_size=5),
+            nn.ReLU(True))
+
+    def forward(self, x):
+        x = self.encoder(x)
+        x = self.decoder(x)
+        return x
+
+
 class CellAutoencoderItemList(ImageImageList):
 
     def open(self, item):
@@ -21,7 +42,8 @@ class CellAutoencoderItemList(ImageImageList):
         # we will take a 64x64px patch from this location:
         x = int(pos[0])
         y = int(pos[1])
-        return Image(self.whole_image.data[:, x-32:x+32, y-32:y+32])
+        # fast.ai Image dims are (c, y, x)
+        return Image(self.whole_image.data[:, y-32:y+32, x-32:x+32])
 
 
 def prepare_and_train_autoencoder(params, model_id, img_path):
@@ -42,7 +64,6 @@ def prepare_and_train_autoencoder(params, model_id, img_path):
     item_list = CellAutoencoderItemList(items, path=model_path/'input')
     item_lists = item_list.split_by_rand_pct()
     label_lists = item_lists.label_from_func(lambda x: x, label_cls=CellAutoencoderItemList)
-    print(type(label_lists.x), type(label_lists.y), label_lists.y)
     tfms = ((dihedral(),
              brightness(change=(0.4, 0.6)),
              contrast(scale=(0.9, 1.1)),
@@ -66,7 +87,7 @@ def train_unet_autoencoder(path, base_model_weights, databunch, epochs):
     # learn = unet_autoencoder_learner(databunch, arch, pretrained=True, wd=wd, blur=False, norm_type=NormType.Weight,
     #                      self_attention=True, y_range=None, last_cross=False, loss_func=loss_gen, callbacks=[training_tracker],
     #                      callback_fns=[CSVLogger, partial(EarlyStoppingCallback, monitor='valid_loss', min_delta=0.01, patience=2)])
-    model = VAE(512)
+    model = Autoencoder()
     learn = Learner(databunch, model, loss_func=loss_gen, callbacks=[training_tracker],
                           callback_fns=[CSVLogger, partial(EarlyStoppingCallback, monitor='valid_loss', min_delta=0.01, patience=2)])
     apply_init(model, nn.init.kaiming_normal_)
