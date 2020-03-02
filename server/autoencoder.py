@@ -1,5 +1,5 @@
 from fastai.vision import ImageImageList, open_image, Image
-from fastai.layers import PixelShuffle_ICNR, conv_layer, Flatten
+from fastai.layers import PixelShuffle_ICNR, conv_layer, Flatten, ResizeBatch
 from torch import nn
 
 
@@ -17,6 +17,7 @@ class Autoencoder(nn.Module):
             nn.Linear(8*16*16, 128))
         self.decoder = nn.Sequential(
             nn.Linear(128, 8*16*16),
+            ResizeBatch(8, 16, 16),
             PixelShuffle_ICNR(8, 8),  # 8*32*32
             nn.ReLU(True),
             conv_layer(8, 8),
