@@ -7,6 +7,7 @@ class Autoencoder(nn.Module):
     def __init__(self):
         super(Autoencoder, self).__init__()
         self.print_shape = True
+        self.decode = True
 
         self.encoder = nn.Sequential(
             conv_layer(3, 8),  # 8, 64, 64
@@ -29,7 +30,8 @@ class Autoencoder(nn.Module):
         if self.print_shape:
             print("Shape after bottleneck:", x.shape)
             self.print_shape = False
-        x = self.decoder(x)
+        if self.decode:
+            x = self.decoder(x)
         return x
 
 

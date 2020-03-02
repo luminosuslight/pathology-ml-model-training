@@ -14,7 +14,7 @@ import uuid
 from apply_unet import NeuralNetwork
 from train_unet import unpack_data_and_train, training_tracker
 
-from apply_autoencoder import NeuralNetworkAutoencoder
+from apply_autoencoder import TrainedAutoencoder
 from train_autoencoder import prepare_and_train_autoencoder
 
 print("Python version:", sys.version)
@@ -210,7 +210,7 @@ def predict(model_id, img_hash, left, top, right, bottom):
 
 @app.route('/model/<model_id>/encode/<img_hash>', methods=['GET'])
 def apply_autoencoder(model_id, img_hash):
-    model = NeuralNetworkAutoencoder('models/' + model_id + '/input')
+    model = TrainedAutoencoder('models/' + model_id + '/input')
     raw_data = request.get_data()
     params = cbor2.loads(raw_data)
 
@@ -233,4 +233,4 @@ def apply_autoencoder(model_id, img_hash):
 
 @app.route('/inference_progress', methods=['GET'])
 def inference_progress():
-    return str(max(NeuralNetwork.progress, NeuralNetworkAutoencoder.progress)), 200
+    return str(max(NeuralNetwork.progress, TrainedAutoencoder.progress)), 200
