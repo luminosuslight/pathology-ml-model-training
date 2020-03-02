@@ -7,21 +7,26 @@ class Autoencoder(nn.Module):
         super(Autoencoder, self).__init__()
 
         self.encoder = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=3),
+            nn.Conv2d(3, 16, kernel_size=3, padding=1),
             nn.ReLU(True),
             nn.MaxPool2d(2, 2),
-            nn.Conv2d(16, 4, kernel_size=3),
+            nn.Conv2d(16, 8, kernel_size=3, padding=1),
+            nn.ReLU(True),
+            nn.MaxPool2d(2, 2),
+            nn.Conv2d(8, 4, kernel_size=3, padding=1),
             nn.ReLU(True),
             nn.MaxPool2d(2, 2))
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(4, 16, kernel_size=2, stride=2),
+            nn.ConvTranspose2d(4, 8, kernel_size=2, stride=2),
+            nn.ReLU(True),
+            nn.ConvTranspose2d(8, 16, kernel_size=2, stride=2),
             nn.ReLU(True),
             nn.ConvTranspose2d(16, 3, kernel_size=2, stride=2),
             nn.Sigmoid())
 
     def forward(self, x):
         x = self.encoder(x)
-        print("Shape after bottleneck:", x.shape)
+        #print("Shape after bottleneck:", x.shape)
         x = self.decoder(x)
         return x
 
