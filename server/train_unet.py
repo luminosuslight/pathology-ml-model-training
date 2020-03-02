@@ -1,3 +1,5 @@
+from global_training_tracker import training_tracker
+
 from fastai.vision import *
 from fastai.callbacks import *
 
@@ -63,7 +65,6 @@ def train_unet(path, base_model_weights, epochs):
     databunch = label_lists.databunch(bs=1)
     databunch.c = 3
 
-    global training_tracker
     training_tracker.dataset_size = len(databunch.train_dl)
 
     wd = 1e-3
@@ -105,17 +106,3 @@ def train_unet(path, base_model_weights, epochs):
     learn.export()  # export for simple inference
     training_tracker.progress = 0.0
     print("Finished training and exported the model.")
-
-
-class ProgressUpdateCallback(Callback):
-
-    def __init__(self):
-        self.progress = 0.0
-        self.dataset_size = 1
-
-    def on_batch_end(self, n_epochs, epoch, num_batch, **kwargs):
-        self.progress = (epoch * self.dataset_size + num_batch) / (n_epochs * self.dataset_size)
-
-
-training_tracker = ProgressUpdateCallback()
-

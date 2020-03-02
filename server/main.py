@@ -11,8 +11,8 @@ import sys
 import threading
 import uuid
 
-from inference import NeuralNetwork
-from train import unpack_data_and_train, training_tracker
+from apply_unet import NeuralNetwork
+from train_unet import unpack_data_and_train, training_tracker
 
 from apply_autoencoder import NeuralNetworkAutoencoder
 from autoencoder import prepare_and_train_autoencoder
@@ -114,8 +114,8 @@ def delete_data(hash):
 #    return list_of_models
 
 
-@app.route('/model', methods=['POST'])
-def train():
+@app.route('/model/unet', methods=['POST'])
+def train_unet():
     raw_data = request.get_data()
     params = cbor2.loads(raw_data)
     print(params)
@@ -138,20 +138,28 @@ def train():
 
 @app.route('/model/autoencoder', methods=['POST'])
 def train_autoencoder():
+    # unpack arguments:
     raw_data = request.get_data()
     params = cbor2.loads(raw_data)
 
+    # check parameters to be valid:
+    img_path = os.path.join(app.config['UPLOAD_FOLDER'], params['imgHash'])
+    if not os.path.isfile(img_path):
+        print("Image not found:", params['imgHash'])
+        abort(404)
+
+    if not params['cellPositions']:
+        print("No cells provided.")
+        abort(400)
+
+    # generate model_id:
     base_model = params['baseModel']
     if base_model:
         model_id = f"{base_model}-{uuid.uuid1().hex}"
     else:
         model_id = uuid.uuid1().hex
 
-    img_path = os.path.join(app.config['UPLOAD_FOLDER'], params['imgHash'])
-    if not os.path.isfile(img_path):
-        print("Image not found:", params['imgHash'])
-        abort(404)
-
+    # start training:
     thread = threading.Thread(target=prepare_and_train_autoencoder,
                               args=(params, model_id, img_path))
     thread.start()
