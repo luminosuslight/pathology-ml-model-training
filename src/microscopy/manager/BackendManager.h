@@ -8,6 +8,7 @@
 #include <QNetworkAccessManager>
 #include <QCborMap>
 #include <QRect>
+#include <QCborArray>
 
 class CoreController;
 
@@ -35,7 +36,9 @@ public slots:
 
     void runInference(QString imageHash, QRect area, QString modelId, std::function<void(QCborMap)> onSuccess);
 
-    void train(QString modelName, QString baseModel, int epochs, QString trainHash, QString valHash, std::function<void(QString)> onSuccess);
+    void trainUnet(QString modelName, QString baseModel, int epochs, QString trainHash, QString valHash, std::function<void(QString)> onSuccess);
+
+    void trainAutoencoder(QString modelName, QString baseModel, int epochs, QString imgHash, QCborArray cellPositions, std::function<void(QString)> onSuccess);
 
     void loadRemoteProject(QString name);
 

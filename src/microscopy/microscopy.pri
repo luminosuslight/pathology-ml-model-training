@@ -9,6 +9,7 @@ HEADERS += \
     $$PWD/blocks/actions/DimensionalityReductionBlock.h \
     $$PWD/blocks/actions/FeatureSetterBlock.h \
     $$PWD/blocks/ai/AutoAiSegmentationBlock.h \
+    $$PWD/blocks/ai/AutoencoderTrainingBlock.h \
     $$PWD/blocks/ai/CellAreaAverageBlock.h \
     $$PWD/blocks/ai/CellDatabaseComparison.h \
     $$PWD/blocks/ai/CellRendererBlock.h \
@@ -36,6 +37,7 @@ SOURCES += \
     $$PWD/blocks/actions/DimensionalityReductionBlock.cpp \
     $$PWD/blocks/actions/FeatureSetterBlock.cpp \
     $$PWD/blocks/ai/AutoAiSegmentationBlock.cpp \
+    $$PWD/blocks/ai/AutoencoderTrainingBlock.cpp \
     $$PWD/blocks/ai/CellAreaAverageBlock.cpp \
     $$PWD/blocks/ai/CellDatabaseComparison.cpp \
     $$PWD/blocks/ai/CellRendererBlock.cpp \

@@ -187,7 +187,7 @@ void BackendManager::runInference(QString imageHash, QRect area, QString modelId
     });
 }
 
-void BackendManager::train(QString modelName, QString baseModel, int epochs, QString trainHash, QString validHash, std::function<void (QString)> onSuccess) {
+void BackendManager::trainUnet(QString modelName, QString baseModel, int epochs, QString trainHash, QString validHash, std::function<void (QString)> onSuccess) {
     QCborMap params;
     params["modelName"_q] = modelName;
     params["baseModel"_q] = baseModel;
@@ -195,11 +195,28 @@ void BackendManager::train(QString modelName, QString baseModel, int epochs, QSt
     params["trainDataHash"_q] = trainHash;
     params["validDataHash"_q] = validHash;
     QNetworkRequest request;
-    request.setUrl(QUrl(m_serverUrl + "/model"));
+    request.setUrl(QUrl(m_serverUrl + "/model/unet"));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/cbor");
     auto reply = m_nam->post(request, params.toCborValue().toCbor());
-    connect(reply, &QNetworkReply::finished, this, [this, reply, onSuccess]() {
-        m_inferenceProgress = 0.0;
+    connect(reply, &QNetworkReply::finished, this, [reply, onSuccess]() {
+        QString modelId = QString::fromUtf8(reply->readAll());
+        onSuccess(modelId);
+        reply->deleteLater();
+    });
+}
+
+void BackendManager::trainAutoencoder(QString modelName, QString baseModel, int epochs, QString imgHash, QCborArray cellPositions, std::function<void (QString)> onSuccess) {
+    QCborMap params;
+    params["modelName"_q] = modelName;
+    params["baseModel"_q] = baseModel;
+    params["epochs"_q] = epochs;
+    params["imgHash"_q] = imgHash;
+    params["cellPositions"_q] = cellPositions;  // [(x, y), (x, y), ...] in pixels
+    QNetworkRequest request;
+    request.setUrl(QUrl(m_serverUrl + "/model/autoencoder"));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/cbor");
+    auto reply = m_nam->post(request, params.toCborValue().toCbor());
+    connect(reply, &QNetworkReply::finished, this, [reply, onSuccess]() {
         QString modelId = QString::fromUtf8(reply->readAll());
         onSuccess(modelId);
         reply->deleteLater();
