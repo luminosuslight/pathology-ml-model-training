@@ -1,32 +1,33 @@
 from fastai.vision import ImageImageList, open_image, Image
+from fastai.layers import PixelShuffle_ICNR, conv_layer, Flatten
 from torch import nn
 
 
 class Autoencoder(nn.Module):
     def __init__(self):
         super(Autoencoder, self).__init__()
+        self.print_shape = True
 
         self.encoder = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=3, padding=1),
-            nn.ReLU(True),
-            nn.MaxPool2d(2, 2),
-            nn.Conv2d(16, 8, kernel_size=3, padding=1),
-            nn.ReLU(True),
-            nn.MaxPool2d(2, 2),
-            nn.Conv2d(8, 4, kernel_size=3, padding=1),
-            nn.ReLU(True),
-            nn.MaxPool2d(2, 2))
+            conv_layer(3, 8),  # 8, 64, 64
+            nn.AvgPool2d(2, ceil_mode=True),  # 8, 32, 32
+            conv_layer(8, 8),  # 8, 32, 32
+            nn.AvgPool2d(2, ceil_mode=True),  # 8, 16, 16 -> 2048
+            Flatten(),
+            nn.Linear(8*16*16, 128))
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(4, 8, kernel_size=2, stride=2),
+            nn.Linear(128, 8*16*16),
+            PixelShuffle_ICNR(8, 8),  # 8*32*32
             nn.ReLU(True),
-            nn.ConvTranspose2d(8, 16, kernel_size=2, stride=2),
-            nn.ReLU(True),
-            nn.ConvTranspose2d(16, 3, kernel_size=2, stride=2),
-            nn.Sigmoid())
+            conv_layer(8, 8),
+            PixelShuffle_ICNR(8, 8),  # 8*64*64
+            conv_layer(8, 3))
 
     def forward(self, x):
         x = self.encoder(x)
-        #print("Shape after bottleneck:", x.shape)
+        if self.print_shape:
+            print("Shape after bottleneck:", x.shape)
+            self.print_shape = False
         x = self.decoder(x)
         return x
 
