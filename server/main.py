@@ -15,7 +15,7 @@ from apply_unet import NeuralNetwork
 from train_unet import unpack_data_and_train, training_tracker
 
 from apply_autoencoder import NeuralNetworkAutoencoder
-from autoencoder import prepare_and_train_autoencoder
+from train_autoencoder import prepare_and_train_autoencoder
 
 print("Python version:", sys.version)
 
