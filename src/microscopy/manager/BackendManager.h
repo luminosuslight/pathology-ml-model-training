@@ -34,11 +34,11 @@ public slots:
     void downloadFile(QString hash, std::function<void(double)> onProgress, std::function<void(QByteArray)> onSuccess);
     void removeFile(QString hash, std::function<void(void)> onSuccess);
 
-    void runInference(QString imageHash, QRect area, QString modelId, std::function<void(QCborMap)> onSuccess);
-
+    void applyUnet(QString imageHash, QRect area, QString modelId, std::function<void(QCborMap)> onSuccess);
     void trainUnet(QString modelName, QString baseModel, int epochs, QString trainHash, QString valHash, std::function<void(QString)> onSuccess);
 
-    void trainAutoencoder(QString modelName, QString baseModel, int epochs, QString imgHash, QCborArray cellPositions, std::function<void(QString)> onSuccess);
+    void applyAutoencoder(QString imageHash, QString modelId, QCborArray cellPositions, std::function<void(QCborArray)> onSuccess);
+    void trainAutoencoder(QString modelName, QString baseModel, int epochs, QString imageHash, QCborArray cellPositions, std::function<void(QString)> onSuccess);
 
     void loadRemoteProject(QString name);
 

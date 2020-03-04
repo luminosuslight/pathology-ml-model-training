@@ -28,7 +28,7 @@ public:
                         "A new model will be created for the retrained and finetuned model, the "
                         "existing model will not be changed.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/AutoencoderTrainingBlock.qml";
-        info.orderHint = 1000 + 200 + 7;
+        info.orderHint = 1000 + 200 + 8;
         info.complete<AutoencoderTrainingBlock>();
         return info;
     }

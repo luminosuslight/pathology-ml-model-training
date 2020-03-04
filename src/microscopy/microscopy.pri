@@ -9,6 +9,7 @@ HEADERS += \
     $$PWD/blocks/actions/DimensionalityReductionBlock.h \
     $$PWD/blocks/actions/FeatureSetterBlock.h \
     $$PWD/blocks/ai/AutoAiSegmentationBlock.h \
+    $$PWD/blocks/ai/AutoencoderInferenceBlock.h \
     $$PWD/blocks/ai/AutoencoderTrainingBlock.h \
     $$PWD/blocks/ai/CellAreaAverageBlock.h \
     $$PWD/blocks/ai/CellDatabaseComparison.h \
@@ -29,7 +30,10 @@ HEADERS += \
     $$PWD/blocks/selection/FeatureSelectionBlock.h \
     $$PWD/blocks/selection/RectangularAreaBlock.h \
     $$PWD/manager/BackendManager.h \
-    $$PWD/manager/ViewManager.h
+    $$PWD/manager/ViewManager.h \
+    $$PWD/multicore_tsne/splittree.h \
+    $$PWD/multicore_tsne/tsne.h \
+    $$PWD/multicore_tsne/vptree.h
 
 SOURCES += \
     $$PWD/blocks/actions/ClusteringBlock.cpp \
@@ -37,6 +41,7 @@ SOURCES += \
     $$PWD/blocks/actions/DimensionalityReductionBlock.cpp \
     $$PWD/blocks/actions/FeatureSetterBlock.cpp \
     $$PWD/blocks/ai/AutoAiSegmentationBlock.cpp \
+    $$PWD/blocks/ai/AutoencoderInferenceBlock.cpp \
     $$PWD/blocks/ai/AutoencoderTrainingBlock.cpp \
     $$PWD/blocks/ai/CellAreaAverageBlock.cpp \
     $$PWD/blocks/ai/CellDatabaseComparison.cpp \
@@ -57,7 +62,9 @@ SOURCES += \
     $$PWD/blocks/selection/FeatureSelectionBlock.cpp \
     $$PWD/blocks/selection/RectangularAreaBlock.cpp \
     $$PWD/manager/BackendManager.cpp \
-    $$PWD/manager/ViewManager.cpp
+    $$PWD/manager/ViewManager.cpp \
+    $$PWD/multicore_tsne/splittree.cpp \
+    $$PWD/multicore_tsne/tsne.cpp
 
 RESOURCES += \
     $$PWD/microscopy.qrc
