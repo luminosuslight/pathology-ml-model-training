@@ -148,7 +148,7 @@ float TissueImageBlock::pixelValueColorMultiplied(int x, int y, float r, float g
         value = float(qRed(rgb) * 256 + qGreen(rgb)) / float(256 * 256 - 1);
     } else {
         QRgb rgb = m_image.pixel(x, y);
-        value = std::max(std::max(qRed(rgb) * r, qGreen(rgb) * b), qBlue(rgb) * b) / 255.0f;
+        value = std::max(std::max(qRed(rgb) * r, qGreen(rgb) * g), qBlue(rgb) * b) / 255.0f;
     }
     float blackLevel = float(std::pow(m_blackLevel, 2.0));
     // TODO: apply gamma?
