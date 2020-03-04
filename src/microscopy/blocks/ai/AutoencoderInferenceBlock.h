@@ -19,6 +19,7 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Autoencoder Inference";
+        info.nameInUi = "Autoencoder + t-SNE";
         info.category << "Neural Network";
         info.helpText = "Prepares the input for an autoencoder, sends it to the server and "
                         "encodes an area of 32x32px around each provided cell using the "
