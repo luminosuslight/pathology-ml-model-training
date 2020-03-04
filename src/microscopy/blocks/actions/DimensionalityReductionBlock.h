@@ -15,7 +15,7 @@ public:
         static BlockInfo info;
         info.typeName = "Dimensionality Reduction";
         info.nameInUi = "Dim. Reduction";
-        info.category << "Microscopy" << "Actions";
+        info.category << "Actions";
         info.helpText = "[Not implemented yet]<br>"
                         "Applies a dimensionality reduction algorithm to the selected features "
                         "of the incoming cells. Stores the resulting two dimensions back into "

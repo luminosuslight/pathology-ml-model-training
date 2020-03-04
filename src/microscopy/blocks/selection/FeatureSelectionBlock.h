@@ -14,7 +14,7 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Feature Selection";
-        info.category << "Microscopy" << "Selection";
+        info.category << "Selection";
         info.helpText = "";
         info.qmlFile = "qrc:/microscopy/blocks/selection/FeatureSelectionBlock.qml";
         info.orderHint = 1000 + 200 + 1;

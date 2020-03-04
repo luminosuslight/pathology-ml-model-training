@@ -98,7 +98,7 @@ void CnnInferenceBlock::doInference(QByteArray imageData) {
             }
         }
 
-        m_backend->runInference(serverHash, area, modelId, [this](QCborMap cbor) {
+        m_backend->applyUnet(serverHash, area, modelId, [this](QCborMap cbor) {
             m_running = false;
 
             QString resultHash = cbor["outputImageHash"_q].toString();

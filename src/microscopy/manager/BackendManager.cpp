@@ -168,7 +168,7 @@ void BackendManager::removeFile(QString hash, std::function<void ()> onSuccess) 
     });
 }
 
-void BackendManager::runInference(QString imageHash, QRect area, QString modelId, std::function<void (QCborMap)> onSuccess) {
+void BackendManager::applyUnet(QString imageHash, QRect area, QString modelId, std::function<void (QCborMap)> onSuccess) {
     QNetworkRequest request;
     QString url = "%1/model/%2/prediction/%3/%4/%5/%6/%7";
     url = url.arg(m_serverUrl).arg(modelId).arg(imageHash);
@@ -187,7 +187,7 @@ void BackendManager::runInference(QString imageHash, QRect area, QString modelId
     });
 }
 
-void BackendManager::train(QString modelName, QString baseModel, int epochs, QString trainHash, QString validHash, std::function<void (QString)> onSuccess) {
+void BackendManager::trainUnet(QString modelName, QString baseModel, int epochs, QString trainHash, QString validHash, std::function<void (QString)> onSuccess) {
     QCborMap params;
     params["modelName"_q] = modelName;
     params["baseModel"_q] = baseModel;
@@ -195,11 +195,47 @@ void BackendManager::train(QString modelName, QString baseModel, int epochs, QSt
     params["trainDataHash"_q] = trainHash;
     params["validDataHash"_q] = validHash;
     QNetworkRequest request;
-    request.setUrl(QUrl(m_serverUrl + "/model"));
+    request.setUrl(QUrl(m_serverUrl + "/model/unet"));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/cbor");
+    auto reply = m_nam->post(request, params.toCborValue().toCbor());
+    connect(reply, &QNetworkReply::finished, this, [this, reply, onSuccess]() {
+        m_trainingProgress = 0.0;
+        QString modelId = QString::fromUtf8(reply->readAll());
+        onSuccess(modelId);
+        reply->deleteLater();
+    });
+}
+
+void BackendManager::applyAutoencoder(QString imageHash, QString modelId, QCborArray cellPositions, std::function<void (QCborArray)> onSuccess) {
+    QCborMap params;
+    params["cellPositions"_q] = cellPositions;  // [(x, y), (x, y), ...] in pixels
+    QNetworkRequest request;
+    QString url = "%1/model/%2/encode/%3";
+    url = url.arg(m_serverUrl).arg(modelId).arg(imageHash);
+    request.setUrl(QUrl(url));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/cbor");
     auto reply = m_nam->post(request, params.toCborValue().toCbor());
     connect(reply, &QNetworkReply::finished, this, [this, reply, onSuccess]() {
         m_inferenceProgress = 0.0;
+        auto result = QCborValue::fromCbor(reply->readAll()).toArray();
+        onSuccess(result);
+        reply->deleteLater();
+    });
+}
+
+void BackendManager::trainAutoencoder(QString modelName, QString baseModel, int epochs, QString imageHash, QCborArray cellPositions, std::function<void (QString)> onSuccess) {
+    QCborMap params;
+    params["modelName"_q] = modelName;
+    params["baseModel"_q] = baseModel;
+    params["epochs"_q] = epochs;
+    params["imgHash"_q] = imageHash;
+    params["cellPositions"_q] = cellPositions;  // [(x, y), (x, y), ...] in pixels
+    QNetworkRequest request;
+    request.setUrl(QUrl(m_serverUrl + "/model/autoencoder"));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/cbor");
+    auto reply = m_nam->post(request, params.toCborValue().toCbor());
+    connect(reply, &QNetworkReply::finished, this, [this, reply, onSuccess]() {
+        m_trainingProgress = 0.0;
         QString modelId = QString::fromUtf8(reply->readAll());
         onSuccess(modelId);
         reply->deleteLater();

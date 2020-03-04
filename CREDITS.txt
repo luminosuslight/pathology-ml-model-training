@@ -1,3 +1,5 @@
+Multicore t-SNE library by Dmitry Ulyanov (BSD 3-Clause License)
+
 Settings Icon (Sliders) by Marek Polakovic
 Edit Icon by Julia Simplicio
 BluePrint Background by MediaLoot http://medialoot.com/item/seamless-blueprint-textures/

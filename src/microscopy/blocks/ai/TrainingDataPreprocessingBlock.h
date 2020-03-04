@@ -17,7 +17,7 @@ public:
         static BlockInfo info;
         info.typeName = "Training Data Preprocessing";
         info.nameInUi = "Train Data Preproc.";
-        info.category << "Microscopy" << "Neural Network";
+        info.category << "Neural Network";
         info.helpText = "Splits input images and their corresponding target images in random "
                         "patches, augments them and stores them in a .cbor file, ready to be "
                         "used to train a network.";

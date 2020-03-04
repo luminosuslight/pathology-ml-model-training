@@ -19,7 +19,7 @@ public:
         static BlockInfo info;
         info.typeName = "Marker-Based Region Grow";
         info.nameInUi = "Region Grow";
-        info.category << "Microscopy" << "Actions";
+        info.category << "Actions";
         info.helpText = "Applies a region growing algorithm and stores the new shape for the "
                         "selected cells back into the connected dataset.<br><br>"
                         "If the cells already have a shape it is overwritten.";

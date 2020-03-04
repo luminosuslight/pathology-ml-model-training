@@ -54,7 +54,7 @@ void CnnTrainingBlock::run() {
                 }
             }
 
-            m_backend->train(m_modelName, baseModel, m_epochs, trainDataHash, validDataHash, [this](QString modelId) {
+            m_backend->trainUnet(m_modelName, baseModel, m_epochs, trainDataHash, validDataHash, [this](QString modelId) {
                 auto* block = m_controller->blockManager()->addNewBlock<CnnModelBlock>();
                 if (!block) {
                     qWarning() << "Could not create CnnModelBlock.";

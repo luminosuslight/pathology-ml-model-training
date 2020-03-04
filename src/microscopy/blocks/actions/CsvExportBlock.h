@@ -14,7 +14,7 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "CSV Export";
-        info.category << "Microscopy" << "Actions";
+        info.category << "Actions";
         info.helpText = "[Not implemented yet]<br>"
                         "Exports the selected features of the incoming cells as a CSV file.";
         info.qmlFile = "qrc:/microscopy/blocks/actions/CsvExportBlock.qml";

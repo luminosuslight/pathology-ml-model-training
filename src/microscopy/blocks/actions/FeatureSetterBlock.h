@@ -14,7 +14,7 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Feature Setter";
-        info.category << "Microscopy" << "Actions";
+        info.category << "Actions";
         info.helpText = "Sets a certain feature of the incoming cells to a specific value. "
                         "If the features already exists it will be overwritten, otherwise it "
                         "will be created.";

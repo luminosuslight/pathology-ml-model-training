@@ -14,10 +14,10 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Folder View";
-        info.category << "Microscopy" << "Formats";
-        info.helpText = "Shows all images contained in a folder in a list.";
+        info.nameInUi = "Biomarker List";
+        info.helpText = "Shows all images contained in a folder sorted by their biomarkers.";
         info.qmlFile = "qrc:/microscopy/blocks/formats/FolderViewBlock.qml";
-        info.orderHint = 1000 + 300 + 1;
+        info.orderHint = 1000 + 6;
         info.complete<FolderViewBlock>();
         return info;
     }

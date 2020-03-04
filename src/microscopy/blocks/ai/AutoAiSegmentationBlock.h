@@ -14,7 +14,7 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Auto AI Segmentation";
-        info.category << "Microscopy" << "Segmentation";
+        info.category << "Segmentation";
         info.helpText = "[Not implemented yet]";
         info.qmlFile = "qrc:/microscopy/blocks/ai/AutoAiSegmentationBlock.qml";
         info.orderHint = 1000 + 500 + 1;

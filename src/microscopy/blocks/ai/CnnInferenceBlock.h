@@ -19,7 +19,7 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "CNN Inference";
-        info.category << "Microscopy" << "Neural Network";
+        info.category << "Neural Network";
         info.helpText = "Prepares the input for a neural network, sends it to the server and "
                         "applies a neural network forward pass on it (also called inference).<br>"
                         "It then downloads the result and creates a new Image block for it.<br>"

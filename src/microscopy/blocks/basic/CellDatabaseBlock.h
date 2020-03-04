@@ -25,7 +25,6 @@ public:
         static BlockInfo info;
         info.typeName = "Cell Database";
         info.nameInUi = "Dataset";
-        info.category << "Microscopy";
         info.helpText = "Stores information about cells. By default it only contains their "
                         "position and shape, but by using other blocks more information per "
                         "cell can be added. The <i>Cell Area Average</i> block for example adds "

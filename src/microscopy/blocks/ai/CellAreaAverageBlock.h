@@ -15,7 +15,7 @@ public:
         static BlockInfo info;
         info.typeName = "Cell Area Average";
         info.nameInUi = "Cell Pixel Values";
-        info.category << "Microscopy" << "Actions";
+        info.category << "Actions";
         info.helpText = "Stores the average pixel values in the cell's area or the center "
                         "pixel value of each cell as a new feature to the connected dataset.<br><br>"
                         "Helpful to analyse the intensity of cells in different image channels or "

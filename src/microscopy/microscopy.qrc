@@ -39,5 +39,7 @@
         <file>blocks/actions/FeatureSetterBlock.qml</file>
         <file>blocks/ai/ElongatedRenderer.qml</file>
         <file>blocks/formats/FolderViewBlock.qml</file>
+        <file>blocks/ai/AutoencoderTrainingBlock.qml</file>
+        <file>blocks/ai/AutoencoderInferenceBlock.qml</file>
     </qresource>
 </RCC>

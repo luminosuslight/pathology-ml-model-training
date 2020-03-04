@@ -17,7 +17,7 @@ public:
         static BlockInfo info;
         info.typeName = "Dataset Comparison";
         info.nameInUi = "Benchmark";
-        info.category << "Microscopy" << "Neural Network";
+        info.category << "Neural Network";
         info.helpText = "[Not implemented yet]<br>"
                         "Compares the content of two datasets and computes metrics for them.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/CellDatabaseComparison.qml";

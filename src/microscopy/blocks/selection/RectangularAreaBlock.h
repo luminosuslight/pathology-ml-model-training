@@ -17,7 +17,6 @@ public:
         static BlockInfo info;
         info.typeName = "Rectangular Area";
         info.nameInUi = "Area";
-        info.category << "Microscopy";
         info.helpText = "A rectangular area in the dimenions of the assigned view.<br><br>"
                         "It can be used to represent a physical area in the plane of the tissue "
                         "images in the case the dimensions of the view are 'x' and 'y'.<br><br>"
