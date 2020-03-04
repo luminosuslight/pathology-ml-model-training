@@ -14,7 +14,7 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Folder View";
-        info.category << "Microscopy" << "Formats";
+        info.category << "Formats";
         info.helpText = "Shows all images contained in a folder in a list.";
         info.qmlFile = "qrc:/microscopy/blocks/formats/FolderViewBlock.qml";
         info.orderHint = 1000 + 300 + 1;

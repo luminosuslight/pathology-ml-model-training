@@ -14,7 +14,7 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Clustering";
-        info.category << "Microscopy" << "Actions";
+        info.category << "Actions";
         info.helpText = "[Not implmeneted yet]<br>"
                         "Applies a clustering algorithm to the incoming cells and the selected "
                         "features. Stores the resulting clusters as a new feature back into "

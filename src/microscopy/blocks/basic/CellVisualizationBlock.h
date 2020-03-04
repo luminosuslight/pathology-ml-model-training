@@ -26,7 +26,6 @@ public:
         static BlockInfo info;
         info.typeName = "Cell Visualization";
         info.nameInUi = "Visualization";
-        info.category << "Microscopy";
         info.helpText = "Visualizes the incoming data in a <i>View</i> and "
                         "allows the manual selection of cells.<br><br>"
                         "If the View's dimensions are set to x and y it will display the "

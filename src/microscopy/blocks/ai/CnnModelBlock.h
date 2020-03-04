@@ -14,7 +14,7 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "CNN Model";
-        info.category << "Microscopy" << "Neural Network";
+        info.category << "Neural Network";
         info.helpText = "Represents a trained CNN model.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/CnnModelBlock.qml";
         info.visibilityRequirements << VisibilityRequirement::InvisibleBlock;

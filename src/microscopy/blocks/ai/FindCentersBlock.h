@@ -15,7 +15,7 @@ public:
         static BlockInfo info;
         info.typeName = "Find Centers";
         info.nameInUi = "Dot Finder";
-        info.category << "Microscopy" << "Actions";
+        info.category << "Actions";
         info.helpText = "[Not implemented yet]<br>"
                         "Finds nuclei centers by looking for connected components in the "
                         "provided image and stores their centroids in connected dataset.";

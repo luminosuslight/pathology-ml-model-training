@@ -23,7 +23,6 @@ public:
         static BlockInfo info;
         info.typeName = "Tissue Image";
         info.nameInUi = "Image";
-        info.category << "Microscopy";
         info.helpText = "An image that can be displayed in a view and / or used for calculations.<br><br>"
                         "It can be grayscale (8 or 16bit, for example one channel of a "
                         "multi-channel tissue image) or RGB colored (for example the result of a "

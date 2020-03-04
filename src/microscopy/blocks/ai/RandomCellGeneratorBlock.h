@@ -17,7 +17,7 @@ public:
         static BlockInfo info;
         info.typeName = "Random Cell Generator";
         info.nameInUi = "Random Cells";
-        info.category << "Microscopy" << "Neural Network";
+        info.category << "Neural Network";
         info.helpText = "Generates random cell positions and shapes and stores them "
                         "in the connected dataset.<br><br>"
                         "This can then be rendered using the <i>Cell Renderer</i> and used as "

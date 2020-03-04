@@ -14,7 +14,7 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Training Data";
-        info.category << "Microscopy" << "Neural Network";
+        info.category << "Neural Network";
         info.helpText = "Points to a .cbor file that contains the input and target images "
                         "to train a CNN.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/TrainingDataBlock.qml";

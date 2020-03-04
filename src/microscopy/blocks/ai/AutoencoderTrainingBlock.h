@@ -18,7 +18,7 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Autoencoder Training";
-        info.category << "Microscopy" << "Neural Network";
+        info.category << "Neural Network";
         info.helpText = "Allows the training of a new autoencoder model.<br><br>"
                         "The epoch count is the maximum before stopping the training process. "
                         "If the validation loss increases before that, the training is stopped "

@@ -18,7 +18,7 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Cell Renderer";
-        info.category << "Microscopy" << "Neural Network";
+        info.category << "Neural Network";
         info.helpText = "Draws the given cells on an image to either simulate an "
                         "input or a targeted output of a neural network.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/CellRendererBlock.qml";
