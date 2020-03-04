@@ -208,7 +208,7 @@ def predict(model_id, img_hash, left, top, right, bottom):
     return result_cbor, 200
 
 
-@app.route('/model/<model_id>/encode/<img_hash>', methods=['GET'])
+@app.route('/model/<model_id>/encode/<img_hash>', methods=['POST'])
 def apply_autoencoder(model_id, img_hash):
     model = TrainedAutoencoder('models/' + model_id + '/input')
     raw_data = request.get_data()
