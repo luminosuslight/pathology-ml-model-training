@@ -10,19 +10,19 @@ class Autoencoder(nn.Module):
         self.decode = True
 
         self.encoder = nn.Sequential(
-            conv_layer(3, 8),  # 8, 64, 64
-            nn.AvgPool2d(2, ceil_mode=True),  # 8, 32, 32
-            conv_layer(8, 8),  # 8, 32, 32
-            nn.AvgPool2d(2, ceil_mode=True),  # 8, 16, 16 -> 2048
+            conv_layer(3, 8),  # 8, 32, 32
+            nn.AvgPool2d(2, ceil_mode=True),  # 8, 16, 16
+            conv_layer(8, 8),  # 8, 16, 16
+            nn.AvgPool2d(2, ceil_mode=True),  # 8, 8, 8 -> 512
             Flatten(),
-            nn.Linear(8*16*16, 128))
+            nn.Linear(8*8*8, 4))
         self.decoder = nn.Sequential(
-            nn.Linear(128, 8*16*16),
-            ResizeBatch(8, 16, 16),
-            PixelShuffle_ICNR(8, 8),  # 8*32*32
+            nn.Linear(4, 8*8*8),
+            ResizeBatch(8, 8, 8),
+            PixelShuffle_ICNR(8, 8),  # 8*16*16
             nn.ReLU(True),
             conv_layer(8, 8),
-            PixelShuffle_ICNR(8, 8),  # 8*64*64
+            PixelShuffle_ICNR(8, 8),  # 8*16*16
             conv_layer(8, 3))
 
     def forward(self, x):
@@ -48,8 +48,8 @@ class CellAutoencoderItemList(ImageImageList):
             self.current_image = open_image(filename)
             self.current_image_filename = filename
         # pos is (x, y) center position of a cell on the provided image,
-        # we will take a 64x64px patch from this location:
+        # we will take a 32x32px patch from this location:
         x = int(pos[0])
         y = int(pos[1])
         # note: fast.ai Image dimensions are (c, y, x)
-        return Image(self.current_image.data[:, y-32:y+32, x-32:x+32])
+        return Image(self.current_image.data[:, y-16:y+16, x-16:x+16])

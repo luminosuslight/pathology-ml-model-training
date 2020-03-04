@@ -19,10 +19,9 @@ class TrainedAutoencoder(object):
             TrainedAutoencoder.progress = i / len(cell_positions)
             x = int(pos[0])
             y = int(pos[1])
-            p, prediction, b = self.learn.predict(img.data[:, y-32:y+32, x-32:x+32])
-            feature_vectors.append(prediction)
+            p, prediction, b = self.learn.predict(img.data[:, y-16:y+16, x-16:x+16])
+            feature_vectors.append([float(x) for x in prediction])
 
-        print("Prediction shape:", feature_vectors[0].shape)
         TrainedAutoencoder.progress = 0.0
         return feature_vectors
 
