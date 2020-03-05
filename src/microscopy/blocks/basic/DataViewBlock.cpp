@@ -69,6 +69,12 @@ DataViewBlock::DataViewBlock(CoreController* controller, QString uid)
     connect(&m_yDimension, &StringAttribute::valueChanged, this, &DataViewBlock::updateDimensions);
 }
 
+void DataViewBlock::onCreatedByUser() {
+    // this is a new block, assign a view name:
+    const int number = m_controller->manager<ViewManager>("viewManager")->views().size();
+    static_cast<StringAttribute*>(attr("label"))->setValue("View " + QString::number(number));
+}
+
 QList<QObject*> DataViewBlock::channelBlocks() const {
     QList<QObject*> list;
     for (auto block: m_channelBlocks) {

@@ -39,6 +39,8 @@ public:
 
     explicit DataViewBlock(CoreController* controller, QString uid);
 
+    void onCreatedByUser() override;
+
     struct ViewArea {
         double left = 0.0;
         double right = 0.0;

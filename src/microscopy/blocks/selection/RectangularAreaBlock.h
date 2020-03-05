@@ -10,6 +10,8 @@ class RectangularAreaBlock : public InOutBlock {
 
     Q_OBJECT
 
+    Q_PROPERTY(DataViewBlock* view READ view NOTIFY viewChanged)
+
 public:
 
     static bool s_registered;
@@ -35,9 +37,12 @@ public:
     void onCreatedByUser() override;
 
 signals:
+    void viewChanged();
 
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
+
+    DataViewBlock* view() const;
 
     bool isAssignedTo(QString uid) const;
 

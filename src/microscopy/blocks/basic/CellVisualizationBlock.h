@@ -14,6 +14,7 @@ class CellVisualizationBlock : public OneInputBlock {
     Q_OBJECT
 
     Q_PROPERTY(QObject* database READ databaseQml NOTIFY databaseChanged)
+    Q_PROPERTY(DataViewBlock* view READ view NOTIFY viewChanged)
     Q_PROPERTY(QVector<double> xPositions READ xPositions NOTIFY positionsChanged)
     Q_PROPERTY(QVector<double> yPositions READ yPositions NOTIFY positionsChanged)
     Q_PROPERTY(QVector<double> colorValues READ colorValues NOTIFY positionsChanged)
@@ -47,6 +48,7 @@ public:
 
 signals:
     void databaseChanged();
+    void viewChanged();
     void positionsChanged();
 
 public slots:
@@ -54,6 +56,7 @@ public slots:
 
     QObject* databaseQml() const;
     CellDatabaseBlock* database() const;
+    DataViewBlock* view() const;
 
     QSListModel* visibleCells() { return &m_visibleCells; }
 
