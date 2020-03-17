@@ -34,11 +34,13 @@ CellVisualizationBlock::CellVisualizationBlock(CoreController* controller, QStri
 
     connect(m_controller->projectManager(), &ProjectManager::projectLoadingFinished, this, [this]() {
         m_view = m_controller->blockManager()->getBlockByUid<DataViewBlock>(m_assignedView);
+        emit viewChanged();
         updateCells();
     });
 
     connect(&m_assignedView, &StringAttribute::valueChanged, this, [this]() {
         m_view = m_controller->blockManager()->getBlockByUid<DataViewBlock>(m_assignedView);
+        emit viewChanged();
         updateCells();
         emit m_controller->manager<ViewManager>("viewManager")->visualizeAssignmentChanged();
     });
@@ -69,6 +71,10 @@ QObject* CellVisualizationBlock::databaseQml() const {
 CellDatabaseBlock* CellVisualizationBlock::database() const {
     if (!m_inputNode->isConnected()) return nullptr;
     return m_lastDb;
+}
+
+DataViewBlock* CellVisualizationBlock::view() const {
+    return m_view;
 }
 
 void CellVisualizationBlock::updateCells() {

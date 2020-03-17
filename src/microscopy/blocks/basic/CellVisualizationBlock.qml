@@ -6,7 +6,7 @@ import "qrc:/core/ui/controls"
 BlockBase {
     id: root
     width: block.attr("colorFeature").val === "Solid" ? 110*dp : 160*dp
-    height: 110*dp
+    height: 140*dp
     settingsComponent: settings
 
     StretchColumn {
@@ -61,11 +61,26 @@ BlockBase {
             }
         }
 
+        BlockRow {
+            AttributeOptionPicker {
+                attr: block.attr("assignedView")
+                optionListGetter: function () { return viewManager.views }
+                optionToDisplayText: function (option) {
+                    return option.attr("label").val
+                }
+                onOptionSelected: function (option) {
+                    block.attr("assignedView").val = option.getUid()
+                }
+                displayText: block.view ? "→ " + block.view.attr("label").val : "unknown"
+                openToLeft: true
+            }
+        }
+
         DragArea {
             InputNodeCommand {
                 node: block.node("inputNode")
             }
-            text: "Vis  "
+            text: "Vis"
             OutputNodeCommand {
                 node: block.node("selection")
                 suggestions: ["Feature Setter"]
@@ -86,18 +101,6 @@ BlockBase {
                 text: "Clear Selection"
                 allUpperCase: false
                 onPress: block.clearSelection()
-            }
-
-            Repeater {
-                model: viewManager.views
-                BlockRow {
-                    ButtonSideLine {
-                        text: "View " + (index + 1)
-                        allUpperCase: false
-                        marked: block.attr("assignedView").val === modelData.getUid()
-                        onPress: block.attr("assignedView").val = modelData.getUid()
-                    }
-                }
             }
         }
     }  // end Settings Component

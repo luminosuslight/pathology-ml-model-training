@@ -202,7 +202,7 @@ BlockBase {
                         }
                     }
                     StretchText {
-                        text: "View " + (index + 1)
+                        text: modelData.attr("label").val
                     }
                 }
             }

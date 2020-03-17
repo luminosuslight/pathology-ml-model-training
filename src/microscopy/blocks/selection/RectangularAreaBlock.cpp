@@ -34,10 +34,12 @@ RectangularAreaBlock::RectangularAreaBlock(CoreController* controller, QString u
 
     connect(m_controller->projectManager(), &ProjectManager::projectLoadingFinished, this, [this]() {
         m_view = m_controller->blockManager()->getBlockByUid<DataViewBlock>(m_assignedView);
+        emit viewChanged();
         update();
     });
     connect(&m_assignedView, &StringAttribute::valueChanged, this, [this]() {
         m_view = m_controller->blockManager()->getBlockByUid<DataViewBlock>(m_assignedView);
+        emit viewChanged();
         update();
         emit m_controller->manager<ViewManager>("viewManager")->areaAssignmentChanged();
     });
@@ -49,6 +51,10 @@ void RectangularAreaBlock::onCreatedByUser() {
     if (!views.isEmpty()) {
         m_assignedView = views.first()->getUid();
     }
+}
+
+DataViewBlock* RectangularAreaBlock::view() const {
+    return m_view;
 }
 
 bool RectangularAreaBlock::isAssignedTo(QString uid) const {

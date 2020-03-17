@@ -7,8 +7,7 @@ import "qrc:/core/ui/controls"
 BlockBase {
     id: root
     width: 130*dp
-    height: 3*20*dp + 30*dp
-    settingsComponent: settings
+    height: 3*20*dp + 60*dp
 
     StretchColumn {
         anchors.fill: parent
@@ -52,6 +51,21 @@ BlockBase {
             }
         }
 
+        BlockRow {
+            AttributeOptionPicker {
+                attr: block.attr("assignedView")
+                optionListGetter: function () { return viewManager.views }
+                optionToDisplayText: function (option) {
+                    return option.attr("label").val
+                }
+                onOptionSelected: function (option) {
+                    block.attr("assignedView").val = option.getUid()
+                }
+                displayText: block.view ? "→ " + block.view.attr("label").val : "unknown"
+                openToLeft: true
+            }
+        }
+
         DragArea {
             text: "Area"
 
@@ -74,27 +88,4 @@ BlockBase {
             }
         }
     }
-
-    // -------------------------- Settings ----------------------------
-
-    Component {
-        id: settings
-        StretchColumn {
-            leftMargin: 15*dp
-            rightMargin: 15*dp
-            defaultSize: 30*dp
-
-            Repeater {
-                model: viewManager.views
-                BlockRow {
-                    ButtonSideLine {
-                        text: "View " + (index + 1)
-                        allUpperCase: false
-                        marked: block.attr("assignedView").val === modelData.getUid()
-                        onPress: block.attr("assignedView").val = modelData.getUid()
-                    }
-                }
-            }
-        }
-    }  // end Settings Component
 }
