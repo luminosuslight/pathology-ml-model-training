@@ -2,6 +2,7 @@
 
 #include "core/CoreController.h"
 #include "core/manager/BlockList.h"
+#include "core/manager/GuiManager.h"
 #include "core/connections/Nodes.h"
 #include "microscopy/blocks/basic/TissueImageBlock.h"
 
@@ -14,6 +15,7 @@ bool MarkerBasedRegionGrowBlock::s_registered = BlockList::getInstance().addBloc
 
 MarkerBasedRegionGrowBlock::MarkerBasedRegionGrowBlock(CoreController* controller, QString uid)
     : OneInputBlock(controller, uid)
+    , m_progress(this, "progress", 0.0)
 {
     m_maskNode = createInputNode("mask");
 }
@@ -41,13 +43,16 @@ void MarkerBasedRegionGrowBlock::run() {
 
         auto begin = HighResTime::now();
         for (int watershedStep = 1; watershedStep < maxSize; ++watershedStep) {
+            m_progress = double(watershedStep) / 60;  // 60 is typically the max cell size, doesn't hurt if not
             const int cellsChanged = regionGrowStep(watershedStep, cells, db, imageBlock);
             if (cellsChanged <= 0) {
                 break;
             }
         }
         qDebug() << "Watershed" << HighResTime::getElapsedSecAndUpdate(begin);
+        m_controller->guiManager()->showToast("Region Grow completed ✓");
         m_isRunning = false;
+        m_progress = 0.0;
     });
 #endif
 }

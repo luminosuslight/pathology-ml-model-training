@@ -44,6 +44,7 @@ protected:
     QPointer<NodeBase> m_maskNode;
 
     bool m_isRunning = false;
+    DoubleAttribute m_progress;
     QHash<int, std::array<int, CellDatabaseConstants::RADII_COUNT>> m_radiiIntermediate;
     QHash<int, std::array<bool, CellDatabaseConstants::RADII_COUNT>> m_radiiFinished;
 

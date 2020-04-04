@@ -38,6 +38,12 @@ BlockBase {
 
         DragArea {
             text: "Region Grow"
+
+            DotProgressIndicator {
+                anchors.right: parent.right
+                anchors.rightMargin: 5*dp
+                progress: block.attr("progress").val
+            }
         }
     }
 }
