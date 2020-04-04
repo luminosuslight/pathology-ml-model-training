@@ -460,7 +460,7 @@ Window {
             if (url.indexOf(".jpg") !== -1 || url.indexOf(".jpeg") !== -1
                     || url.indexOf(".JPG") !== -1 || url.indexOf(".JPEG") !== -1) {
                 block = controller.blockManager().addBlockByNameQml("Image")
-                block.filePath = url
+                block.attr("filePath").val = url
             } else if (url.indexOf(".mp3") !== -1 || url.indexOf(".wav") !== -1
                        || url.indexOf(".MP3") !== -1 || url.indexOf(".WAV") !== -1) {
                 block = controller.blockManager().addBlockByNameQml("Audio Playback")

@@ -1,13 +1,13 @@
 #include "BackendManager.h"
 
 #include "core/CoreController.h"
-#include "core/manager/UpdateManager.h"
 #include "core/manager/GuiManager.h"
 #include "core/manager/FileSystemManager.h"
 #include "core/manager/ProjectManager.h"
 #include "core/helpers/qstring_literal.h"
 
 #include <QQmlApplicationEngine>
+#include <QNetworkReply>
 
 #include <functional>
 
@@ -16,7 +16,7 @@ BackendManager::BackendManager(CoreController* controller)
     : QObject(controller)
     , ObjectWithAttributes(this)
     , m_controller(controller)
-    , m_nam(m_controller->updateManager()->nam())
+    , m_nam(m_controller->networkAccessManager())
     , m_serverUrl(this, "serverUrl", "?")
     , m_version(this, "version", "", /*persistent*/ false)
     , m_secureConnection(this, "secureConnection", false, /*persistent*/ false)
