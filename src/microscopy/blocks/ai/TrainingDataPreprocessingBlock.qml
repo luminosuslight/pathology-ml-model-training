@@ -93,6 +93,8 @@ BlockBase {
                     id: targetImageArea
                     width: 256
                     height: 256
+                    inputWidth: inputImageArea.implicitWidth
+                    inputHeight: inputImageArea.implicitHeight
                     anchors.centerIn: parent
                     clip: true
                     xOffset: root.xOffset

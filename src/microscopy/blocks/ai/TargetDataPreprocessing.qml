@@ -8,6 +8,9 @@ Rectangle {
     id: root
     color: "black"
 
+    property real inputWidth
+    property real inputHeight
+
     property real xOffset: 0.0
     property real yOffset: 0.0
     property real contentRotation: 0.0
@@ -68,8 +71,8 @@ Rectangle {
 
     ShaderEffect {
         id: shaderEffect
-        width: Math.max(image1.width, image2.width, image3.width)
-        height: Math.max(image1.height, image2.height, image3.height)
+        width: inputWidth
+        height: inputHeight
         x: (block.area().x + (Math.min(block.area().width, width) - root.width) * xOffset) * -1
         y: (block.area().y + (Math.min(block.area().height, height) - root.height) * yOffset) * -1
         property variant src1: source1
