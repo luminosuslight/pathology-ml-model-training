@@ -30,7 +30,7 @@ DataViewBlock::DataViewBlock(CoreController* controller, QString uid)
     , m_xDimension(this, "xDimension", "x")
     , m_yDimension(this, "yDimension", "y")
 {
-    qmlRegisterType<QSListModel>();
+    qmlRegisterAnonymousType<QSListModel>("Luminosus", 1);
 
     connect(m_controller->blockManager(), &BlockManager::blockInstanceCountChanged,
             this, &DataViewBlock::updateChannelBlocks);

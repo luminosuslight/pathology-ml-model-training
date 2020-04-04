@@ -12,7 +12,7 @@ ViewManager::ViewManager(CoreController* controller)
     , m_dataViewHeight(this, "dataViewHeight", 400, 0, std::numeric_limits<int>::max())
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
-    qmlRegisterType<DataViewBlock>();
+    qmlRegisterAnonymousType<DataViewBlock>("Luminosus", 1);
 
     connect(m_controller->blockManager(), &BlockManager::blockInstanceCountChanged,
             this, &ViewManager::updateViews);
