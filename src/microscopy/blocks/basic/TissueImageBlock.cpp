@@ -4,7 +4,6 @@
 #include "core/manager/BlockList.h"
 #include "core/manager/BlockManager.h"
 #include "core/manager/FileSystemManager.h"
-#include "core/manager/UpdateManager.h"
 #include "core/manager/ProjectManager.h"
 #include "core/connections/Nodes.h"
 
