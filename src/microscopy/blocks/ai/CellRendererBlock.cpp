@@ -117,5 +117,4 @@ void CellRendererBlock::updateFeatureMax() {
     if (m_maxFeatureValue == 0.0) {
         m_maxFeatureValue = 1.0;
     }
-    qDebug() << m_feature << m_maxFeatureValue;
 }

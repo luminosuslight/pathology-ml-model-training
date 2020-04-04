@@ -100,6 +100,7 @@ def train_unet(path, base_model_weights, epochs):
     learn.recorder.plot_losses(return_fig=True).savefig(path/'losses_fine.png')
     learn.recorder.plot_lr(return_fig=True).savefig(path/'learning_rate_fine.png')
     #learn.recorder.plot_metrics(return_fig=True).savefig(path/'metrics_fine.png')
+    # FIXME: close figures to close memory leak
     print("Saving...")
     with open(path/'trained_model.pth', 'wb') as file:
         learn.save(file)  # save for later finetuning
