@@ -5,12 +5,12 @@
 #include "core/helpers/ObjectWithAttributes.h"
 
 #include <QObject>
-#include <QNetworkAccessManager>
 #include <QCborMap>
 #include <QRect>
 #include <QCborArray>
 
 class CoreController;
+class QNetworkAccessManager;
 
 class BackendManager : public QObject, public ObjectWithAttributes {
 

@@ -3,6 +3,7 @@
 #include "core/CoreController.h"
 #include "core/manager/BlockList.h"
 #include "core/manager/BlockManager.h"
+#include "core/manager/StatusManager.h"
 #include "core/connections/Nodes.h"
 
 #include "microscopy/manager/BackendManager.h"
@@ -44,6 +45,9 @@ void CnnInferenceBlock::runInference(QImage image) {
 #ifdef THREADS_ENABLED
     QtConcurrent::run([this, image]() {
         qDebug() << "runInference";
+        Status* status = m_controller->manager<StatusManager>("statusManager")->getStatus(getUid());
+        status->m_title = "Compressing Image...";
+        status->m_running = true;
         auto begin = HighResTime::now();
         m_networkProgress = 0.1;
         QByteArray imageData;
@@ -77,11 +81,16 @@ QRect CnnInferenceBlock::area() const {
 }
 
 void CnnInferenceBlock::doInference(QByteArray imageData) {
-    m_backend->uploadFile(imageData, [this](double progress) {
+    Status* status = m_controller->manager<StatusManager>("statusManager")->getStatus(getUid());
+    status->m_title = "Uploading Image...";
+    status->m_running = false;
+    m_backend->uploadFile(imageData, [this, status](double progress) {
+        status->m_progress = progress;
         m_networkProgress = progress;
     }, [this](QString serverHash) {
         m_networkProgress = 0.0;
         m_running = true;
+        m_controller->manager<StatusManager>("statusManager")->removeStatus(getUid());
 
         QString modelId = "default";
         if (m_inputNode->isConnected()) {

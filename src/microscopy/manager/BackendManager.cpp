@@ -4,10 +4,12 @@
 #include "core/manager/GuiManager.h"
 #include "core/manager/FileSystemManager.h"
 #include "core/manager/ProjectManager.h"
+#include "core/manager/StatusManager.h"
 #include "core/helpers/qstring_literal.h"
 
 #include <QQmlApplicationEngine>
 #include <QNetworkReply>
+#include <QNetworkAccessManager>
 
 #include <functional>
 
@@ -23,8 +25,6 @@ BackendManager::BackendManager(CoreController* controller)
     , m_inferenceProgress(this, "inferenceProgress", 0.0, 0.0, 1.0, /*persistent*/ false)
     , m_trainingProgress(this, "trainingProgress", 0.0, 0.0, 1.0, /*persistent*/ false)
 {
-    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
-
 #ifdef SSL_ENABLED
     QSslConfiguration sslConfiguration = QSslConfiguration::defaultConfiguration();
     QFile certFile(QStringLiteral(":/core/data/luminosus_websocket.cert"));
@@ -100,8 +100,18 @@ void BackendManager::updateInferenceProgress() {
     auto reply = m_nam->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         QString val = reply->readAll();
-        m_inferenceProgress = val.toDouble();
         reply->deleteLater();
+        m_inferenceProgress = val.toDouble();
+        if (m_inferenceProgress > 0) {
+            Status* status = m_controller->manager<StatusManager>("statusManager")->getStatus("inferenceProgress");
+            status->m_title = "Applying Neural Network...";
+            status->m_progress = m_inferenceProgress.getValue();
+        } else if (m_controller->manager<StatusManager>("statusManager")->hasStatus("inferenceProgress")) {
+            Status* status = m_controller->manager<StatusManager>("statusManager")->getStatus("inferenceProgress");
+            status->m_progress = 0.0;
+            status->m_title = "Inference Completed ✓";
+            status->closeIn(3000);
+        }
     });
 }
 
@@ -111,8 +121,18 @@ void BackendManager::updateTrainingProgress() {
     auto reply = m_nam->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         QString val = reply->readAll();
-        m_trainingProgress = val.toDouble();
         reply->deleteLater();
+        m_trainingProgress = val.toDouble();
+        if (m_trainingProgress > 0) {
+            Status* status = m_controller->manager<StatusManager>("statusManager")->getStatus("trainingProgress");
+            status->m_title = "Training Neural Network...";
+            status->m_progress = m_trainingProgress.getValue();
+        } else if (m_controller->manager<StatusManager>("statusManager")->hasStatus("trainingProgress")) {
+            Status* status = m_controller->manager<StatusManager>("statusManager")->getStatus("trainingProgress");
+            status->m_progress = 0.0;
+            status->m_title = "Training Completed ✓";
+            status->closeIn(3000);
+        }
     });
 }
 

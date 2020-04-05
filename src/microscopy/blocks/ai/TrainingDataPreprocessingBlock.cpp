@@ -4,6 +4,7 @@
 #include "core/manager/BlockList.h"
 #include "core/manager/BlockManager.h"
 #include "core/manager/FileSystemManager.h"
+#include "core/manager/StatusManager.h"
 #include "core/connections/Nodes.h"
 
 #include "microscopy/blocks/ai/TrainingDataBlock.h"
@@ -61,6 +62,8 @@ void TrainingDataPreprocessingBlock::createNewDataFile(QString filename) {
     m_currentDataFilename = filename;
     m_inputImages.clear();
     m_targetImages.clear();
+    Status* status = m_controller->manager<StatusManager>("statusManager")->getStatus(getUid());
+    status->m_title = "Generating Patches...";
 }
 
 void TrainingDataPreprocessingBlock::addInputImage(QImage image) {
@@ -98,6 +101,9 @@ void TrainingDataPreprocessingBlock::writeDataFile() {
     }
     block->focus();
     block->path().setValue(filename);
+    Status* status = m_controller->manager<StatusManager>("statusManager")->getStatus(getUid());
+    status->m_title = "Training Data Complete ✓";
+    status->closeIn(3000);
 }
 
 QRect TrainingDataPreprocessingBlock::area() const {

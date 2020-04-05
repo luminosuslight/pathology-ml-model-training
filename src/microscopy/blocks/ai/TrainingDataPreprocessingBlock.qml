@@ -57,6 +57,7 @@ BlockBase {
         targetImageArea.grabToImage(function(result) {
             block.addTargetImage(result.image)
             alreadyGenerated = alreadyGenerated + 1
+            statusManager.getStatus(block.getUid()).attr("progress").val = alreadyGenerated / block.attr("imagesToGenerate").val
             if (alreadyGenerated < block.attr("imagesToGenerate").val) {
                 refresh()
             } else {

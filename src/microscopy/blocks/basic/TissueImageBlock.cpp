@@ -5,6 +5,7 @@
 #include "core/manager/BlockManager.h"
 #include "core/manager/FileSystemManager.h"
 #include "core/manager/ProjectManager.h"
+#include "core/manager/StatusManager.h"
 #include "core/connections/Nodes.h"
 
 #include "microscopy/manager/ViewManager.h"
@@ -172,33 +173,48 @@ void TissueImageBlock::removeFromView(QString uid) {
 void TissueImageBlock::upload() {
     if (m_imageDataPath.getValue().isEmpty()) return;
 
+    Status* status = m_controller->manager<StatusManager>("statusManager")->getStatus(getUid());
+    status->m_title = "Uploading Image...";
+
     auto dao = m_controller->dao();
     const auto data = dao->loadLocalFile(dao->withoutFilePrefix(m_imageDataPath));
-    m_backend->uploadFile(data, [this](double progress) {
+    m_backend->uploadFile(data, [this, status](double progress) {
+        status->m_progress = progress;
         m_networkProgress = progress;
-    }, [this](QString serverHash) {
+    }, [this, status](QString serverHash) {
         m_networkProgress = 0.0;
+        status->m_progress = 1.0;
         if (serverHash == m_hashOfSelectedFile) {
             m_remotelyAvailable = true;
+            status->m_title = "Uploading Image Completed ✓";
         } else {
             m_remotelyAvailable = false;
             qWarning() << "Something went wrong during upload, hashs do not match.";
+            status->m_title = "Error During Upload ✗";
         }
+        status->closeIn(3000);
     });
 }
 
 void TissueImageBlock::download() {
     if (m_hashOfSelectedFile.getValue().isEmpty()) return;
+    Status* status = m_controller->manager<StatusManager>("statusManager")->getStatus(getUid());
+    status->m_title = "Downloading Image...";
 
-    m_backend->downloadFile(m_hashOfSelectedFile, [this](double progress) {
+    m_backend->downloadFile(m_hashOfSelectedFile, [this, status](double progress) {
+        status->m_progress = progress;
         m_networkProgress = progress;
-    }, [this](QByteArray data) {
+    }, [this, status](QByteArray data) {
         m_networkProgress = 0.0;
+        status->m_title = "Decompressing Image...";
         auto dao = m_controller->dao();
         dao->saveFile("downloads", m_hashOfSelectedFile, data);
         QString imageDataPath = "file://" + dao->getDataDir("downloads") + m_hashOfSelectedFile;
         m_imageDataPath = imageDataPath;
         loadImageData();
+        status->m_progress = 1.0;
+        status->m_title = "Loading Image Completed ✓";
+        status->closeIn(1000);
     });
 }
 
@@ -222,9 +238,14 @@ void TissueImageBlock::loadLocalFile(QString filePath) {
     m_imageDataPath = filePath;
     m_image = QImage();
 
+    Status* status = m_controller->manager<StatusManager>("statusManager")->getStatus(getUid());
+    status->m_title = "Loading Image...";
+    status->m_running = true;
+
 #ifdef THREADS_ENABLED
     QtConcurrent::run([this](){
         loadImageData();
+        m_controller->manager<StatusManager>("statusManager")->removeStatus(getUid());
     });
 #endif
 }

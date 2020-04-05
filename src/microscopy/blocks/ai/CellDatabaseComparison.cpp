@@ -2,6 +2,7 @@
 
 #include "core/CoreController.h"
 #include "core/manager/BlockList.h"
+#include "core/manager/StatusManager.h"
 #include "core/connections/Nodes.h"
 #include "microscopy/blocks/basic/CellDatabaseBlock.h"
 
@@ -56,6 +57,10 @@ void CellDatabaseComparison::update() {
     const QVector<int> candidateCells = m_inputNode->constData().ids();
     CellDatabaseBlock* candidateDb = m_inputNode->constData().referenceObject<CellDatabaseBlock>();
     if (!candidateDb) return;
+
+    Status* status = m_controller->manager<StatusManager>("statusManager")->getStatus(getUid());
+    status->m_title = "Comparing Datasets...";
+    status->m_running = true;
 
     m_instanceCountDifference = candidateCells.size() - gtCells.size();
 
@@ -142,4 +147,6 @@ void CellDatabaseComparison::update() {
     m_falsePositivesNode->data().setReferenceObject(candidateDb);
     m_falsePositivesNode->data().setIds(falsePositives);
     m_falsePositivesNode->dataWasModifiedByBlock();
+
+    m_controller->manager<StatusManager>("statusManager")->removeStatus(getUid());
 }

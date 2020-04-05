@@ -25,5 +25,6 @@
         <file>ui/app/CellVisualizationUi.qml</file>
         <file>ui/app/TissueChannelUi.qml</file>
         <file>ui/settings/BackendSettings.qml</file>
+        <file>ui/app/StatusList.qml</file>
     </qresource>
 </RCC>

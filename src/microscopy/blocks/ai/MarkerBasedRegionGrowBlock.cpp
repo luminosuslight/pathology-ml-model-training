@@ -3,6 +3,7 @@
 #include "core/CoreController.h"
 #include "core/manager/BlockList.h"
 #include "core/manager/GuiManager.h"
+#include "core/manager/StatusManager.h"
 #include "core/connections/Nodes.h"
 #include "microscopy/blocks/basic/TissueImageBlock.h"
 
@@ -21,9 +22,6 @@ MarkerBasedRegionGrowBlock::MarkerBasedRegionGrowBlock(CoreController* controlle
 }
 
 void MarkerBasedRegionGrowBlock::run() {
-    if (m_isRunning) return;
-    m_isRunning = true;
-
     // TODO: this is dangerous and definitely not thread safe
 
 #ifdef THREADS_ENABLED
@@ -35,6 +33,12 @@ void MarkerBasedRegionGrowBlock::run() {
         if (!db) return;
         auto* imageBlock = m_maskNode->getConnectedBlock<TissueImageBlock>();
         if (!imageBlock) return;
+
+        if (m_isRunning) return;
+        m_isRunning = true;
+        Status* status = m_controller->manager<StatusManager>("statusManager")->getStatus(getUid());
+        status->m_title = "Region Grow...";
+
         imageBlock->preparePixelAccess();
 
         const int maxSize = 200;
@@ -44,6 +48,7 @@ void MarkerBasedRegionGrowBlock::run() {
         auto begin = HighResTime::now();
         for (int watershedStep = 1; watershedStep < maxSize; ++watershedStep) {
             m_progress = double(watershedStep) / 60;  // 60 is typically the max cell size, doesn't hurt if not
+            status->m_progress = double(watershedStep) / 60;
             const int cellsChanged = regionGrowStep(watershedStep, cells, db, imageBlock);
             if (cellsChanged <= 0) {
                 break;
@@ -53,6 +58,9 @@ void MarkerBasedRegionGrowBlock::run() {
         m_controller->guiManager()->showToast("Region Grow completed ✓");
         m_isRunning = false;
         m_progress = 0.0;
+        status->m_title = "Region Grow Complete ✓";
+        status->m_progress = 1.0;
+        status->closeIn(3000);
     });
 #endif
 }

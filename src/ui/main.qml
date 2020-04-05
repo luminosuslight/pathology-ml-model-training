@@ -193,6 +193,39 @@ Window {
         }
     }
 
+    // -------------------------------- Status List ---------------------------------
+
+    DarkBackgroundBlur {
+        width: 250*dp
+        height: statusList.implicitHeight
+        x: 40*dp
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 100*dp
+        blurSource: content
+
+        RectangularGlow {
+            anchors.fill: parent
+            visible: GRAPHICAL_EFFECTS_LEVEL >=2 && statusList.implicitHeight > 0
+            glowRadius: 6*dp
+            cornerRadius: glowRadius
+            spread: 0.03
+            color: Qt.rgba(0, 0, 0, 0.4)
+        }
+
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+            border.width: 1*dp
+            border.color: "#aaa"
+            visible: statusList.implicitHeight > 0
+        }
+
+        StatusList {
+            id: statusList
+            anchors.fill: parent
+        }
+    }
+
     // -------------------------------- Group Buttons ---------------------------------
 
     Loader {
