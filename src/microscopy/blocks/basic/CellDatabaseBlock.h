@@ -1,7 +1,7 @@
 #ifndef CELLDATABASEBLOCK_H
 #define CELLDATABASEBLOCK_H
 
-#include "core/block_basics/OneOutputBlock.h"
+#include "core/block_basics/InOutBlock.h"
 
 
 namespace CellDatabaseConstants {
@@ -14,7 +14,7 @@ namespace CellDatabaseConstants {
 using CellShape = std::array<float, CellDatabaseConstants::RADII_COUNT>;
 
 
-class CellDatabaseBlock : public OneOutputBlock {
+class CellDatabaseBlock : public InOutBlock {
 
     Q_OBJECT
 

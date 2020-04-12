@@ -46,7 +46,7 @@ QVector<T> bytesToVector(const QByteArray& data) {
 }
 
 CellDatabaseBlock::CellDatabaseBlock(CoreController* controller, QString uid)
-    : OneOutputBlock(controller, uid)
+    : InOutBlock(controller, uid)
     , m_features(this, "features")
     , m_count(this, "count", 0, 0, 999999, /*persistent*/ false)
 {
@@ -264,6 +264,7 @@ void CellDatabaseBlock::importCenterData(QCborMap data) {
     m_shapes.clear();
     m_shapes.resize(nucleusCount);
     m_count = nucleusCount;
+    emit existingDataChanged();
 }
 
 void CellDatabaseBlock::reserve(int count) {

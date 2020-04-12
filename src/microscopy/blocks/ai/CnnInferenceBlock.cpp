@@ -33,12 +33,18 @@ CnnInferenceBlock::CnnInferenceBlock(CoreController* controller, QString uid)
     m_input1Node = createInputNode("input1");
     m_input2Node = createInputNode("input2");
     m_input3Node = createInputNode("input3");
-
     m_areaNode = createInputNode("area");
+
+    m_outputImageNode = createOutputNode("outputImage");
 
     connect(m_input1Node, &NodeBase::connectionChanged, this, &CnnInferenceBlock::updateSources);
     connect(m_input2Node, &NodeBase::connectionChanged, this, &CnnInferenceBlock::updateSources);
     connect(m_input3Node, &NodeBase::connectionChanged, this, &CnnInferenceBlock::updateSources);
+
+    m_input1Node->enableImpulseDetection();
+    connect(m_input1Node, &NodeBase::impulseBegin, this, [this]() {
+        QTimer::singleShot(500, this, &CnnInferenceBlock::triggerInference);
+    });
 }
 
 void CnnInferenceBlock::runInference(QImage image) {
@@ -111,23 +117,32 @@ void CnnInferenceBlock::doInference(QByteArray imageData) {
             m_running = false;
 
             QString resultHash = cbor["outputImageHash"_q].toString();
-            auto* block = m_controller->blockManager()->addNewBlock<TissueImageBlock>();
-            if (!block) {
-                qWarning() << "Could not create TissueImageBlock.";
-                return;
-            }
-            block->focus();
-            block->onCreatedByUser();
-            static_cast<StringAttribute*>(block->attr("label"))->setValue("CNN Output");
-            block->loadRemoteFile(resultHash);
 
             auto centers = cbor["cellCenters"_q].toMap();
-            auto* database = m_controller->blockManager()->addNewBlock<CellDatabaseBlock>();
+            auto* database = m_outputNode->getConnectedBlock<CellDatabaseBlock>();
             if (!database) {
-                qWarning() << "Could not create CellDatabaseBlock.";
-                return;
+                database = m_controller->blockManager()->addNewBlock<CellDatabaseBlock>();
+                if (!database) {
+                    qWarning() << "Could not create CellDatabaseBlock.";
+                    return;
+                }
             }
             database->importCenterData(centers);
+
+            auto* imageBlock = m_outputImageNode->getConnectedBlock<TissueImageBlock>();
+            bool newImageBlockCreated = false;
+            if (!imageBlock) {
+                imageBlock = m_controller->blockManager()->addNewBlock<TissueImageBlock>();
+                if (!imageBlock) {
+                    qWarning() << "Could not create TissueImageBlock.";
+                    return;
+                }
+                newImageBlockCreated = true;
+            }
+            imageBlock->focus();
+            imageBlock->attribute<StringAttribute>("label")->setValue("CNN Output");
+            imageBlock->loadRemoteFile(resultHash);
+            if (newImageBlockCreated) imageBlock->onCreatedByUser();
         });
     });
 }

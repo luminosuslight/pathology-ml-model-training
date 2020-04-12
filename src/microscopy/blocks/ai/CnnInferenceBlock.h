@@ -37,6 +37,7 @@ public:
     explicit CnnInferenceBlock(CoreController* controller, QString uid);
 
 signals:
+    void triggerInference();
 
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
@@ -57,6 +58,8 @@ protected:
     QPointer<NodeBase> m_input2Node;
     QPointer<NodeBase> m_input3Node;
     QPointer<NodeBase> m_areaNode;
+
+    QPointer<NodeBase> m_outputImageNode;
 
     // runtime:
     VariantListAttribute m_inputSources;

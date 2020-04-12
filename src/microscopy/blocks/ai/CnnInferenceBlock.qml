@@ -10,6 +10,11 @@ BlockBase {
     width: 150*dp
     height: 7*30*dp + 150*dp
 
+    Connections {
+        target: block
+        onTriggerInference: captureInput()
+    }
+
     function captureInput() {
         inputImageArea.width = inputImageArea.implicitWidth
         inputImageArea.height = inputImageArea.implicitHeight
@@ -47,6 +52,9 @@ BlockBase {
             text: "Run ▻"
             allUpperCase: false
             onPress: captureInput()
+            OutputNodeCommand {
+                node: block.node("outputNode")
+            }
         }
 
         BlockRow {
@@ -64,6 +72,9 @@ BlockBase {
             }
             StretchText {
                 text: "Input 1 (Red)"
+            }
+            OutputNode {
+                node: block.node("outputImage")
             }
         }
 

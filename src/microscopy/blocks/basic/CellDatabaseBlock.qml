@@ -47,6 +47,10 @@ BlockBase {
 
         DragArea {
             text: "Dataset"
+
+            InputNodeCommand {
+                node: block.node("inputNode")
+            }
         }
     }
 
