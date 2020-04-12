@@ -7,8 +7,8 @@ import "qrc:/core/ui/controls"
 Rectangle {
     id: root
     color: "black"
-    width: block.areaSize()
-    height: block.areaSize()
+    width: block.attr("preferredWidth").val > 0 ? block.attr("preferredWidth").val : block.areaSize()
+    height: block.attr("preferredHeight").val > 0 ? block.attr("preferredHeight").val : block.areaSize()
     anchors.centerIn: parent
 
     property QtObject db: block.dbQml()

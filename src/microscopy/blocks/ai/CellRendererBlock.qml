@@ -14,9 +14,27 @@ BlockBase {
         "Mask": "qrc:/microscopy/blocks/ai/MaskRenderer.qml",
         "Center": "qrc:/microscopy/blocks/ai/CenterRenderer.qml",
         "Feature": "qrc:/microscopy/blocks/ai/FeatureRenderer.qml",
-        "Elongated": "qrc:/microscopy/blocks/ai/ElongatedRenderer.qml",
+        "Label <255": "qrc:/microscopy/blocks/ai/LabelRenderer.qml",
         "DAPI": "qrc:/microscopy/blocks/ai/DapiRenderer.qml",
         "LAMI": "qrc:/microscopy/blocks/ai/LamiRenderer.qml",
+    }
+
+    Connections {
+        target: block
+        onTriggerRendering: render()
+    }
+
+    function refresh() {
+        loader.active = false
+        loader.active = true
+    }
+
+    function render() {
+        block.updateFeatureMax()
+        refresh()
+        loader.item.grabToImage(function(result) {
+            block.saveRenderedImage(result.image, block.attr("renderType").val)
+        });
     }
 
     StretchColumn {
@@ -37,40 +55,58 @@ BlockBase {
         }
 
         BlockRow {
-            AttributeOptionPicker {
-                attr: block.attr("renderType")
-                optionListGetter: function () { return Object.keys(renderTypes) }
-                openToLeft: true
+            InputNode {
+                node: block.node("run")
             }
-
-            ButtonBottomLine {
-                text: "Refresh"
-                allUpperCase: false
-                onPress: {
-                    loader.active = false
-                    loader.active = true
-                }
-            }
-
             ButtonBottomLine {
                 text: "Save ▻"
                 allUpperCase: false
-                onPress: {
-                    block.updateFeatureMax()
-                    loader.item.grabToImage(function(result) {
-                        block.saveRenderedImage(result.image, block.attr("renderType").val)
-                    });
+                onPress: render()
+            }
+            OutputNode {
+                node: block.node("outputNode")
+            }
+        }
+
+        BlockRow {
+            Item {
+                implicitWidth: -1
+                TextInput {
+                    anchors.fill: parent
+                    anchors.leftMargin: 5*dp
+                    anchors.rightMargin: 5*dp
+                    clip: true
+                    text: block.attr("relativeOutputPath").val
+                    onDisplayTextChanged: {
+                        if (block.attr("relativeOutputPath").val !== displayText) {
+                            block.attr("relativeOutputPath").val = displayText
+                        }
+                    }
+                    hintText: "Output Path"
                 }
             }
         }
 
         BlockRow {
+            AttributeOptionPicker {
+                attr: block.attr("renderType")
+                optionListGetter: function () { return Object.keys(renderTypes) }
+                openToLeft: true
+            }
+            ButtonBottomLine {
+                text: "Refresh"
+                allUpperCase: false
+                onPress: refresh()
+            }
+        }
+
+        BlockRow {
             visible: (block.attr("renderType").val === "Feature")
+            onVisibleChanged: block.positionChanged()
             AttributeOptionPicker {
                 attr: block.attr("feature")
                 optionListGetter: function () { return block.availableFeatures() }
             }
-            onVisibleChanged: block.positionChanged()
         }
 
         BlockRow {
@@ -97,6 +133,15 @@ BlockBase {
             AttributeCheckbox {
                 width: 30*dp
                 attr: block.attr("smallNoise")
+            }
+        }
+
+        BlockRow {
+            InputNode {
+                node: block.node("referenceImage")
+            }
+            StretchText {
+                text: "Reference Image"
             }
         }
 

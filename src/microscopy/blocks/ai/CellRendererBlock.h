@@ -1,14 +1,14 @@
 #ifndef CELLRENDERERBLOCK_H
 #define CELLRENDERERBLOCK_H
 
-#include "core/block_basics/OneInputBlock.h"
+#include "core/block_basics/InOutBlock.h"
 
 #include <QImage>
 
 #include <random>
 
 
-class CellRendererBlock : public OneInputBlock {
+class CellRendererBlock : public InOutBlock {
 
     Q_OBJECT
 
@@ -30,6 +30,7 @@ public:
     explicit CellRendererBlock(CoreController* controller, QString uid);
 
 signals:
+    void triggerRendering();
 
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
@@ -45,14 +46,23 @@ public slots:
     QStringList availableFeatures() const;
     void updateFeatureMax();
 
+private slots:
+    void updateReferenceSize();
+
 protected:
     std::random_device m_rd;
     mutable std::default_random_engine m_engine;
+
+    QPointer<NodeBase> m_runNode;
+    QPointer<NodeBase> m_referenceImageNode;
 
     StringAttribute m_renderType;
     BoolAttribute m_largeNoise;
     BoolAttribute m_smallNoise;
     StringAttribute m_feature;
+    StringAttribute m_relativeOutputPath;
+    IntegerAttribute m_preferredWidth;
+    IntegerAttribute m_preferredHeight;
 
     // runtime:
     DoubleAttribute m_maxFeatureValue;
