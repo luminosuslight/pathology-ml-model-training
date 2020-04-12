@@ -1,7 +1,7 @@
 #ifndef TISSUEIMAGEBLOCK_H
 #define TISSUEIMAGEBLOCK_H
 
-#include "core/block_basics/OneOutputBlock.h"
+#include "core/block_basics/InOutBlock.h"
 
 #include <QImage>
 #include <QFileInfo>
@@ -9,7 +9,7 @@
 class BackendManager;
 
 
-class TissueImageBlock : public OneOutputBlock {
+class TissueImageBlock : public InOutBlock {
 
     Q_OBJECT
 
@@ -42,6 +42,7 @@ public:
 signals:
     void filenameChanged();
     void locallyAvailableChanged();
+    void imageLoaded();
 
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }

@@ -34,7 +34,7 @@ bool TissueImageBlock::s_registered = BlockList::getInstance().addBlock(TissueIm
 
 
 TissueImageBlock::TissueImageBlock(CoreController* controller, QString uid)
-    : OneOutputBlock(controller, uid)
+    : InOutBlock(controller, uid)
     , m_backend(m_controller->manager<BackendManager>("backendManager"))
     , m_selectedFilePath(this, "selectedFilePath", "")
     , m_hashOfSelectedFile(this, "hashOfSelectedFile", "")
@@ -76,6 +76,8 @@ TissueImageBlock::TissueImageBlock(CoreController* controller, QString uid)
             }
         }
     });
+
+    connect(this, &TissueImageBlock::imageLoaded, m_outputNode, &NodeBase::sendImpulse);
 }
 
 void TissueImageBlock::onCreatedByUser() {
@@ -95,7 +97,7 @@ void TissueImageBlock::deletedByUser() {
             m_controller->dao()->deleteLocalFile(m_uiFilePath);
         }
     }
-    OneOutputBlock::deletedByUser();
+    BlockBase::deletedByUser();
 }
 
 void TissueImageBlock::preparePixelAccess() {
@@ -291,6 +293,7 @@ void TissueImageBlock::loadImageData() {
         // -> we can show it directly:
         m_uiFilePath = m_controller->dao()->withoutFilePrefix(filePath);
         m_interpretAs16Bit = false;
+        emit imageLoaded();
     } else if (image.format() == QImage::Format_Grayscale16) {
         // We will convert this grascale 16 bit image to ARGB32
         // by storing the first (MSB) 8bit in the red 8bit channel
@@ -325,6 +328,7 @@ void TissueImageBlock::loadImageData() {
         }
         m_interpretAs16Bit = true;
         m_uiFilePath = m_controller->dao()->withoutFilePrefix(convertedFilePath);
+        emit imageLoaded();
     } else {
         qWarning() << "Image format not supported:" << image.format();
         m_uiFilePath = "";

@@ -56,6 +56,9 @@ BlockBase {
         DragArea {
             text: block.filename.slice(0, 20) || "Tissue Image"
 
+            InputNode {
+                node: block.node("inputNode")
+            }
             AttributeDotColorPicker {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
