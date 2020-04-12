@@ -14,6 +14,12 @@
 #include <functional>
 
 
+inline QString md5(QByteArray input) {
+    QString result = QString(QCryptographicHash::hash(input, QCryptographicHash::Md5).toHex());
+    return result;
+}
+
+
 BackendManager::BackendManager(CoreController* controller)
     : QObject(controller)
     , ObjectWithAttributes(this)
@@ -149,18 +155,26 @@ void BackendManager::checkFile(QString hash, std::function<void (bool)> onSucces
 }
 
 void BackendManager::uploadFile(QByteArray data, std::function<void (double)> onProgress, std::function<void (QString)> onSuccess) {
-    QNetworkRequest request;
-    request.setUrl(QUrl(m_serverUrl + "/data"));
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
-    auto reply = m_nam->post(request, data);
-    connect(reply, &QNetworkReply::uploadProgress, this, [onProgress](qint64 bytesSent, qint64 bytesTotal) {
-        double progress = bytesTotal ? (double(bytesSent) / bytesTotal) : 0.0;
-        onProgress(progress);
-    });
-    connect(reply, &QNetworkReply::finished, this, [reply, onSuccess]() {
-        QString serverHash = QString::fromUtf8(reply->readAll());
-        onSuccess(serverHash);
-        reply->deleteLater();
+    QString hash = md5(data);
+    checkFile(hash, [this, data, onProgress, onSuccess, hash](bool exists) {
+        if (exists) {
+            onProgress(1.0);
+            onSuccess(hash);
+        } else {
+            QNetworkRequest request;
+            request.setUrl(QUrl(m_serverUrl + "/data"));
+            request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
+            auto reply = m_nam->post(request, data);
+            connect(reply, &QNetworkReply::uploadProgress, this, [onProgress](qint64 bytesSent, qint64 bytesTotal) {
+                double progress = bytesTotal ? (double(bytesSent) / bytesTotal) : 0.0;
+                onProgress(progress);
+            });
+            connect(reply, &QNetworkReply::finished, this, [reply, onSuccess]() {
+                QString serverHash = QString::fromUtf8(reply->readAll());
+                onSuccess(serverHash);
+                reply->deleteLater();
+            });
+        }
     });
 }
 
