@@ -41,5 +41,7 @@
         <file>blocks/formats/FolderViewBlock.qml</file>
         <file>blocks/ai/AutoencoderTrainingBlock.qml</file>
         <file>blocks/ai/AutoencoderInferenceBlock.qml</file>
+        <file>blocks/formats/ImageListBlock.qml</file>
+        <file>blocks/ai/LabelRenderer.qml</file>
     </qresource>
 </RCC>

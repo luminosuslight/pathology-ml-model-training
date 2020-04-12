@@ -27,6 +27,7 @@ HEADERS += \
     $$PWD/blocks/basic/DataViewBlock.h \
     $$PWD/blocks/basic/TissueImageBlock.h \
     $$PWD/blocks/formats/FolderViewBlock.h \
+    $$PWD/blocks/formats/ImageListBlock.h \
     $$PWD/blocks/selection/FeatureSelectionBlock.h \
     $$PWD/blocks/selection/RectangularAreaBlock.h \
     $$PWD/manager/BackendManager.h \
@@ -59,6 +60,7 @@ SOURCES += \
     $$PWD/blocks/basic/DataViewBlock.cpp \
     $$PWD/blocks/basic/TissueImageBlock.cpp \
     $$PWD/blocks/formats/FolderViewBlock.cpp \
+    $$PWD/blocks/formats/ImageListBlock.cpp \
     $$PWD/blocks/selection/FeatureSelectionBlock.cpp \
     $$PWD/blocks/selection/RectangularAreaBlock.cpp \
     $$PWD/manager/BackendManager.cpp \
