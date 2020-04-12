@@ -16,6 +16,10 @@ BlockBase {
             text: "Run ▻"
             allUpperCase: false
             onPress: block.run()
+
+            OutputNode {
+                node: block.node("outputNode")
+            }
         }
 
         BlockRow {

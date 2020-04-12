@@ -15,10 +15,16 @@
 bool MarkerBasedRegionGrowBlock::s_registered = BlockList::getInstance().addBlock(MarkerBasedRegionGrowBlock::info());
 
 MarkerBasedRegionGrowBlock::MarkerBasedRegionGrowBlock(CoreController* controller, QString uid)
-    : OneInputBlock(controller, uid)
+    : InOutBlock(controller, uid)
     , m_progress(this, "progress", 0.0)
 {
     m_maskNode = createInputNode("mask");
+
+    m_maskNode->enableImpulseDetection();
+    connect(m_maskNode, &NodeBase::impulseBegin, this, [this]() {
+        QTimer::singleShot(300, this, &MarkerBasedRegionGrowBlock::run);
+    });
+    connect(this, &MarkerBasedRegionGrowBlock::finished, m_outputNode, &NodeBase::sendImpulse);
 }
 
 void MarkerBasedRegionGrowBlock::run() {
@@ -61,6 +67,7 @@ void MarkerBasedRegionGrowBlock::run() {
         status->m_title = "Region Grow Complete ✓";
         status->m_progress = 1.0;
         status->closeIn(3000);
+        emit finished();
     });
 #endif
 }

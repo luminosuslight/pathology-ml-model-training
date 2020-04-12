@@ -1,14 +1,14 @@
 #ifndef MARKERBASEDREGIONGROWBLOCK_H
 #define MARKERBASEDREGIONGROWBLOCK_H
 
-#include "core/block_basics/OneInputBlock.h"
+#include "core/block_basics/InOutBlock.h"
 
 #include "microscopy/blocks/basic/CellDatabaseBlock.h"
 
 class TissueImageBlock;
 
 
-class MarkerBasedRegionGrowBlock : public OneInputBlock {
+class MarkerBasedRegionGrowBlock : public InOutBlock {
 
     Q_OBJECT
 
@@ -32,6 +32,7 @@ public:
     explicit MarkerBasedRegionGrowBlock(CoreController* controller, QString uid);
 
 signals:
+    void finished();
 
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
