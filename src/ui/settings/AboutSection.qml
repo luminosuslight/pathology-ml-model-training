@@ -18,7 +18,7 @@ StretchColumn {
             verticalAlignment: Text.AlignVCenter
         }
         Text {
-            text: controller.getVersionString()
+            text: "1.0.0"//controller.getVersionString()
             width: parent.width / 2
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignRight
