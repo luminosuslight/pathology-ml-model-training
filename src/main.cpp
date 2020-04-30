@@ -19,8 +19,7 @@ void addFonts() {
     QFontDatabase::addApplicationFont(":/fonts/Quicksand-BoldItalic.otf");
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     Luminosus::preQApplicationCreation();
 
     QApplication app(argc, argv);

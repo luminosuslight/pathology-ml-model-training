@@ -13,7 +13,7 @@ public:
     static bool s_registered;
     static BlockInfo info() {
         static BlockInfo info;
-        info.typeName = "CSV Export";
+        info.typeName = "CSV Export [n/a]";
         info.category << "Actions";
         info.helpText = "[Not implemented yet]<br>"
                         "Exports the selected features of the incoming cells as a CSV file.";

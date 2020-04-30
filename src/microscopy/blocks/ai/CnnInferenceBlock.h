@@ -22,9 +22,11 @@ public:
         info.category << "Neural Network";
         info.helpText = "Prepares the input for a neural network, sends it to the server and "
                         "applies a neural network forward pass on it (also called inference).<br>"
-                        "It then downloads the result and creates a new Image block for it.<br>"
-                        "The server also finds the cell centers in this process and a new dataset "
-                        "is created for them.<br><br>"
+                        "It then downloads the result and stores it in the Image block connected "
+                        "to the second output or creates a new one.<br>"
+                        "The server also finds the cell centers in this process and the result is "
+                        "stored in the Dataset block connected to the top output or a new "
+                        "Dataset is created for it.<br><br>"
                         "The model to use for the neural network can be specified and the area "
                         "to apply the network on can be restricted (for example to reduce the "
                         "computation time).";

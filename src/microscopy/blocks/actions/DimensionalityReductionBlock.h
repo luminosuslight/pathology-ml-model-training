@@ -14,9 +14,10 @@ public:
     static BlockInfo info() {
         static BlockInfo info;
         info.typeName = "Dimensionality Reduction";
-        info.nameInUi = "Dim. Reduction";
+        info.nameInUi = "Dim. Reduction [n/a]";
         info.category << "Actions";
-        info.helpText = "[Not implemented yet]<br>"
+        info.helpText = "[Not implemented yet, use it integrated in the autoencoder feature "
+                        "instead]<br>"
                         "Applies a dimensionality reduction algorithm to the selected features "
                         "of the incoming cells. Stores the resulting two dimensions back into "
                         "the connected dataset.<br><br>"

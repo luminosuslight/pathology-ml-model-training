@@ -39,7 +39,7 @@ BlockBase {
         }
 
         DragArea {
-            text: "%1 Images".arg(block.attr("images").val.length)
+            text: "%1/%2 Images".arg(block.attr("currentIndex").val + 1).arg(block.attr("images").val.length)
 
             InputNode {
                 node: block.node("inputNode")

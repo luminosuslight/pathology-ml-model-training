@@ -22,7 +22,7 @@ public:
                         "If the validation loss increases before that, the training is stopped "
                         "anyway.<br><br>"
                         "Both, training data and validation data, must be provided. They can be "
-                        "created using the <i>Training Data Preprocessing</i> block."
+                        "created using the <i>Training Data Preprocessing</i> block. "
                         "If a base model is specified, it will be used to intialize the weights. "
                         "A new model will be created for the retrained and finetuned model, the "
                         "existing model will not be changed.";

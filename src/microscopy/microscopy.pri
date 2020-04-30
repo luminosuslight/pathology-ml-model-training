@@ -1,8 +1,5 @@
 
 
-# Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH = ../core/ui
-
 HEADERS += \
     $$PWD/blocks/actions/ClusteringBlock.h \
     $$PWD/blocks/actions/CsvExportBlock.h \

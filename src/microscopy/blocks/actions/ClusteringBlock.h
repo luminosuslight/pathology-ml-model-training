@@ -13,9 +13,9 @@ public:
     static bool s_registered;
     static BlockInfo info() {
         static BlockInfo info;
-        info.typeName = "Clustering";
+        info.typeName = "Clustering [n/a]";
         info.category << "Actions";
-        info.helpText = "[Not implmeneted yet]<br>"
+        info.helpText = "[Not implmeneted yet, only manual clustering with areas is possible]<br>"
                         "Applies a clustering algorithm to the incoming cells and the selected "
                         "features. Stores the resulting clusters as a new feature back into "
                         "the connected dataset.";

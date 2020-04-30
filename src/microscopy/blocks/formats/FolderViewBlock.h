@@ -15,7 +15,8 @@ public:
         static BlockInfo info;
         info.typeName = "Folder View";
         info.nameInUi = "Biomarker List";
-        info.helpText = "Shows all images contained in a folder sorted by their biomarkers.";
+        info.helpText = "Shows all images contained in a folder sorted by their biomarkers.\n\n"
+                        "Works only for one specific dataformat yet.";
         info.qmlFile = "qrc:/microscopy/blocks/formats/FolderViewBlock.qml";
         info.orderHint = 1000 + 6;
         info.complete<FolderViewBlock>();

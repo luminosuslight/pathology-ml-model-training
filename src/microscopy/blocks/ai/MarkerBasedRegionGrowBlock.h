@@ -21,8 +21,10 @@ public:
         info.nameInUi = "Region Grow";
         info.category << "Actions";
         info.helpText = "Applies a region growing algorithm and stores the new shape for the "
-                        "selected cells back into the connected dataset.<br><br>"
-                        "If the cells already have a shape it is overwritten.";
+                        "selected cells back into the connected dataset. It starts at the cell "
+                        "centers centers. An Image block has to be connected that provides a "
+                        "foreground mask.<br><br>"
+                        "Attention: If the cells already have a shape it is overwritten.";
         info.qmlFile = "qrc:/microscopy/blocks/ai/MarkerBasedRegionGrowBlock.qml";
         info.orderHint = 1000 + 100 + 4;
         info.complete<MarkerBasedRegionGrowBlock>();

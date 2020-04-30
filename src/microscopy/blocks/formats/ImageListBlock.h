@@ -16,7 +16,10 @@ public:
         info.typeName = "Image List";
         info.nameInUi = "Image List";
         info.helpText = "Lists all images contained in a folder.\n\n"
-                        "May be useful to apply an image pipeline to all images in a folder.";
+                        "May be useful to apply an image pipeline to all images in a folder.\n\n"
+                        "Connect an Image block to the output. It will be set to the selected "
+                        "image. End the pipeline with a Cycle block and connect it to the input "
+                        "of this block. It will trigger the next image.";
         info.qmlFile = "qrc:/microscopy/blocks/formats/ImageListBlock.qml";
         info.orderHint = 1000 + 7;
         info.complete<ImageListBlock>();
