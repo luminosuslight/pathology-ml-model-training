@@ -19,7 +19,6 @@ from train_autoencoder import prepare_and_train_autoencoder
 
 print("Python version:", sys.version)
 
-# default_network = NeuralNetwork('/home/tim/Masterarbeit/artificial_data/input')
 default_network = NeuralNetwork('models/7c0c7084ac8007ab0c24a3ee563e349c/input')
 
 UPLOAD_FOLDER = 'uploads'
