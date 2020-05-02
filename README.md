@@ -25,14 +25,15 @@ You also need to create an SSL certificate (core/data/luminosus_websocket.cert a
 
 ### Requirements
 
-* Python 3 and dependencies as listed in `requirements.txt` (most notably fast.ai and Flask)
+* Python 3 and dependencies as listed in [server/requirements.txt](server/requirements.txt) (most notably fast.ai and Flask)
 * Nvidia GPU recommended for accelerated training and inference
 
 ### Set-up
 
 * copy SSL certificate from client in case you want to use HTTPS
 * (optionally) create and activate Conda environment
-* install Python dependencies
+* change to the `server` directory
+* install Python dependencies (e.g. using `conda install --file requirements.txt`)
 * run `export FLASK_APP=main.py`
 * start the server with `python3 -m flask run --host='::' --port=55712` to listen for IPv6 HTTP requests
 * alternatively run `python3 -m flask run --host='::' --port=55712 --cert=luminosus_websocket.cert --key=luminosus_websocket.key` for HTTPS
