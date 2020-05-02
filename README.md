@@ -35,3 +35,5 @@ You also need to create an SSL certificate (core/data/luminosus_websocket.cert a
 * start the server with `python3 -m flask run --host='::' --port=55712` to listen for IPv6 HTTP requests
 * alternatively run `python3 -m flask run --host='::' --port=55712 --cert=luminosus_websocket.cert --key=luminosus_websocket.key` for HTTPS
 * enter the IP address of the server in the clients settings, it will connect to it automatically
+
+![screenshot of the graphical user interface of the client](gui_screenshot.png)
