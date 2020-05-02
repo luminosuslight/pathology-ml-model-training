@@ -3,6 +3,8 @@ An tool to enable biologists to train machine learning models for their own path
 
 Open the **example projects** in the client to learn how to use the software.
 
+The code is released under the MIT license.
+
 ## Client
 
 Windows and macOS binaries are available in the releases area at the top right.
