@@ -1,5 +1,5 @@
 # Interactive Deep Learning Tool for Cell Segmentation and Analysis
-An tool to enable biologists to train machine learning models for their own pathology images.
+A tool to enable biologists to train machine learning models for their own pathology images.
 
 Open the **example projects** in the client to learn how to use the software.
 
