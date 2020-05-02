@@ -5,6 +5,8 @@ Open the **example projects** in the client to learn how to use the software.
 
 ## Client
 
+Windows and macOS binaries are available in the releases area at the top right.
+
 ### Requirements
 
 * Win / macOS / Linux (cross-compilation for Android and iOS should work, too)
