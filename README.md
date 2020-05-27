@@ -3,6 +3,8 @@ A tool to enable biologists to train machine learning models for their own patho
 
 Open the **example projects** in the client to learn how to use the software.
 
+See the [pathology-pretrained-models](https://github.com/luminosuslight/pathology-pretrained-models) repository for pre-trained models.
+
 The code is released under the MIT license.
 
 ## Client
