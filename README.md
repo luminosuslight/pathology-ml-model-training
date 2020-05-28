@@ -9,9 +9,9 @@ The code is released under the MIT license.
 
 ## Client
 
-Windows and macOS binaries are available in the releases area at the top right.
+Windows and macOS binaries are available in the releases area at the top right. They already contain all required dependencies.
 
-### Requirements
+### Build Requirements
 
 * Win / macOS / Linux (cross-compilation for Android and iOS should work, too)
 * Qt 5.14
