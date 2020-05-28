@@ -9,6 +9,7 @@ BlockBase {
     id: root
     width: 200*dp
     height: mainCol.implicitHeight
+    onHeightChanged: block.positionChanged()
 
     property var renderTypes: {
         "Mask": "qrc:/microscopy/blocks/ai/MaskRenderer.qml",
@@ -69,25 +70,6 @@ BlockBase {
         }
 
         BlockRow {
-            Item {
-                implicitWidth: -1
-                TextInput {
-                    anchors.fill: parent
-                    anchors.leftMargin: 5*dp
-                    anchors.rightMargin: 5*dp
-                    clip: true
-                    text: block.attr("relativeOutputPath").val
-                    onDisplayTextChanged: {
-                        if (block.attr("relativeOutputPath").val !== displayText) {
-                            block.attr("relativeOutputPath").val = displayText
-                        }
-                    }
-                    hintText: "Output Path"
-                }
-            }
-        }
-
-        BlockRow {
             AttributeOptionPicker {
                 attr: block.attr("renderType")
                 optionListGetter: function () { return Object.keys(renderTypes) }
@@ -142,6 +124,26 @@ BlockBase {
             }
             StretchText {
                 text: "Reference Image"
+            }
+        }
+
+        BlockRow {
+            visible: block.node('referenceImage').isConnected
+            Item {
+                implicitWidth: -1
+                TextInput {
+                    anchors.fill: parent
+                    anchors.leftMargin: 5*dp
+                    anchors.rightMargin: 5*dp
+                    clip: true
+                    text: block.attr("relativeOutputPath").val
+                    onDisplayTextChanged: {
+                        if (block.attr("relativeOutputPath").val !== displayText) {
+                            block.attr("relativeOutputPath").val = displayText
+                        }
+                    }
+                    hintText: "Output Path"
+                }
             }
         }
 

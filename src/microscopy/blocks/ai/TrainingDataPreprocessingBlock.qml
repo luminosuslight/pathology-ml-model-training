@@ -209,7 +209,7 @@ BlockBase {
                 text: "Target 1 (Red)"
             }
             StretchText {
-                text: "Count:"
+                text: "Patch Count:"
             }
             AttributeNumericInput {
                 width: 70*dp
@@ -239,7 +239,7 @@ BlockBase {
         }
 
         DragArea {
-            text: "Training Data"
+            text: "Training Data Preprocessing"
 
             BlockRow {
                 anchors.fill: parent
