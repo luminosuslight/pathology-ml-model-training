@@ -11,7 +11,7 @@ import "qrc:/core/ui/controls"
 
 
 Window {
-    title: "microscopy - " + controller.getVersionString()
+    title: "microscopy"
     width: 1000
     height: 800
     visible: false  // is shown by CoreController ctor
