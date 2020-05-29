@@ -1,15 +1,17 @@
-# Interactive Deep Learning Tool for Cell Segmentation and Analysis
-A tool to enable biologists to train machine learning models for their own pathology images.
+# HistoFlow: Interactive Deep Learning Tool for Cell Segmentation and Analysis
+A tool to enable biologists to train machine learning models for their own histo-pathology images.
 
 Open the **example projects** in the client to learn how to use the software.
 
-See the [pathology-pretrained-models](https://github.com/luminosuslight/pathology-pretrained-models) repository for pre-trained models.
+See the [HistoFlow-Models](https://github.com/luminosuslight/pathology-pretrained-models) repository for pre-trained models.
 
 The code is released under the MIT license.
 
+Note: The development name of the tool was _luminosus-microscopy_ which may still appear in the code.
+
 ## Client
 
-Windows and macOS binaries are available in the releases area at the top right. They already contain all required dependencies.
+Windows and macOS binaries are available in the [releases](https://github.com/luminosuslight/pathology-ml-model-training/releases) area at the top right. They already contain all required dependencies.
 
 ### Build Requirements
 
