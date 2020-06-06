@@ -19,7 +19,7 @@ from train_autoencoder import prepare_and_train_autoencoder
 
 print("Python version:", sys.version)
 
-default_network = NeuralNetwork('models/7c0c7084ac8007ab0c24a3ee563e349c/input')
+default_network = NeuralNetwork('models/a0e6aaa83fb7a50ab5de37faef9fecb7-557c183ee44cafc2bf48a20e24543710/input')
 
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(UPLOAD_FOLDER):
