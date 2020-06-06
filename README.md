@@ -3,7 +3,8 @@
 A tool to enable biologists to train machine learning models for their own histo-pathology images.
 
 A short introduction video can be seen here:
-[![Introduction Video to HistoFlow](http://img.youtube.com/vi/s4tRJaIIrgI/1.jpg)](http://www.youtube.com/watch?v=s4tRJaIIrgI "Introduction Video to HistoFlow")
+
+[![Introduction Video to HistoFlow](http://img.youtube.com/vi/s4tRJaIIrgI/0.jpg)](http://www.youtube.com/watch?v=s4tRJaIIrgI "Introduction Video to HistoFlow")
 
 Open the **example projects** in the client to learn how to use the software.
 
