@@ -16,7 +16,7 @@ Note: The development name of the tool was _luminosus-microscopy_ which may stil
 
 ## Client
 
-Windows and macOS binaries are available in the [releases](https://github.com/luminosuslight/pathology-ml-model-training/releases) area at the top right. They already contain all required dependencies.
+Windows and macOS binaries are available in the [releases](https://github.com/luminosuslight/pathology-ml-model-training/releases) area at the top right. They already contain all required dependencies. Setting up or having access to a HistoFlow server is required to train or apply models (see below).
 
 ### Build Requirements
 
