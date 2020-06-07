@@ -6,7 +6,7 @@ A short introduction video can be seen here:
 
 [![Introduction Video to HistoFlow](http://img.youtube.com/vi/s4tRJaIIrgI/0.jpg)](http://www.youtube.com/watch?v=s4tRJaIIrgI "Introduction Video to HistoFlow")
 
-Open the **example projects** in the client to learn how to use the software.
+Open the **example projects** in the client to learn how to use the software. Have a look at the [Model Application and Training](User Guide: Model Training and Application.md) and [Annotation Modes](User Guide: Annotation Modes.md) User Guides for a detailed textual explanation.
 
 See the [HistoFlow-Models](https://github.com/luminosuslight/pathology-pretrained-models) repository for pre-trained models.
 
