@@ -23,7 +23,7 @@ The following section describes how the three training phases are actually imple
 ### Phase B: This is how the model is then fine tuned with real images:
 
 
--  **Apply basic model to a real image:** See \cref{sec:model-application__ on how to do this.
+-  **Apply basic model to a real image:** See below on how to do this.
 -  **Fine tune the result:** Pan and zoom to look for bad segmentations by hand or try to filter potentially false predictions for example on a plot showing the radius and the pixel value of a cell in the CNN output image. Delete incorrect segmentations by entering the 'Add' mode in the view and clicking on the center of the wrong cell. Replace it with a correct one by either activating the 'Interactive Watershed Mode' for an image as in phase A or by just adding a cell center and applying the region grow algorithm afterwards again. The latter works best if the semantic segmentation is already correct but not the cell centers.
 -  **Render new target images:** The input image in this phase is the real DAPI channel and doesn't have to be generated, but we still need the target images. Connect the __Dataset__ with the fine tuned results to a __Cell Renderer__. Generate a 'Mask' and 'Center' image as before.
 -  **Pre-process training data:** As in phase A, create a __Training Data Preprocessing__ block, but this time connect the real DAPI channel to all of its input channels. Connect the 'Mask' and 'Center' channel as before. Connect a __Region__ block and select a large part of the image. Generate 1000 patches for the training data and repeat the step with a smaller, not overlapping region and only 100 patches for the validation data.
@@ -33,7 +33,7 @@ The following section describes how the three training phases are actually imple
 ### Phase C: In the last phase the model will be retrained to output additional features. This can be done as follows:
 
 
--  **Apply fine tuned model to a real image:** See the explanation in \cref{sec:model-application__ on how to do this.
+-  **Apply fine tuned model to a real image:** See the explanation below on how to do this.
 -  **Select cells of interest:** Find all cells with a certain characteristic that the network should learn to detect and select them by clicking them in the view after entering the 'Select' mode.
 -  **Create new feature:** Add a __Feature Setter__ block and connect it to the output of your __Visualize__ block. Enter a name for the new feature and select a value for the selected cells, the default value for all other cells is 0.0. Click on 'Set' to store the new feature in the __Dataset__.
 -  **Render new target images:** Create a __Cell Renderer__ block and connect the __Dataset__ to it. Select the new feature and hit 'Save'. The 'Mask' and 'Center' images from phase B can be reused.
