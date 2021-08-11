@@ -55,7 +55,7 @@ VerticalScrollView {
 
 			Connections {
 				target: controller.blockManager()
-				onFocusChanged: if (root.visible) blockSettings.updateComponent()
+                function onFocusChanged() { if (root.visible) blockSettings.updateComponent(); }
 			}
 
 			onItemChanged: {
@@ -163,7 +163,7 @@ VerticalScrollView {
 
                 Connections {
                     target: controller.blockManager()
-                    onFocusChanged: if (root.visible) helpText.updateHelp()
+                    function onFocusChanged() { if (root.visible) helpText.updateHelp(); }
                 }
             }  // end helpText
         }

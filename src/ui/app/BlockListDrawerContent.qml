@@ -128,7 +128,7 @@ StretchColumn {
 
             Connections {
                 target: controller
-                onDeveloperModeChanged: blockListContainer.showAllBlocks()
+                function onDeveloperModeChanged() { blockListContainer.showAllBlocks(); }
             }
 
 			function showAllBlocks() {

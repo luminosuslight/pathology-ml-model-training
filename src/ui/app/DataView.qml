@@ -20,7 +20,7 @@ Item {
 
     Connections {
         target: view
-        onIsTissuePlaneChanged: {
+        function onIsTissuePlaneChanged() {
             if (!view.isTissuePlane) {
                 currentMode = DataView.Mode.View
             }

@@ -415,7 +415,7 @@ Window {
 
         Connections {
             target: controller.anchorManager()
-            onPresentationModeChanged: {
+            function onPresentationModeChanged() {
                 if (controller.anchorManager().presentationMode
                         && drawer.offset > 0) {
                     drawerCloseAnimation.start()
@@ -425,7 +425,7 @@ Window {
 
         Connections {
             target: guiManager
-            onOpenBlockSettings: {
+            function onOpenBlockSettings() {
                 if (!drawer.visible) {
                     drawerCloseAnimation.stop()
                     drawerOpenAnimation.start()

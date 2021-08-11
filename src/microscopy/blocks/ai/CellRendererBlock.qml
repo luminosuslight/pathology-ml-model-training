@@ -22,7 +22,7 @@ BlockBase {
 
     Connections {
         target: block
-        onTriggerRendering: render()
+        function onTriggerRendering() { render(); }
     }
 
     function refresh() {

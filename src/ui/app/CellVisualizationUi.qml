@@ -51,7 +51,7 @@ Item {
 
                 Connections {
                     target: visBlock.attr("color1")
-                    onValChanged: {
+                    function onValChanged() {
                         cellOutline.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
                         rect.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
                     }
@@ -59,7 +59,7 @@ Item {
 
                 Connections {
                     target: visBlock.attr("color2")
-                    onValChanged: {
+                    function onValChanged() {
                         cellOutline.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
                         rect.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
                     }

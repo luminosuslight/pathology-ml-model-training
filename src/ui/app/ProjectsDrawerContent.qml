@@ -190,7 +190,7 @@ VerticalScrollView {
                     allUpperCase: false
                     Connections {
                         target: controller.projectManager()
-                        onProjectChanged: {
+                        function onProjectChanged() {
                             button.marked = modelData === controller.projectManager().getCurrentProjectName()
                         }
                     }
