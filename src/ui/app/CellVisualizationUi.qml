@@ -6,27 +6,11 @@ import "qrc:/core/ui/controls"
 
 Item {
     property bool showDotsAdditionally: view.attr("xScale").val > 2.5
-
-    ColoredPoints {
-        width: 1
-        height: 1
-        color1: visBlock.attr("color1").qcolor
-        color2: visBlock.attr("color2").qcolor
-        pointSize: Math.max(1, visBlock.attr("strength").val * 4) * dp
-        xPositions: visBlock.xPositions
-        yPositions: visBlock.yPositions
-        colorValues: visBlock.colorValues
-        opacity: visBlock.attr("detailedView").val ? 0.0 : visBlock.attr("opacity").val
-        Behavior on opacity {
-            NumberAnimation {
-                duration: 700
-                easing.type: Easing.OutCubic
-            }
-        }
-    }
+    property int xDimensionId: view.attr("xDimension").val ? visBlock.database.getOrCreateFeatureId(view.attr("xDimension").val) : 0
+    property int yDimensionId: view.attr("yDimension").val ? visBlock.database.getOrCreateFeatureId(view.attr("yDimension").val) : 0
 
     Item {
-        opacity: visBlock.attr("detailedView").val ? visBlock.attr("opacity").val : 0.0
+        opacity: visBlock.attr("imageOpacity").val
         Behavior on opacity {
             NumberAnimation {
                 duration: 700
@@ -38,21 +22,17 @@ Item {
             id: largelyVisibleNucleiRepeater
             model: visBlock.visibleCells()
 
-            IrregularCircleOutline {
+            Item {
                 id: cellOutline
                 // idx and colorValue come from the model
-                width: visBlock.database.getFeature(2, idx) * 2
+                width: (120*dp / view.attr("xScale").val) * visBlock.attr("imageSize").val
                 height: width
-                x: visBlock.database.getFeature(0, idx) - width / 2
-                y: visBlock.database.getFeature(1, idx) - width / 2
-                radii: visBlock.database.getShapeVector(idx)
-                color: visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
-                lineWidth: Math.max(1, visBlock.attr("strength").val * 4) * dp
+                x: visBlock.database.getFeature(xDimensionId, idx) - width / 2
+                y: visBlock.database.getFeature(yDimensionId, idx) - width / 2
 
                 Connections {
                     target: visBlock.attr("color1")
                     function onValChanged() {
-                        cellOutline.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
                         rect.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
                     }
                 }
@@ -60,18 +40,24 @@ Item {
                 Connections {
                     target: visBlock.attr("color2")
                     function onValChanged() {
-                        cellOutline.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
                         rect.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
                     }
                 }
 
+                Image {
+                    z: 100
+                    anchors.fill: parent
+                    source: "file:///Users/tim/work/image-data-analytics-platform/data/exported_images/" + visBlock.database.getThumbnail(idx)
+                    //source: "qrc:/core/ui/images/color_wheel_thick@2x.png"
+                    fillMode: Image.PreserveAspectFit
+                }
+
                 Rectangle {
-                    id: rect
-                    width: Math.max(1, visBlock.attr("strength").val * 4) * dp
-                    height: width
-                    anchors.centerIn: parent
-                    color: visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
-                    visible: visBlock.database.getFeature(2, idx) < 1.0 || showDotsAdditionally
+                    anchors.fill: parent
+                    color: "transparent"
+                    border.width: 1*dp
+                    border.color: "red"
+                    visible: visBlock.isSelected(idx)
                 }
 
                 CustomTouchArea {
@@ -122,5 +108,50 @@ Item {
                 }
             }  // IrregularCircleOutline
         }  // Repeater
+    }
+
+    Repeater {
+        id: classLabelRepeater
+        model: visBlock.attr("showClassLabels").val ? visBlock.attr("classLabels").val : []
+
+        Item {
+            id: captionItem
+            width: caption.width
+            height: caption.height
+            x: modelData.x - width / 2
+            y: modelData.y - height / 2
+            scale: 1 / view.attr("xScale").val
+
+            Rectangle {
+                anchors.fill: caption
+                anchors.margins: -2*dp
+                color: "#222"
+                radius: 4*dp
+            }
+            Text {
+                id: caption
+                anchors.centerIn: parent
+                text: modelData.name
+                color: "white"
+            }
+        }
+    }
+
+    ColoredPoints {
+        width: 1
+        height: 1
+        color1: visBlock.attr("color1").qcolor
+        color2: visBlock.attr("color2").qcolor
+        pointSize: Math.max(1, visBlock.attr("strength").val * 4) * dp
+        xPositions: visBlock.xPositions
+        yPositions: visBlock.yPositions
+        colorValues: visBlock.colorValues
+        opacity: visBlock.attr("opacity").val
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 700
+                easing.type: Easing.OutCubic
+            }
+        }
     }
 }

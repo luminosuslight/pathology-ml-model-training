@@ -50,6 +50,8 @@ public slots:
 
     QRect area() const;
 
+    void getCaption();
+
 protected:
     HsvAttribute m_color;
     DoubleAttribute m_left;
@@ -57,6 +59,7 @@ protected:
     DoubleAttribute m_right;
     DoubleAttribute m_bottom;
     StringAttribute m_assignedView;
+    StringAttribute m_caption;
 
     // runtime:
     IntegerAttribute m_cellCount;

@@ -91,15 +91,19 @@ protected:
     HsvAttribute m_color2;
     DoubleAttribute m_strength;
     DoubleAttribute m_opacity;
+    DoubleAttribute m_imageSize;
+    DoubleAttribute m_imageOpacity;
     StringAttribute m_colorFeature;
     StringAttribute m_assignedView;
     VariantListAttribute m_selectedCells;
+    BoolAttribute m_showClassLabels;
 
     // runtime:
     BoolAttribute m_detailedView;
     QPointer<DataViewBlock> m_view;
     QPointer<CellDatabaseBlock> m_lastDb;
     QSListModel m_visibleCells;
+    VariantListAttribute m_classLabels;
 
     QVector<double> m_xPositions;
     QVector<double> m_yPositions;

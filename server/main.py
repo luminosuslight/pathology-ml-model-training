@@ -3,6 +3,9 @@ from flask import request, abort, send_from_directory
 from werkzeug import serving
 from flask_cors import CORS
 import cbor2
+import pickle
+import numpy as np
+import umap
 
 from hashlib import md5
 import os
@@ -109,3 +112,31 @@ def training_progress():
 def inference_progress():
     #return str(max(NeuralNetwork.progress, TrainedAutoencoder.progress)), 200
     return str(0.0), 200
+
+
+with open('unsplash_alt_descriptions_with_CLIP_features.pkl', 'rb') as f:
+    captions, caption_features = pickle.load(f)
+
+
+@app.route('/caption', methods=['POST'])
+def get_caption():
+    raw_data = request.get_data()
+    reference_features = cbor2.loads(raw_data)
+    dist = caption_features.dot(reference_features)
+    caption = captions[np.argsort(dist)[-1]]
+    return caption, 200
+
+
+@app.route('/umap', methods=['POST'])
+def run_umap():
+    raw_data = request.get_data()
+    data = cbor2.loads(raw_data)
+    input_data = data["inputData"]
+    embedding = umap.UMAP(n_neighbors=data["neighbours"],
+                          min_dist=data["minDistance"],
+                          metric=data["metric"]).fit_transform(input_data)
+    return cbor2.dumps(list(list(float(x) for x in p) for p in embedding)), 200
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=55712)

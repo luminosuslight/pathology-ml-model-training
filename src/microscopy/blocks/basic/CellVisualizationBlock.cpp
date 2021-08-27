@@ -20,11 +20,15 @@ CellVisualizationBlock::CellVisualizationBlock(CoreController* controller, QStri
     , m_color2(this, "color2", {0.66, 1, 1})
     , m_strength(this, "strength", 0.5)
     , m_opacity(this, "opacity", 0.7)
+    , m_imageSize(this, "imageSize", 0.5)
+    , m_imageOpacity(this, "imageOpacity", 1.0)
     , m_colorFeature(this, "colorFeature", "Solid")
     , m_assignedView(this, "assignedView")
     , m_selectedCells(this, "selectedCells")
+    , m_showClassLabels(this, "showClassLabels", false)
     , m_detailedView(this, "detailedView", false, /*persistent*/ false)
     , m_lastDb(nullptr)
+    , m_classLabels(this, "classLabels", {}, /*persistent*/ false)
 {
     m_selectionNode = createOutputNode("selection");
 
@@ -48,6 +52,7 @@ CellVisualizationBlock::CellVisualizationBlock(CoreController* controller, QStri
             this, &CellVisualizationBlock::updateCells);
 
     connect(&m_colorFeature, &StringAttribute::valueChanged, this, &CellVisualizationBlock::updateCells);
+    connect(&m_showClassLabels, &BoolAttribute::valueChanged, this, &CellVisualizationBlock::updateCells);
 
     connect(&m_selectedCells, &VariantListAttribute::valueChanged, this, [this]() {
         updateSelectedCells();
@@ -116,8 +121,35 @@ void CellVisualizationBlock::updateCells() {
             const double colorValue = db->getFeature(colorFeatureId, idx);
             m_colorValues[i] = (colorValue - minColorValue) / colorValueRange;
         }
+        if (m_showClassLabels) {
+            QHash<int, std::tuple<double, double, int>> classPositionSumAndSize;
+            for (int i = 0; i < cells.size(); ++i) {
+                const int idx = cells.at(i);
+                const int classValue = int(db->getFeature(colorFeatureId, idx));
+                const auto& iter = classPositionSumAndSize.find(classValue);
+                if (iter != classPositionSumAndSize.end()) {
+                    std::get<0>(iter.value()) += db->getFeature(xFeatureId, idx);
+                    std::get<1>(iter.value()) += db->getFeature(yFeatureId, idx);
+                    std::get<2>(iter.value()) += 1;
+                } else {
+                    classPositionSumAndSize.insert(classValue, {db->getFeature(xFeatureId, idx), db->getFeature(yFeatureId, idx), 1});
+                }
+            }
+            m_classLabels->clear();
+            for (auto iter = classPositionSumAndSize.constBegin(); iter != classPositionSumAndSize.constEnd(); iter++) {
+                const double classCenterX = std::get<0>(iter.value()) / std::get<2>(iter.value());
+                const double classCenterY = std::get<1>(iter.value()) / std::get<2>(iter.value());
+                QString name = db->getClassName(colorFeatureId, iter.key());
+                if (name.isEmpty()) {
+                     name = QString::number(iter.key());
+                }
+                m_classLabels->append(QVariantMap({{"x", classCenterX}, {"y", classCenterY}, {"name", name}}));
+            }
+            emit m_classLabels.valueChanged();
+        }
     } else {
         m_colorValues.fill(0.0);
+        m_classLabels.clear();
     }
 
     emit positionsChanged();
@@ -126,6 +158,7 @@ void CellVisualizationBlock::updateCells() {
 
 void CellVisualizationBlock::invalidateIndexes() {
     // the indexes changed and the old ones are invalid now:
+    updateCells();  // this wasn't here before, not sure why
     m_visibleCells.clear();
     updateCellVisibility();
 }
@@ -177,12 +210,12 @@ void CellVisualizationBlock::updateCellVisibility() {
         m_visibleCells.clear();
         return;
     }
-    if (!m_view->isTissuePlane()) {
-        // detailed cell shapes are only shown if the view shows the normal x and y dimensions
-        // which is not the case here:
-        m_detailedView = false;
-        return;
-    }
+//    if (!m_view->isTissuePlane()) {
+//        // detailed cell shapes are only shown if the view shows the normal x and y dimensions
+//        // which is not the case here:
+//        m_detailedView = false;
+//        return;
+//    }
     // the db is only required for the largely visible cells, update it here:
     if (db != m_lastDb) {
         if (m_lastDb) {
@@ -207,11 +240,8 @@ void CellVisualizationBlock::updateCellVisibility() {
                 const double colorValue = m_colorValues[i];
                 visible.append(QVariantMap({{"idx", QVariant(idx)},
                                            {"colorValue", colorValue}}));
-                if (visible.size() > 1024) {
-                    // early exit, there are too many cells visible
-                    // don't change list for fade out animation
-                    m_detailedView = false;
-                    return;
+                if (visible.size() > 100) {
+                    break;
                 }
             }
         }

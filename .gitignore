@@ -50,3 +50,6 @@ server/venv
 server/.idea
 server/models
 
+data/
+
+

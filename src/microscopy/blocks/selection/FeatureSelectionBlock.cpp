@@ -4,6 +4,8 @@
 #include "core/manager/BlockList.h"
 #include "core/connections/Nodes.h"
 
+#include "microscopy/blocks/basic/CellDatabaseBlock.h"
+
 
 bool FeatureSelectionBlock::s_registered = BlockList::getInstance().addBlock(FeatureSelectionBlock::info());
 
@@ -18,6 +20,18 @@ FeatureSelectionBlock::FeatureSelectionBlock(CoreController* controller, QString
     m_availableFeatures.append(QVariantMap({{"id", 2}, {"name", "Radius"}}));
 
     connect(&m_selectedFeatures, &VariantListAttribute::valueChanged, this, &FeatureSelectionBlock::update);
+
+    connect(m_outputNode, &NodeBase::connectionChanged, this, [this]() {
+        if (m_outputNode->getConnectedNodes().size() > 1) {
+            auto db = m_outputNode->getConnectedNodes()[0]->constData().referenceObject<CellDatabaseBlock>();
+            if (db) {
+                m_availableFeatures.clear();
+                for (QString feature: db->features()) {
+                    m_availableFeatures.append(QVariantMap({{"id", db->getOrCreateFeatureId(feature)}, {"name", feature}}));
+                }
+            }
+        }
+    });
 }
 
 void FeatureSelectionBlock::update() {

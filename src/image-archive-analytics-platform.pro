@@ -9,7 +9,7 @@ CONFIG += c++17
 
 QT += quickcontrols2
 
-CONFIG(debug, debug|release):!emscripten {
+CONFIG(debug, debug|release):!emscripten:!macx {
     LIBS += -lasan
     QMAKE_CXXFLAGS += -fsanitize=address
 }
@@ -26,3 +26,9 @@ SOURCES += \
 RESOURCES += qml.qrc \
     fonts.qrc \
     images.qrc
+
+INCLUDEPATH += /usr/local/include
+
+QMAKE_LFLAGS += -lomp
+LIBS += -L/usr/local/lib -L/usr/local/opt/llvm/lib -lomp
+#QMAKE_CXXFLAGS += -Xpreprocessor -fopenmp

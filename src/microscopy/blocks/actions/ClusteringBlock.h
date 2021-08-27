@@ -13,10 +13,9 @@ public:
     static bool s_registered;
     static BlockInfo info() {
         static BlockInfo info;
-        info.typeName = "Clustering [n/a]";
+        info.typeName = "Clustering (k-Means)";
         info.category << "Actions";
-        info.helpText = "[Not implmeneted yet, only manual clustering with areas is possible]<br>"
-                        "Applies a clustering algorithm to the incoming cells and the selected "
+        info.helpText = "Applies a clustering algorithm to the incoming points and the selected "
                         "features. Stores the resulting clusters as a new feature back into "
                         "the connected dataset.";
         info.qmlFile = "qrc:/microscopy/blocks/actions/ClusteringBlock.qml";
@@ -32,9 +31,20 @@ signals:
 public slots:
     virtual BlockInfo getBlockInfo() const override { return info(); }
 
+    void run();
+
+    bool isSelected(int featureId) const;
+    void selectFeature(int featureId);
+    void deselectFeature(int featureId);
+
 protected:
-    QPointer<NodeBase> m_featuresNode;
     QPointer<NodeBase> m_featuresOutNode;
+
+    IntegerAttribute m_clusterCount;
+    VariantListAttribute m_selectedFeatures;
+
+    // runtime:
+    VariantListAttribute m_availableFeatures;
 
 };
 

@@ -79,6 +79,20 @@ void CellDatabaseBlock::getAdditionalState(QCborMap& state) const {
         shapes.append(arrayToBytes(shape));
     }
     state["shapes"_q] = shapes;
+    QCborArray thumbnails;
+    for (auto& thumbnailPath: m_thumbnails) {
+        thumbnails.append(thumbnailPath);
+    }
+    state["thumbnails"_q] = thumbnails;
+    QCborMap classNames;
+    for (auto iter = m_classNames.constBegin(); iter != m_classNames.constEnd(); iter++) {
+        QCborMap classes;
+        for (auto iter2 = iter.value().constBegin(); iter2 != iter.value().constEnd(); iter2++) {
+            classes[iter2.key()] = iter2.value();
+        }
+        classNames[iter.key()] = classes;
+    }
+    state["classNames"_q] = classNames;
 }
 
 void CellDatabaseBlock::setAdditionalState(const QCborMap& state) {
@@ -92,6 +106,21 @@ void CellDatabaseBlock::setAdditionalState(const QCborMap& state) {
     m_shapes.reserve(int(shapesArr.size()));
     for (auto ref: shapesArr) {
         m_shapes.append(bytesToArray<float, CellDatabaseConstants::RADII_COUNT>(ref.toByteArray()));
+    }
+    auto thumbnailsArr = state["thumbnails"].toArray();
+    m_thumbnails.clear();
+    m_thumbnails.reserve(int(shapesArr.size()));
+    for (auto ref: thumbnailsArr) {
+        m_thumbnails.append(ref.toString());
+    }
+    auto classNamesMap = state["classNames"].toMap();
+    m_classNames.clear();
+    for (auto ref: classNamesMap) {
+        QHash<int, QString> classes;
+        for (auto ref2: ref.second.toMap()) {
+            classes[ref2.first.toInteger()] = ref2.second.toString();
+        }
+        m_classNames[ref.first.toInteger()] = classes;
     }
     m_count = m_data.at(CellDatabaseConstants::X_POS).size();
 }
@@ -225,6 +254,40 @@ void CellDatabaseBlock::importNNResult(QString positionsFilePath, QString maskFi
     }
     qDebug() << "Normalize radii" << HighResTime::getElapsedSecAndUpdate(begin);
     m_count = nucleusCount;
+}
+
+void CellDatabaseBlock::importImages(QString imageDataFilePath) {
+    const QByteArray cbor = m_controller->dao()->loadLocalFile(m_controller->dao()->withoutFilePrefix(imageDataFilePath));
+    const QCborArray data = QCborValue::fromCbor(cbor).toArray();
+    const QCborArray features = data.at(0).toArray();
+    // clear and resize all feature arrays (there may be more than x, y and radius):
+    for (int i = 0; i < m_data.size(); ++i) {
+        m_data[i].clear();
+        m_data[i].resize(features.size());
+    }
+    m_shapes.clear();
+    m_shapes.reserve(features.size());
+    for (int i=0; i<features.size(); ++i) {
+        const auto featureVector = features.at(i).toArray();
+        CellShape shape;
+        for (std::size_t j=0; j < shape.size(); ++j) {
+            shape[j] = featureVector.at(j).toDouble();
+        }
+        m_shapes.append(shape);
+        m_data[CellDatabaseConstants::X_POS][i] = i;
+        m_data[CellDatabaseConstants::Y_POS][i] = 0;
+    }
+    const QCborArray thumbnails = data.at(1).toArray();
+    if (thumbnails.size() != features.size()) {
+        qWarning() << "feature count doesn't match thumbnail count";
+    }
+    m_thumbnails.clear();
+    m_thumbnails.reserve(thumbnails.size());
+    for (auto ref: thumbnails) {
+        m_thumbnails.append(ref.toString());
+    }
+    m_count = features.size();
+    emit existingDataChanged();
 }
 
 void CellDatabaseBlock::importCenters(QString positionsFilePath) {
@@ -384,4 +447,22 @@ void CellDatabaseBlock::finishShapeModification(int index) {
 
 void CellDatabaseBlock::dataWasModified() {
     m_outputNode->dataWasModifiedByBlock();
+}
+
+QString CellDatabaseBlock::getClassName(int featureId, int classId) const {
+    return m_classNames.value(featureId, {}).value(classId, "");
+}
+
+void CellDatabaseBlock::setClassName(int featureId, int classId, QString name) {
+    auto iter = m_classNames.find(featureId);
+    if (iter != m_classNames.end()) {
+        if (name.isEmpty()) {
+            (*iter).remove(classId);
+        } else {
+            (*iter).insert(classId, name);
+        }
+    } else if (!name.isEmpty()) {
+        m_classNames.insert(featureId, {{classId, name}});
+    }
+    dataWasModified();
 }

@@ -6,3 +6,5 @@ cbor2
 flask
 pyopenssl
 flask_cors
+umap-learn
+pynndescent

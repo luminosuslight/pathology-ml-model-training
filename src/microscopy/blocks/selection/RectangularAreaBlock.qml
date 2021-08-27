@@ -48,6 +48,11 @@ BlockBase {
                 hAlign: Text.AlignRight
                 color: "#bbb"
                 font.pixelSize: 12*dp
+
+                CustomTouchArea {
+                    anchors.fill: parent
+                    onClick: block.getCaption()
+                }
             }
         }
 

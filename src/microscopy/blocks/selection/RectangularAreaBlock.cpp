@@ -6,6 +6,7 @@
 #include "core/manager/ProjectManager.h"
 #include "core/connections/Nodes.h"
 
+#include "microscopy/manager/BackendManager.h"
 #include "microscopy/manager/ViewManager.h"
 #include "microscopy/blocks/basic/CellDatabaseBlock.h"
 #include "microscopy/blocks/basic/DataViewBlock.h"
@@ -23,6 +24,7 @@ RectangularAreaBlock::RectangularAreaBlock(CoreController* controller, QString u
     , m_right(this, "right", 200.0, -999999, 999999)
     , m_bottom(this, "bottom", 100.0, -999999, 999999)
     , m_assignedView(this, "assignedView")
+    , m_caption(this, "caption")
     , m_cellCount(this, "cellCount", 0, 0, 999999, /*persistent*/ false)
 {
     connect(m_inputNode, &NodeBase::dataChanged, this, &RectangularAreaBlock::update);
@@ -88,4 +90,46 @@ void RectangularAreaBlock::update() {
 
 QRect RectangularAreaBlock::area() const {
     return QRectF(m_left, m_top, m_right - m_left, m_bottom - m_top).toRect();
+}
+
+void RectangularAreaBlock::getCaption() {
+    const auto& inputData = m_inputNode->constData();
+    const QVector<int>& cells = inputData.ids();
+    CellDatabaseBlock* db = m_inputNode->constData().referenceObject<CellDatabaseBlock>();
+    if (!db || !m_view) return;
+
+    const int xFeatureId = db->getOrCreateFeatureId(m_view->xDimension());
+    const int yFeatureId = db->getOrCreateFeatureId(m_view->yDimension());
+    QVector<int> outputCells;
+    for (int idx: cells) {
+        const int centerX = int(db->getFeature(xFeatureId, idx));
+        const int centerY = int(db->getFeature(yFeatureId, idx));
+        if (centerX >= m_left && centerX <= m_right
+                && centerY >= m_top && centerY <= m_bottom) {
+            outputCells.append(idx);
+        }
+    }
+
+    if (!outputCells.empty()) {
+        CellShape featureAverage;
+        for (auto cellId: outputCells) {
+            const auto& shape = db->getShape(cellId);
+            for (int i = 0; i < int(featureAverage.size()); ++i) {
+                featureAverage[i] += shape[i];
+            }
+        }
+        for (int i = 0; i < int(featureAverage.size()); ++i) {
+            featureAverage[i] /= outputCells.size();
+        }
+        auto backend = m_controller->manager<BackendManager>("backendManager");
+        backend->getCaption(featureAverage, [this](QString caption) {
+            if (caption.contains(" of ")) {
+                m_caption = caption.split(" of ").last();
+            } else {
+                m_caption = caption;
+            }
+        });
+    } else {
+        m_caption = "";
+    }
 }

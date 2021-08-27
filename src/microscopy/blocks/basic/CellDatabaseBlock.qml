@@ -66,70 +66,7 @@ BlockBase {
             BlockRow {
                 ButtonBottomLine {
                     width: 60*dp
-                    text: "Import Centers + Mask"
-                    allUpperCase: false
-                    onClick: positionsImportDialogLoader.active = true
-                }
-
-                Loader {
-                    id: positionsImportDialogLoader
-                    active: false
-                    property string selectedFile: ""
-
-                    sourceComponent: FileDialog {
-                        id: positionsImportDialog
-                        title: "Select Nuclei Positions File"
-                        folder: shortcuts.documents
-                        selectMultiple: false
-                        selectExisting: true
-                        nameFilters: "CBOR Files (*.cbor)"
-                        onAccepted: {
-                            selectedFile = fileUrl
-                            positionsImportDialogLoader.active = false
-                            maskImportDialogLoader.active = true
-                        }
-                        onRejected: {
-                            positionsImportDialogLoader.active = false
-                        }
-                        Component.onCompleted: {
-                            // don't set visible to true before component is complete
-                            // because otherwise the dialog will not be configured correctly
-                            visible = true
-                        }
-                    }
-                }
-
-                Loader {
-                    id: maskImportDialogLoader
-                    active: false
-
-                    sourceComponent: FileDialog {
-                        id: maskImportDialog
-                        title: "Select Nuclei Mask File"
-                        folder: shortcuts.documents
-                        selectMultiple: false
-                        selectExisting: true
-                        nameFilters: "Nuclei Masks (*.png)"
-                        onAccepted: {
-                            block.importNNResult(positionsImportDialogLoader.selectedFile, fileUrl)
-                            maskImportDialogLoader.active = false
-                        }
-                        onRejected: {
-                            maskImportDialogLoader.active = false
-                        }
-                        Component.onCompleted: {
-                            // don't set visible to true before component is complete
-                            // because otherwise the dialog will not be configured correctly
-                            visible = true
-                        }
-                    }
-                }
-            }
-
-            BlockRow {
-                ButtonBottomLine {
-                    width: 60*dp
-                    text: "Import Centers"
+                    text: "Import Images"
                     allUpperCase: false
                     onClick: positionsImportDialogLoader2.active = true
                 }
@@ -139,13 +76,13 @@ BlockBase {
                     active: false
 
                     sourceComponent: FileDialog {
-                        title: "Select Nuclei Positions File"
+                        title: "Select Image Data File"
                         folder: shortcuts.documents
                         selectMultiple: false
                         selectExisting: true
                         nameFilters: "CBOR Files (*.cbor)"
                         onAccepted: {
-                            block.importCenters(fileUrl)
+                            block.importImages(fileUrl)
                             positionsImportDialogLoader2.active = false
                         }
                         onRejected: {

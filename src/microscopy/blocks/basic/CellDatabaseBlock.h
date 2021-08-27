@@ -5,7 +5,7 @@
 
 
 namespace CellDatabaseConstants {
-    const static int RADII_COUNT = 24;
+    const static int RADII_COUNT = 512;
     const static int X_POS = 0;
     const static int Y_POS = 1;
     const static int RADIUS = 2;
@@ -54,6 +54,7 @@ public slots:
 
     void importNNResult(QString positionsFilePath, QString maskFilePath);
 
+    void importImages(QString imageDataFilePath);
     void importCenters(QString positionsFilePath);
     void importCenterData(QCborMap data);
 
@@ -70,6 +71,12 @@ public slots:
     double getFeature(int featureId, int cellIndex) const {
         return m_data.at(featureId).at(cellIndex);
     }
+    QString getThumbnail(int cellIndex) const {
+        if (cellIndex >= m_thumbnails.size()) {
+            return "";
+        }
+        return m_thumbnails.at(cellIndex);
+    }
     double featureMin(int featureId) const;
     double featureMax(int featureId) const;
 
@@ -85,10 +92,15 @@ public slots:
 
     void dataWasModified();
 
+    QString getClassName(int featureId, int classId) const;
+    void setClassName(int featureId, int classId, QString name);
+
 protected:
     StringListAttribute m_features;
     QVector<QVector<double>> m_data;
     QVector<CellShape> m_shapes;
+    QVector<QString> m_thumbnails;
+    QHash<int, QHash<int, QString>> m_classNames;
 
     IntegerAttribute m_count;
 };

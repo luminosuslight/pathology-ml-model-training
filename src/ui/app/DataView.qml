@@ -207,9 +207,9 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         height: 30*dp
-        width: 4*75*dp
+        width: 3*75*dp
         color: Qt.hsva(0, 0, 0, 0.7)
-        visible: view.isTissuePlane
+        //visible: view.isTissuePlane
         BlockRow {
             anchors.fill: parent
             ButtonSideLine {
@@ -218,12 +218,12 @@ Item {
                 onPress: currentMode = DataView.Mode.View
                 allUpperCase: false
             }
-            ButtonSideLine {
-                text: "Add"
-                marked: currentMode === DataView.Mode.Add
-                onPress: currentMode = DataView.Mode.Add
-                allUpperCase: false
-            }
+//            ButtonSideLine {
+//                text: "Add"
+//                marked: currentMode === DataView.Mode.Add
+//                onPress: currentMode = DataView.Mode.Add
+//                allUpperCase: false
+//            }
             ButtonSideLine {
                 text: "Select"
                 marked: currentMode === DataView.Mode.Select

@@ -14,13 +14,26 @@ Rectangle {
     border.color: modelData.attr("color").qcolor
     border.width: 2*dp
     color: "transparent"
-    opacity: (moveArea.mouseOver || resizeArea.mouseOver) ? 1.0 : 0.6
+    opacity: (moveArea.mouseOver || resizeArea.mouseOver) ? 1.0 : 1.0
 
     Behavior on opacity {
         OpacityAnimator {
             duration: 400
             easing.type: Easing.OutCubic
         }
+    }
+
+    Rectangle {
+        anchors.fill: caption
+        anchors.margins: -2*dp
+        color: "#333"
+        radius: 4*dp
+    }
+    Text {
+        id: caption
+        anchors.centerIn: parent
+        text: modelData.attr("caption").val
+        color: "white"
     }
 
     Rectangle {
@@ -51,6 +64,7 @@ Rectangle {
                 modelData.attr("top").val = modelData.attr("top").val + touch.deltaY / yScale
                 modelData.attr("bottom").val = modelData.attr("bottom").val + touch.deltaY / yScale
             }
+            onTouchUp: modelData.getCaption()
         }
     }
 
@@ -81,6 +95,7 @@ Rectangle {
                 modelData.attr("right").val = Math.max(modelData.attr("left").val, modelData.attr("right").val + touch.deltaX / xScale)
                 modelData.attr("bottom").val = Math.max(modelData.attr("top").val, modelData.attr("bottom").val + touch.deltaY / yScale)
             }
+            onTouchUp: modelData.getCaption()
         }
     }
 }

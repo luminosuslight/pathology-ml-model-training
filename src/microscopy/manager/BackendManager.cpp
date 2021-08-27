@@ -291,3 +291,47 @@ void BackendManager::loadRemoteProject(QString name) {
         });
     });
 }
+
+void BackendManager::getCaption(CellShape features, std::function<void (QString)> onSuccess) {
+    QCborArray arr;
+    for (float v: features) {
+        arr.append(v);
+    }
+    QNetworkRequest request;
+    request.setUrl(QUrl(m_serverUrl + "/caption"));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/cbor");
+    auto reply = m_nam->post(request, arr.toCborValue().toCbor());
+    connect(reply, &QNetworkReply::finished, this, [reply, onSuccess]() {
+        QString caption = QString::fromUtf8(reply->readAll());
+        onSuccess(caption);
+        reply->deleteLater();
+    });
+}
+
+void BackendManager::runUmap(int neighbours, double minDistance, QString metric, int outputDimensions,
+                             const QVector<CellShape> &inputData, std::function<void (QCborArray)> onSuccess) {
+    QCborArray inputDataCbor;
+    for (const CellShape& features: inputData) {
+        QCborArray arr;
+        for (float v: features) {
+            arr.append(v);
+        }
+        inputDataCbor.append(arr);
+    }
+    QCborMap data;
+    data["neighbours"_q] = neighbours;
+    data["minDistance"_q] = minDistance;
+    data["metric"_q] = metric;
+    data["outputDimensions"_q] = outputDimensions;
+    data["inputData"_q] = inputDataCbor;
+
+    QNetworkRequest request;
+    request.setUrl(QUrl(m_serverUrl + "/umap"));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/cbor");
+    auto reply = m_nam->post(request, data.toCborValue().toCbor());
+    connect(reply, &QNetworkReply::finished, this, [reply, onSuccess]() {
+        const QCborArray result = QCborValue::fromCbor(reply->readAll()).toArray();
+        onSuccess(result);
+        reply->deleteLater();
+    });
+}

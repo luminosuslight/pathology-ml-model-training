@@ -5,3 +5,7 @@ Multicore t-SNE library by Dmitry Ulyanov (BSD 3-Clause License)
 Settings Icon (Sliders) by Marek Polakovic
 Edit Icon by Julia Simplicio
 BluePrint Background by MediaLoot http://medialoot.com/item/seamless-blueprint-textures/
+
+DBScan implemented by Eleobert (MIT license) https://github.com/Eleobert/dbscan
+
+HDBScan implemented by Sumedh Basarkod, Rohan Mohapatra (GPL3 license) https://github.com/rohanmohapatra/hdbscan-cpp/tree/master/HDBSCAN-CPP/Runner

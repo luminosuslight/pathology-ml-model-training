@@ -4,6 +4,8 @@
 #include "core/helpers/SmartAttribute.h"
 #include "core/helpers/ObjectWithAttributes.h"
 
+#include "microscopy/blocks/basic/CellDatabaseBlock.h"
+
 #include <QObject>
 #include <QCborMap>
 #include <QRect>
@@ -41,6 +43,12 @@ public slots:
     void trainAutoencoder(QString modelName, QString baseModel, int epochs, QString imageHash, QCborArray cellPositions, std::function<void(QString)> onSuccess);
 
     void loadRemoteProject(QString name);
+
+    void getCaption(CellShape features, std::function<void (QString)> onSuccess);
+
+
+    void runUmap(int neighbours, double minDistance, QString metric, int outputDimensions,
+                 const QVector<CellShape>& inputData, std::function<void(QCborArray)> onSuccess);
 
 protected:
     CoreController* const m_controller;

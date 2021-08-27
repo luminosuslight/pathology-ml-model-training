@@ -6,8 +6,8 @@ import "qrc:/core/ui/controls"
 
 BlockBase {
     id: root
-    width: 120*dp
-    height: 120*dp
+    width: 190*dp
+    height: 240*dp
 
     StretchColumn {
         anchors.fill: parent
@@ -15,33 +15,86 @@ BlockBase {
         ButtonBottomLine {
             text: "Run t-SNE ▻"
             allUpperCase: false
+            onPress: block.run()
+        }
+
+        TextInput {
+            text: block.attr("runName").val
+            inputMethodHints: Qt.ImhPreferLatin
+            onDisplayTextChanged: {
+                if (block.attr("runName").val !== displayText) {
+                    block.attr("runName").val = displayText
+                }
+            }
+            hintText: "Run Name"
+            horizontalAlignment: Text.AlignHCenter
         }
 
         BlockRow {
-            InputNodeRect {
-                node: block.node("features")
-                suggestions: ["Feature Selection"]
-            }
+            leftMargin: 5*dp
             StretchText {
-                text: "Features"
+                text: "Output 1D:"
             }
-            OutputNodeRect {
-                node: block.node("featuresOut")
-                suggestions: ["Clustering"]
+            AttributeCheckbox {
+                width: 50*dp
+                implicitWidth: 0
+                attr: block.attr("onlyOutputOneDimension")
             }
         }
 
         BlockRow {
-            InputNodeCommand {
-                node: block.node("inputNode")
-            }
+            leftMargin: 5*dp
             StretchText {
-                text: "Cells"
+                text: "Max. Iter.:"
+            }
+            AttributeNumericInput {
+                width: 50*dp
+                implicitWidth: 0
+                attr: block.attr("maxIterations")
+            }
+        }
+
+        BlockRow {
+            leftMargin: 5*dp
+            StretchText {
+                text: "Perplexity:"
+            }
+            AttributeNumericInput {
+                width: 30*dp
+                implicitWidth: 0
+                attr: block.attr("perplexity")
+            }
+        }
+
+        BlockRow {
+            leftMargin: 5*dp
+            StretchText {
+                text: "Learning R::"
+            }
+            AttributeNumericInput {
+                width: 50*dp
+                implicitWidth: 0
+                attr: block.attr("learningRate")
+            }
+        }
+
+        BlockRow {
+            leftMargin: 5*dp
+            StretchText {
+                text: "Early Exag.:"
+            }
+            AttributeNumericInput {
+                width: 30*dp
+                implicitWidth: 0
+                attr: block.attr("earlyExaggeration")
             }
         }
 
         DragArea {
             text: "Dim. Reduce"
+            InputNodeCommand {
+                node: block.node("inputNode")
+            }
         }
     }
 }

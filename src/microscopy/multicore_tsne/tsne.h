@@ -14,6 +14,8 @@
 
 #include "vptree.h"
 
+#include <functional>
+
 
 static inline double sign(double x) { return (x == .0 ? .0 : (x < .0 ? -1.0 : 1.0)); }
 
@@ -26,13 +28,16 @@ public:
                int num_threads = 1, int max_iter = 1000, int random_state = 0,
                bool init_from_Y = false, int verbose = 0,
                double early_exaggeration = 12, double learning_rate = 200,
-               double *final_error = NULL);
+             double *final_error = NULL,
+             double stop_when_error_change_below = 0.001, int max_error = 5,
+             int iter_without_progress=50,
+             std::function<void (double, int, double)> onProgress=[](double, int, double) {});
     void symmetrizeMatrix(int** row_P, int** col_P, double** val_P, int N);
 private:
     double computeGradient(int* inp_row_P, int* inp_col_P, double* inp_val_P, double* Y, int N, int D, double* dC, double theta, bool eval_error);
     double evaluateError(int* row_P, int* col_P, double* val_P, double* Y, int N, int no_dims, double theta);
     void zeroMean(double* X, int N, int D);
-    void computeGaussianPerplexity(double* X, int N, int D, int** _row_P, int** _col_P, double** _val_P, double perplexity, int K, int verbose);
+    void computeGaussianPerplexity(double* X, int N, int D, int** _row_P, int** _col_P, double** _val_P, double perplexity, int K, int verbose, std::function<void (double, int, double)> onProgress);
     double randn();
 };
 

@@ -6,7 +6,7 @@ import "qrc:/core/ui/controls"
 BlockBase {
     id: root
     width: block.attr("colorFeature").val === "Solid" ? 110*dp : 160*dp
-    height: 140*dp
+    height: block.attr("colorFeature").val === "Solid" ? 190*dp : 220*dp
     settingsComponent: settings
 
     StretchColumn {
@@ -33,6 +33,19 @@ BlockBase {
         }
 
         BlockRow {
+            visible: block.attr("colorFeature").val !== "Solid"
+            leftMargin: 5*dp
+            StretchText {
+                text: "Class Labels:"
+            }
+            AttributeCheckbox {
+                width: 50*dp
+                implicitWidth: 0
+                attr: block.attr("showClassLabels")
+            }
+        }
+
+        BlockRow {
             Spacer { implicitWidth: -0.5 }
             AttributeDotSlider {
                 width: 30*dp
@@ -51,6 +64,35 @@ BlockBase {
             implicitHeight: 0
             Repeater {
                 model: ["Strength", "Alpha"]
+
+                StretchText {
+                    text: modelData
+                    hAlign: Text.AlignHCenter
+                    font.pixelSize: 12*dp
+                    color: "#bbb"
+                }
+            }
+        }
+
+        BlockRow {
+            Spacer { implicitWidth: -0.5 }
+            AttributeDotSlider {
+                width: 30*dp
+                attr: block.attr("imageSize")
+            }
+            Spacer { implicitWidth: -1 }
+            AttributeDotSlider {
+                width: 30*dp
+                attr: block.attr("imageOpacity")
+            }
+            Spacer { implicitWidth: -0.5 }
+        }
+
+        BlockRow {
+            height: 20*dp
+            implicitHeight: 0
+            Repeater {
+                model: ["Size", "I. Alpha"]
 
                 StretchText {
                     text: modelData

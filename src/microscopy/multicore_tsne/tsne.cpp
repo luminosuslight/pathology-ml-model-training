@@ -46,7 +46,9 @@ void TSNE<treeT, dist_fn>::run(double* X, int N, int D, double* Y,
                int num_threads, int max_iter, int random_state,
                bool init_from_Y, int verbose,
                double early_exaggeration, double learning_rate,
-               double *final_error) {
+               double *final_error,
+               double stop_when_error_change_below, int max_error, int iter_without_progress,
+               std::function<void (double progress, int iter, double error)> onProgress) {
 
     if (N - 1 < 3 * perplexity) {
         perplexity = (N - 1) / 3;
@@ -55,6 +57,7 @@ void TSNE<treeT, dist_fn>::run(double* X, int N, int D, double* Y,
     }
 
 #ifdef _OPENMP
+    fprintf(stderr, "Num threads %d \n", NUM_THREADS(num_threads));
     omp_set_num_threads(NUM_THREADS(num_threads));
 #if _OPENMP >= 200805
     omp_set_schedule(omp_sched_guided, 0);
@@ -104,7 +107,7 @@ void TSNE<treeT, dist_fn>::run(double* X, int N, int D, double* Y,
     int* row_P; int* col_P; double* val_P;
 
     // Compute asymmetric pairwise input similarities
-    computeGaussianPerplexity(X, N, D, &row_P, &col_P, &val_P, perplexity, (int) (3 * perplexity), verbose);
+    computeGaussianPerplexity(X, N, D, &row_P, &col_P, &val_P, perplexity, (int) (3 * perplexity), verbose, onProgress);
 
     // Symmetrize input similarities
     symmetrizeMatrix(&row_P, &col_P, &val_P, N);
@@ -147,6 +150,7 @@ void TSNE<treeT, dist_fn>::run(double* X, int N, int D, double* Y,
 
     // Perform main training loop
     start = time(0);
+    double last_error = -1;
     for (int iter = 0; iter < max_iter; iter++) {
 
         bool need_eval_error = (verbose && ((iter > 0 && iter % 50 == 0) || (iter == max_iter - 1)));
@@ -187,8 +191,19 @@ void TSNE<treeT, dist_fn>::run(double* X, int N, int D, double* Y,
                 fprintf(stderr, "Iteration %d: error is %f (50 iterations in %4.2f seconds)\n", iter + 1, error, (float) (end - start) );
             }
             start = time(0);
-        }
 
+            const double error_change = last_error - error;
+            if (error_change < stop_when_error_change_below && error_change > 0
+                    && error < max_error && iter > iter_without_progress) {
+                std::fprintf(stderr, "%f %f", error, error_change);
+                break;
+            }
+            last_error = error;
+        }
+        if (iter > iter_without_progress) {
+            // last_error is only updated every 50 iterations
+            onProgress(iter / double(max_iter), iter, last_error);
+        }
     }
     end = time(0); total_time += (float) (end - start) ;
 
@@ -326,7 +341,8 @@ double TSNE<treeT, dist_fn>::evaluateError(int* row_P, int* col_P, double* val_P
 
 // Compute input similarities with a fixed perplexity using ball trees (this function allocates memory another function should free)
 template <class treeT, double (*dist_fn)( const DataPoint&, const DataPoint&)>
-void TSNE<treeT, dist_fn>::computeGaussianPerplexity(double* X, int N, int D, int** _row_P, int** _col_P, double** _val_P, double perplexity, int K, int verbose) {
+void TSNE<treeT, dist_fn>::computeGaussianPerplexity(double* X, int N, int D, int** _row_P, int** _col_P, double** _val_P, double perplexity, int K, int verbose,
+                                                     std::function<void (double progress, int iter, double error)> onProgress) {
 
     if (perplexity > K) fprintf(stderr, "Perplexity should be lower than K!\n");
 
@@ -450,6 +466,7 @@ void TSNE<treeT, dist_fn>::computeGaussianPerplexity(double* X, int N, int D, in
             #pragma omp critical
 #endif
             fprintf(stderr, " - point %d of %d\n", steps_completed, N);
+            onProgress(steps_completed / double(N), 0, 0.0);
         }
     }
 

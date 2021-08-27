@@ -43,5 +43,9 @@
         <file>blocks/ai/AutoencoderInferenceBlock.qml</file>
         <file>blocks/formats/ImageListBlock.qml</file>
         <file>blocks/ai/LabelRenderer.qml</file>
+        <file>blocks/actions/DbscanBlock.qml</file>
+        <file>blocks/basic/ClassesListBlock.qml</file>
+        <file>blocks/actions/HdbscanBlock.qml</file>
+        <file>blocks/actions/UmapBlock.qml</file>
     </qresource>
 </RCC>

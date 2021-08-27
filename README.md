@@ -23,6 +23,13 @@ Windows and macOS binaries are available in the [releases](https://github.com/lu
 * Win / macOS / Linux (cross-compilation for Android and iOS should work, too)
 * Qt 5.14
 * QtCreator or qmake
+* OpenMP for t-SNE on macOS:
+  * arch -x86_64 zsh
+  * /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  * /usr/local/bin/brew install llvm libomp
+  * then use -Xpreprocessors -lomp as described below:
+  * https://gist.github.com/progrium/b286cd8c82ce0825b2eb3b0b3a0720a0
+  * https://stackoverflow.com/a/54715120
 
 You also need to create an SSL certificate (core/data/luminosus_websocket.cert and core/data/luminosus_websocket.key). Please use the standard commands you can find on the Internet to create those.
 
