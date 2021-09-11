@@ -6,16 +6,31 @@ import "qrc:/core/ui/controls"
 
 BlockBase {
     id: root
-    width: 250*dp
-    height: (165 + 3*30)*dp
+    width: 370*dp
+    height: (165 + 4*30)*dp
 
     StretchColumn {
         anchors.fill: parent
 
         BlockRow {
             AttributeOptionPicker {
-                attr: block.attr("feature")
+                attr: block.attr("classificationFeature")
                 optionListGetter: function () { return block.availableFeatures() }
+            }
+            AttributeOptionPicker {
+                attr: block.attr("statisticsFeature")
+                optionListGetter: function () { return block.availableFeatures() }
+            }
+        }
+
+        BlockRow {
+            AttributeOptionPicker {
+                attr: block.attr("aggregation")
+                optionListGetter: function () { return ["min", "average", "median", "max", "sum"] }
+            }
+            AttributeOptionPicker {
+                attr: block.attr("sortBy")
+                optionListGetter: function () { return ["id", "name", "count", "value"] }
             }
         }
 
@@ -37,6 +52,16 @@ BlockBase {
                             id: classRow
                             implicitHeight: -1
                             property bool editMode: false
+                            Text {
+                                width: 20*dp
+                                text: modelData.id
+                                color: "#aaa"
+                                horizontalAlignment: Text.AlignRight
+                                font.pixelSize: 10*dp
+                            }
+                            Item {
+                                width: 10*dp
+                            }
                             StretchText {
                                 visible: !classRow.editMode
                                 text: modelData.name
@@ -54,10 +79,10 @@ BlockBase {
                                     }
                                 }
                             }
-                            ButtonBottomLine {
-                                implicitWidth: 0
+                            IconButton {
                                 width: 30*dp
-                                onClick: {
+                                iconName: classRow.editMode ? "save_icon" : "gear_icon"
+                                onPress: {
                                     if (classRow.editMode) {
                                         block.setClassName(modelData.id, classNameInput.text)
                                         classRow.editMode = false;
@@ -65,7 +90,30 @@ BlockBase {
                                         classRow.editMode = true;
                                     }
                                 }
-                                text: classRow.editMode ? "c" : "e"
+                            }
+                            Item {
+                                width: 40*dp
+                                Rectangle {
+                                    height: parent.height
+                                    width: parent.width * (modelData.count / modelData.maxClassSize)
+                                    color: "darkblue"
+                                }
+                                StretchText {
+                                    anchors.fill: parent
+                                    text: ((modelData.count / modelData.total) * 100).toFixed(0) + " %"
+                                }
+                            }
+                            Item {
+                                width: 40*dp
+                                Rectangle {
+                                    height: parent.height
+                                    width: parent.width * (modelData.aggregate / modelData.maxAggregationResult)
+                                    color: "darkblue"
+                                }
+                                StretchText {
+                                    anchors.fill: parent
+                                    text: modelData.aggregate.toFixed(2)
+                                }
                             }
                         }
                     }

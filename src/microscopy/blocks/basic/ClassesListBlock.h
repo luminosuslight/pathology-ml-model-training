@@ -39,7 +39,10 @@ public slots:
     void autoLabel();
 
 protected:
-    StringAttribute m_feature;
+    StringAttribute m_classificationFeature;
+    StringAttribute m_statisticsFeature;
+    StringAttribute m_aggregation;
+    StringAttribute m_sortBy;
 
     // runtime:
     VariantListAttribute m_availableClasses;
