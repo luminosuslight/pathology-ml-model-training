@@ -5,7 +5,7 @@ import "qrc:/core/ui/controls"
 
 BlockBase {
     id: root
-    width: block.attr("colorFeature").val === "Solid" ? 110*dp : 160*dp
+    width: block.attr("colorFeature").val === "Solid" ? 140*dp : 190*dp
     height: block.attr("colorFeature").val === "Solid" ? 190*dp : 220*dp
     settingsComponent: settings
 
@@ -29,6 +29,11 @@ BlockBase {
                 visible: block.attr("colorFeature").val !== "Solid"
                 width: 30*dp
                 attr: block.attr("color2")
+            }
+            AttributeDotSlider {
+                visible: block.attr("colorFeature").val !== "Solid"
+                width: 30*dp
+                attr: block.attr("gamma")
             }
         }
 

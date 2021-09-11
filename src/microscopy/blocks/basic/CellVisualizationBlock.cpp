@@ -18,6 +18,7 @@ CellVisualizationBlock::CellVisualizationBlock(CoreController* controller, QStri
     : OneInputBlock(controller, uid)
     , m_color1(this, "color1", {0.33, 1, 1})
     , m_color2(this, "color2", {0.66, 1, 1})
+    , m_gamma(this, "gamma", 1.0, 0.1, 10.0)
     , m_strength(this, "strength", 0.5)
     , m_opacity(this, "opacity", 0.7)
     , m_imageSize(this, "imageSize", 0.5)

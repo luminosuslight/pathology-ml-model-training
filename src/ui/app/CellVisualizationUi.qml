@@ -30,20 +30,6 @@ Item {
                 x: visBlock.database.getFeature(xDimensionId, idx) - width / 2
                 y: visBlock.database.getFeature(yDimensionId, idx) - width / 2
 
-                Connections {
-                    target: visBlock.attr("color1")
-                    function onValChanged() {
-                        rect.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
-                    }
-                }
-
-                Connections {
-                    target: visBlock.attr("color2")
-                    function onValChanged() {
-                        rect.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
-                    }
-                }
-
                 Image {
                     z: 100
                     anchors.fill: parent
@@ -147,6 +133,7 @@ Item {
         yPositions: visBlock.yPositions
         colorValues: visBlock.colorValues
         opacity: visBlock.attr("opacity").val
+        gamma: visBlock.attr("gamma").val
         Behavior on opacity {
             NumberAnimation {
                 duration: 700

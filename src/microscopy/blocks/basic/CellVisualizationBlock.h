@@ -89,6 +89,7 @@ protected:
 
     HsvAttribute m_color1;
     HsvAttribute m_color2;
+    DoubleAttribute m_gamma;
     DoubleAttribute m_strength;
     DoubleAttribute m_opacity;
     DoubleAttribute m_imageSize;
