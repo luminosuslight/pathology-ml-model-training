@@ -173,6 +173,7 @@ QVector<int> CellVisualizationBlock::cellIds() const {
 }
 
 QColor CellVisualizationBlock::color(double colorValue) {
+    colorValue = std::pow(colorValue, m_gamma);
     const double s1 = m_color1.sat();
     const double h1 = s1 > 0.0 ? m_color1.hue() : m_color2.hue();
     const double v1 = m_color1.val();

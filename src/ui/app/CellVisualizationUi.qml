@@ -5,12 +5,11 @@ import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
 
 Item {
-    property bool showDotsAdditionally: view.attr("xScale").val > 2.5
     property int xDimensionId: view.attr("xDimension").val ? visBlock.database.getOrCreateFeatureId(view.attr("xDimension").val) : 0
     property int yDimensionId: view.attr("yDimension").val ? visBlock.database.getOrCreateFeatureId(view.attr("yDimension").val) : 0
 
-    Item {
-        opacity: visBlock.attr("imageOpacity").val
+    Item {  // container for image previews
+        opacity: (view.attr("xScale").val > 1.5) ? visBlock.attr("imageOpacity").val : 0
         Behavior on opacity {
             NumberAnimation {
                 duration: 700
@@ -19,37 +18,60 @@ Item {
         }
 
         Repeater {
-            id: largelyVisibleNucleiRepeater
-            model: visBlock.visibleCells()
+            property bool needed: view.attr("xScale").val > 1.0 && visBlock.attr("imageOpacity").val > 0.0
+            model: needed ? visBlock.visibleCells() : 0
 
             Item {
-                id: cellOutline
+                id: imageThumbnailItem
                 // idx and colorValue come from the model
-                width: (120*dp / view.attr("xScale").val) * visBlock.attr("imageSize").val
+                width: 24*dp * visBlock.attr("imageSize").val
                 height: width
                 x: visBlock.database.getFeature(xDimensionId, idx) - width / 2
                 y: visBlock.database.getFeature(yDimensionId, idx) - width / 2
 
-                Image {
-                    z: 100
-                    anchors.fill: parent
-                    source: "file:///Users/tim/work/image-data-analytics-platform/data/exported_images/" + visBlock.database.getThumbnail(idx)
-                    //source: "qrc:/core/ui/images/color_wheel_thick@2x.png"
-                    fillMode: Image.PreserveAspectFit
+                Connections {
+                    target: visBlock.attr("color1")
+                    function onValChanged() {
+                        rect.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
+                    }
+                }
+
+                Connections {
+                    target: visBlock.attr("color2")
+                    function onValChanged() {
+                        rect.color = visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
+                    }
                 }
 
                 Rectangle {
+                    id: rect
+                    visible: visBlock.attr('colorFeature').val !== 'Solid'
+                    anchors.centerIn: parent
+                    anchors.horizontalCenterOffset: -0.5*dp
+                    anchors.verticalCenterOffset: -0.5*dp
+                    width: imageThumbnail.paintedWidth + 1*dp
+                    height: imageThumbnail.paintedHeight + 1*dp
+                    color: visBlock.isSelected(idx) ? "red" : visBlock.color(colorValue)
+                }
+
+                Image {
+                    id: imageThumbnail
                     anchors.fill: parent
-                    color: "transparent"
-                    border.width: 1*dp
-                    border.color: "red"
-                    visible: visBlock.isSelected(idx)
+                    source: "file:///Users/tim/work/image-data-analytics-platform/data/exported_images/" + visBlock.database.getThumbnail(idx)
+                    fillMode: Image.PreserveAspectFit
+                    // invert aspect scale of view so that image is not distorted:
+                    transform: Scale { yScale: view.attr("xScale").val / view.attr("yScale").val }
                 }
 
                 CustomTouchArea {
                     anchors.centerIn: parent
-                    width: Math.max(5*dp, parent.width / 2)
-                    height: width
+                    width: imageThumbnail.paintedWidth
+                    height: imageThumbnail.paintedHeight
+                    mouseOverEnabled: true
+                    onMouseOverChanged: {
+                        imageThumbnailItem.z = mouseOver ? 5 : 0
+                    }
+
                     onTouchDown: {
                         if (currentMode === DataView.Mode.View
                                 || touch.modifiers & Qt.ControlModifier) {
@@ -58,25 +80,6 @@ Item {
                             touch.accepted = true
                         }
                     }
-
-                    property bool shapeChanged: false
-
-                    onTouchMove: {
-                        if (!touch.isAtOrigin()) {
-                            visBlock.database.setShapePoint(idx, touch.itemX - width / 2, touch.itemY - height / 2)
-                            cellOutline.width = visBlock.database.getFeature(2, idx) * 2
-                            cellOutline.radii = visBlock.database.getShapeVector(idx)
-                            shapeChanged = true
-                        }
-                    }
-
-                    onTouchUp: {
-                        if (shapeChanged) {
-                            visBlock.database.finishShapeModification(idx)
-                            shapeChanged = false
-                        }
-                    }
-
                     onClick: {
                         if (touch.modifiers & Qt.ControlModifier) {
                             return
@@ -113,6 +116,7 @@ Item {
                 anchors.margins: -2*dp
                 color: "#222"
                 radius: 4*dp
+                antialiasing: false
             }
             Text {
                 id: caption
