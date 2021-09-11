@@ -97,6 +97,40 @@ BlockBase {
                 }
             }
 
+            BlockRow {
+                ButtonBottomLine {
+                    width: 60*dp
+                    text: "Import Metadata"
+                    allUpperCase: false
+                    onClick: metadataImportDialogLoader.active = true
+                }
+
+                Loader {
+                    id: metadataImportDialogLoader
+                    active: false
+
+                    sourceComponent: FileDialog {
+                        title: "Select Metadata File"
+                        folder: shortcuts.documents
+                        selectMultiple: false
+                        selectExisting: true
+                        nameFilters: "CBOR Files (*.cbor)"
+                        onAccepted: {
+                            block.importMetadata(fileUrl)
+                            metadataImportDialogLoader.active = false
+                        }
+                        onRejected: {
+                            metadataImportDialogLoader.active = false
+                        }
+                        Component.onCompleted: {
+                            // don't set visible to true before component is complete
+                            // because otherwise the dialog will not be configured correctly
+                            visible = true
+                        }
+                    }
+                }
+            }
+
             ButtonBottomLine {
                 width: 60*dp
                 text: "Clear"

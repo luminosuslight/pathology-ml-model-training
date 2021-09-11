@@ -55,6 +55,7 @@ public slots:
     void importNNResult(QString positionsFilePath, QString maskFilePath);
 
     void importImages(QString imageDataFilePath);
+    void importMetadata(QString imageDataFilePath);
     void importCenters(QString positionsFilePath);
     void importCenterData(QCborMap data);
 

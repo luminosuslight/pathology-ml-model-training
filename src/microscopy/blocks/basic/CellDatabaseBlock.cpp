@@ -290,6 +290,29 @@ void CellDatabaseBlock::importImages(QString imageDataFilePath) {
     emit existingDataChanged();
 }
 
+void CellDatabaseBlock::importMetadata(QString metadataFilePath) {
+    const QByteArray cbor = m_controller->dao()->loadLocalFile(m_controller->dao()->withoutFilePrefix(metadataFilePath));
+    const QCborMap metadata = QCborValue::fromCbor(cbor).toMap();
+
+    const int likesFeatureId = getOrCreateFeatureId("likes");
+    const int viewsFeatureId = getOrCreateFeatureId("views");
+    const int downloadsFeatureId = getOrCreateFeatureId("downloads");
+    const int createdDOYFeatureId = getOrCreateFeatureId("created_DOY");
+
+    int imported = 0;
+    for (int i = 0; i < m_thumbnails.size(); ++i) {
+        const QCborMap info = metadata.value(m_thumbnails.at(i)).toMap();
+        if (info.isEmpty()) continue;
+        imported++;
+        setFeature(likesFeatureId, i, info.value("likes"_q).toInteger());
+        setFeature(viewsFeatureId, i, info.value("views"_q).toInteger());
+        setFeature(downloadsFeatureId, i, info.value("downloads"_q).toInteger());
+        setFeature(createdDOYFeatureId, i, 10 * QDateTime::fromString(info.value("created_at"_q).toString(), Qt::ISODate).date().dayOfYear());
+    }
+    qDebug() << "Imported:" << imported << "Available:" << m_thumbnails.size();
+    emit existingDataChanged();
+}
+
 void CellDatabaseBlock::importCenters(QString positionsFilePath) {
     const QByteArray cbor = m_controller->dao()->loadLocalFile(m_controller->dao()->withoutFilePrefix(positionsFilePath));
     const QCborMap data = QCborValue::fromCbor(cbor).toMap();
