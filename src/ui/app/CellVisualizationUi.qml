@@ -9,7 +9,7 @@ Item {
     property int yDimensionId: view.attr("yDimension").val ? visBlock.database.getOrCreateFeatureId(view.attr("yDimension").val) : 0
 
     Item {  // container for image previews
-        opacity: (view.attr("xScale").val > 1.5) ? visBlock.attr("imageOpacity").val : 0
+        opacity: (view.attr("xScale").val > 1.2) ? visBlock.attr("imageOpacity").val : 0
         Behavior on opacity {
             NumberAnimation {
                 duration: 700
@@ -24,7 +24,7 @@ Item {
             Item {
                 id: imageThumbnailItem
                 // idx and colorValue come from the model
-                width: 24*dp * visBlock.attr("imageSize").val
+                width: 32*dp * visBlock.attr("imageSize").val
                 height: width
                 x: visBlock.database.getFeature(xDimensionId, idx) - width / 2
                 y: visBlock.database.getFeature(yDimensionId, idx) - width / 2
