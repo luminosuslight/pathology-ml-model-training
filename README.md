@@ -59,3 +59,7 @@ The screenshot below shows how a CNN model is applied in the node-based GUI: The
 The following screenshot shows the whole user interface. Multiple images and plots can be displayed simultaneously.
 
 ![screenshot of the graphical user interface of the client](gui_screenshot.png)
+
+## Citation
+
+Please cite this pre-print when you refer to this tool: [HistoFlow Paper](https://www.biorxiv.org/content/10.1101/2020.07.15.204891v1)
