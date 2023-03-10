@@ -57,7 +57,7 @@ Item {
                 Image {
                     id: imageThumbnail
                     anchors.fill: parent
-                    source: "file:///Users/tim/work/image-data-analytics-platform/data/exported_images/" + visBlock.database.getThumbnail(idx)
+                    source: "file:///home/tim/work/pond5/clustering/exported_thumbnails_pond5/" + visBlock.database.getThumbnail(idx)
                     fillMode: Image.PreserveAspectFit
                     // invert aspect scale of view so that image is not distorted:
                     transform: Scale { yScale: view.attr("xScale").val / view.attr("yScale").val }

@@ -10,6 +10,7 @@
 #include <QQmlApplicationEngine>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
+#include <QFile>
 
 #include <functional>
 

@@ -23,6 +23,7 @@ Windows and macOS binaries are available in the [releases](https://github.com/lu
 * Win / macOS / Linux (cross-compilation for Android and iOS should work, too)
 * Qt 5.14
 * QtCreator or qmake
+* OpenMP on Linux: apt install libomp-dev
 * OpenMP for t-SNE on macOS:
   * arch -x86_64 zsh
   * /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"

@@ -3,7 +3,7 @@
 #include "microscopy/manager/ViewManager.h"
 #include "microscopy/manager/BackendManager.h"
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
 void addFonts() {
@@ -22,7 +22,7 @@ void addFonts() {
 int main(int argc, char *argv[]) {
     Luminosus::preQApplicationCreation();
 
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
     addFonts();
 
     QQmlApplicationEngine* engine = new QQmlApplicationEngine();

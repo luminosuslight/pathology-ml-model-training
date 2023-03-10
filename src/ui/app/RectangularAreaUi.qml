@@ -1,5 +1,5 @@
 import QtQuick 2.12
-import QtGraphicalEffects 1.0
+import QtGraphicalEffects 1.12
 import CustomGeometry 1.0
 import CustomElements 1.0
 import "qrc:/ui/app"

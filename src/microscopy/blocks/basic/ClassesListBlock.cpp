@@ -66,7 +66,7 @@ void ClassesListBlock::updateClasses() {
     int maxClassSize = 1;
     QHash<int, double> aggregations;
     for (auto classInfo = classValues.constBegin(); classInfo != classValues.constEnd(); classInfo++) {
-        maxClassSize = std::max(maxClassSize, classInfo.value().size());
+        maxClassSize = std::max(maxClassSize, int(classInfo.value().size()));
         double aggregationResult = 0;
         if (m_aggregation.getValue() == "min") {
             aggregationResult = *std::min_element(classInfo.value().constBegin(), classInfo.value().constEnd());

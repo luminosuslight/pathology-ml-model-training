@@ -9,10 +9,10 @@ CONFIG += c++17
 
 QT += quickcontrols2
 
-CONFIG(debug, debug|release):!emscripten:!macx {
-    LIBS += -lasan
-    QMAKE_CXXFLAGS += -fsanitize=address
-}
+#CONFIG(debug, debug|release):!emscripten:!macx {
+#    LIBS += -lasan
+#    QMAKE_CXXFLAGS += -fsanitize=address
+#}
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -27,8 +27,8 @@ RESOURCES += qml.qrc \
     fonts.qrc \
     images.qrc
 
-INCLUDEPATH += /usr/local/include
+#INCLUDEPATH += /usr/local/include /usr/lib/gcc/x86_64-linux-gnu/9/include/
 
-QMAKE_LFLAGS += -lomp
-LIBS += -L/usr/local/lib -L/usr/local/opt/llvm/lib -lomp
-#QMAKE_CXXFLAGS += -Xpreprocessor -fopenmp
+#QMAKE_LFLAGS += -lomp
+LIBS += -L/usr/lib/llvm-10/lib/ -L/usr/lib/llvm-14/lib/ -lomp
+QMAKE_CXXFLAGS += -fopenmp

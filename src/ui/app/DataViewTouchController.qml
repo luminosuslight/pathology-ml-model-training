@@ -115,7 +115,8 @@ CustomTouchArea {
         }
         onPressed: mouse.accepted = false
         onWheel: {
-            const wheelDelta = wheel.pixelDelta.y ? wheel.pixelDelta.y * Screen.devicePixelRatio : wheel.angleDelta.y
+            let wheelDelta = wheel.pixelDelta.y ? wheel.pixelDelta.y * Screen.devicePixelRatio : wheel.angleDelta.y
+            wheelDelta *= 10
 
             for (let attributes of [["xScale", "contentX", wheel.x], ["yScale", "contentY", wheel.y]]) {
                 // think Y instead of X for second iteration

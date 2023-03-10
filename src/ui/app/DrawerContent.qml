@@ -1,6 +1,5 @@
 import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls  1.3
 import QtQuick.Window 2.2
 import CustomElements 1.0
 
@@ -54,38 +53,37 @@ MouseArea {
         }
     }
 
-	TabView {
+    Item {
 		id: tabView
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.top: tabs.bottom
-		tabsVisible: false
-        style: TabViewStyle {
-                     frame: Item { }
-                     tab: Item {}
-                 }
-        currentIndex: 0
+        property int currentIndex: 0
 
-		Tab {
+        Loader {
 			id: blocksTab
-			title: "Blocks"
-			BlockListDrawerContent {}
+            active: tabView.currentIndex === 0
+            anchors.fill: parent
+            sourceComponent: BlockListDrawerContent {}
 		}
-		Tab {
+        Loader {
 			id: blockSettingsTab
-			title: "Block Settings"
-			BlockSettingsDrawerContent {}
+            active: tabView.currentIndex === 1
+            anchors.fill: parent
+            sourceComponent: BlockSettingsDrawerContent {}
 		}
-		Tab {
+        Loader {
 			id: projectsTab
-			title: "Projects"
-			ProjectsDrawerContent {}
+            active: tabView.currentIndex === 2
+            anchors.fill: parent
+            sourceComponent: ProjectsDrawerContent {}
 		}
-		Tab {
+        Loader {
 			id: settingsTab
-			title: "Settings"
-			SettingsDrawerContent {}
+            active: tabView.currentIndex === 3
+            anchors.fill: parent
+            sourceComponent: SettingsDrawerContent {}
 		}
     }
 

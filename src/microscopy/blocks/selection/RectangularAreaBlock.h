@@ -4,6 +4,8 @@
 #include "core/block_basics/InOutBlock.h"
 
 class DataViewBlock;
+// Qt6 MOC breaks circular referecences, see here: https://lists.qt-project.org/pipermail/development/2020-April/039379.html
+// Q_MOC_INCLUDE("microscopy/blocks/basic/DataViewBlock.h")
 
 
 class RectangularAreaBlock : public InOutBlock {

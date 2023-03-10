@@ -1,5 +1,5 @@
 import QtQuick 2.12
-import QtQuick.Dialogs 1.2
+import QtQuick.Dialogs 1.3
 import CustomElements 1.0
 import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
@@ -80,6 +80,8 @@ BlockBase {
                         folder: shortcuts.documents
                         selectMultiple: false
                         selectExisting: true
+//                        currentFolder: shortcuts.documents
+//                        fileMode: FileDialog.OpenFile
                         nameFilters: "CBOR Files (*.cbor)"
                         onAccepted: {
                             block.importImages(fileUrl)
@@ -114,6 +116,8 @@ BlockBase {
                         folder: shortcuts.documents
                         selectMultiple: false
                         selectExisting: true
+//                        currentFolder: shortcuts.documents
+//                        fileMode: FileDialog.OpenFile
                         nameFilters: "CBOR Files (*.cbor)"
                         onAccepted: {
                             block.importMetadata(fileUrl)

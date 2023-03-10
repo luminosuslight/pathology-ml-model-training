@@ -29,7 +29,7 @@ void FolderViewBlock::updateContent() {
 
     QVariantList images;
 
-    for (const QFileInfo& info: dir.entryInfoList({QDir::Files})) {
+    for (const QFileInfo& info: dir.entryInfoList(QDir::Filters{QDir::Files})) {
         QRegularExpressionMatch match = re.match(info.fileName());
         if (!match.hasMatch()) continue;
 

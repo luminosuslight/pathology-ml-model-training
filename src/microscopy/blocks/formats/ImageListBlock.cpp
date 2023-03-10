@@ -30,7 +30,7 @@ void ImageListBlock::updateContent() {
 
     QVariantList images;
 
-    for (const QFileInfo& info: dir.entryInfoList({QDir::Files})) {
+    for (const QFileInfo& info: dir.entryInfoList(QDir::Filters{QDir::Files})) {
         if (info.fileName().endsWith(".16bit_as_argb.tif")) continue;
         QRegularExpressionMatch match = re.match(info.fileName());
         if (!match.hasMatch()) continue;
