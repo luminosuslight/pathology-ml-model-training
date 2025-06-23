@@ -5,8 +5,6 @@
 
 #include "microscopy/blocks/basic/CellDatabaseBlock.h"
 
-#include <qsyncable/QSListModel>
-
 class TissueImageBlock;
 class CellVisualizationBlock;
 class RectangularAreaBlock;

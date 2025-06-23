@@ -73,7 +73,7 @@ CellDatabaseBlock* CellVisualizationBlock::database() const {
     return m_lastDb;
 }
 
-DataViewBlock* CellVisualizationBlock::view() const {
+QObject* CellVisualizationBlock::view() const {
     return m_view;
 }
 
