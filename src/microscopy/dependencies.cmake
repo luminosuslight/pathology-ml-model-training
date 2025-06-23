@@ -1,0 +1,75 @@
+# --- Source Files ---
+set(PROJECT_HEADERS
+    ${PROJECT_HEADERS}
+    microscopy/blocks/actions/ClusteringBlock.h
+    microscopy/blocks/actions/CsvExportBlock.h
+    microscopy/blocks/actions/DimensionalityReductionBlock.h
+    microscopy/blocks/actions/FeatureSetterBlock.h
+    microscopy/blocks/ai/AutoAiSegmentationBlock.h
+    microscopy/blocks/ai/AutoencoderInferenceBlock.h
+    microscopy/blocks/ai/AutoencoderTrainingBlock.h
+    microscopy/blocks/ai/CellAreaAverageBlock.h
+    microscopy/blocks/ai/CellDatabaseComparison.h
+    microscopy/blocks/ai/CellRendererBlock.h
+    microscopy/blocks/ai/CnnInferenceBlock.h
+    microscopy/blocks/ai/CnnModelBlock.h
+    microscopy/blocks/ai/CnnTrainingBlock.h
+    microscopy/blocks/ai/FindCentersBlock.h
+    microscopy/blocks/ai/MarkerBasedRegionGrowBlock.h
+    microscopy/blocks/ai/RandomCellGeneratorBlock.h
+    microscopy/blocks/ai/TrainingDataBlock.h
+    microscopy/blocks/ai/TrainingDataPreprocessingBlock.h
+    microscopy/blocks/basic/CellDatabaseBlock.h
+    microscopy/blocks/basic/CellVisualizationBlock.h
+    microscopy/blocks/basic/DataViewBlock.h
+    microscopy/blocks/basic/TissueImageBlock.h
+    microscopy/blocks/formats/FolderViewBlock.h
+    microscopy/blocks/formats/ImageListBlock.h
+    microscopy/blocks/selection/FeatureSelectionBlock.h
+    microscopy/blocks/selection/RectangularAreaBlock.h
+    microscopy/manager/BackendManager.h
+    microscopy/manager/ViewManager.h
+    microscopy/multicore_tsne/splittree.h
+    microscopy/multicore_tsne/tsne.h
+    microscopy/multicore_tsne/vptree.h
+)
+
+set(PROJECT_SOURCES
+    ${PROJECT_SOURCES}
+    microscopy/blocks/actions/ClusteringBlock.cpp
+    microscopy/blocks/actions/CsvExportBlock.cpp
+    microscopy/blocks/actions/DimensionalityReductionBlock.cpp
+    microscopy/blocks/actions/FeatureSetterBlock.cpp
+    microscopy/blocks/ai/AutoAiSegmentationBlock.cpp
+    microscopy/blocks/ai/AutoencoderInferenceBlock.cpp
+    microscopy/blocks/ai/AutoencoderTrainingBlock.cpp
+    microscopy/blocks/ai/CellAreaAverageBlock.cpp
+    microscopy/blocks/ai/CellDatabaseComparison.cpp
+    microscopy/blocks/ai/CellRendererBlock.cpp
+    microscopy/blocks/ai/CnnInferenceBlock.cpp
+    microscopy/blocks/ai/CnnModelBlock.cpp
+    microscopy/blocks/ai/CnnTrainingBlock.cpp
+    microscopy/blocks/ai/FindCentersBlock.cpp
+    microscopy/blocks/ai/MarkerBasedRegionGrowBlock.cpp
+    microscopy/blocks/ai/RandomCellGeneratorBlock.cpp
+    microscopy/blocks/ai/TrainingDataBlock.cpp
+    microscopy/blocks/ai/TrainingDataPreprocessingBlock.cpp
+    microscopy/blocks/basic/CellDatabaseBlock.cpp
+    microscopy/blocks/basic/CellVisualizationBlock.cpp
+    microscopy/blocks/basic/DataViewBlock.cpp
+    microscopy/blocks/basic/TissueImageBlock.cpp
+    microscopy/blocks/formats/FolderViewBlock.cpp
+    microscopy/blocks/formats/ImageListBlock.cpp
+    microscopy/blocks/selection/FeatureSelectionBlock.cpp
+    microscopy/blocks/selection/RectangularAreaBlock.cpp
+    microscopy/manager/BackendManager.cpp
+    microscopy/manager/ViewManager.cpp
+    microscopy/multicore_tsne/splittree.cpp
+    microscopy/multicore_tsne/tsne.cpp
+)
+
+# --- Resource Files ---
+set(PROJECT_RESOURCES
+    ${PROJECT_RESOURCES}
+    microscopy/microscopy.qrc
+)

@@ -50,3 +50,11 @@ server/venv
 server/.idea
 server/models
 
+.vscode
+
+# CMake and Build Directories
+build/
+src/build/
+src/.cache/
+CMakeLists.txt.user
+compile_commands.json
