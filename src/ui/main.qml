@@ -1,7 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.14 as Controls2
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 import CustomGeometry 1.0
 import CustomElements 1.0
 import CustomStyle 1.0
