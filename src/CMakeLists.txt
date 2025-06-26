@@ -10,7 +10,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 # --- Qt Components ---
-set(QT_REQUIRED_COMPONENTS Core Quick Svg Network Concurrent)
+set(QT_REQUIRED_COMPONENTS Core Quick Svg Network Concurrent ShaderTools)
 
 option(LUMINOSUS_MULTIMEDIA_AVAILABLE "Enable Multimedia support" OFF) # Corresponds to 'multimedia_available' CONFIG
 
@@ -49,6 +49,13 @@ qt_add_executable(luminosus-minimal
     ${PROJECT_HEADERS}
     ${PROJECT_SOURCES}
     ${PROJECT_RESOURCES}
+)
+
+qt6_add_shaders(luminosus-minimal "luminosus-minimal_shaders"
+    PREFIX
+        "/"
+    FILES
+        ${SHADERS_CORE}
 )
 
 # --- Include Directories ---
