@@ -1,5 +1,7 @@
+pragma ComponentBehavior: Bound
 import QtQuick 2.12
 import QtQuick.Dialogs
+import QtCore
 import CustomElements 1.0
 import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
@@ -10,6 +12,7 @@ BlockBase {
     width: 180*dp
     height: mainColumn.implicitHeight
     settingsComponent: settings
+    required property var block
 
     StretchColumn {
         id: mainColumn
@@ -69,14 +72,12 @@ BlockBase {
                     id: selectDialog
                     active: false
 
-                    sourceComponent: FileDialog {
+                    sourceComponent: FolderDialog {
                         title: "Choose folder:"
-                        folder: shortcuts.documents
-                        selectMultiple: false
-                        selectFolder: true
+                        currentFolder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
                         onAccepted: {
-                            if (fileUrl) {
-                                block.attr("path").val = fileUrl
+                            if (selectedFolder) {
+                                root.block.attr("path").val = selectedFolder
                             }
                             selectDialog.active = false
                         }

@@ -1,5 +1,7 @@
+pragma ComponentBehavior: Bound
 import QtQuick 2.12
 import QtQuick.Dialogs
+import QtCore
 import CustomElements 1.0
 import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
@@ -9,6 +11,8 @@ BlockBase {
     width: 200*dp
     height: 80*dp
     settingsComponent: settings
+
+    required property var block
 
     StretchColumn {
         height: parent.height
@@ -225,12 +229,12 @@ BlockBase {
                     sourceComponent: FileDialog {
                         id: fileDialog
                         title: "Select Tissue Image File"
-                        folder: shortcuts.documents
-                        selectMultiple: false
-                        nameFilters: "Image Files (*.tiff *.tif *.png *.jpg *.jpeg *.bpm)"
+                        currentFolder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+                        fileMode: FileDialog.OpenFile
+                        nameFilters: ["Image Files (*.tiff *.tif *.png *.jpg *.jpeg *.bpm)"]
                         onAccepted: {
-                            if (fileUrl) {
-                                block.loadLocalFile(fileUrl)
+                            if (selectedFile) {
+                                root.block.loadLocalFile(selectedFile)
                             }
                             fileDialogLoader.active = false
                         }

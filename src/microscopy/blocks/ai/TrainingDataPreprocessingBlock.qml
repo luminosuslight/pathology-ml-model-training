@@ -1,5 +1,7 @@
+pragma ComponentBehavior: Bound
 import QtQuick 2.12
 import QtQuick.Dialogs
+import QtCore
 import QtQuick.Window 2.12
 import CustomElements 1.0
 import "qrc:/core/ui/items"
@@ -18,6 +20,8 @@ BlockBase {
     property real brightness: 1.0
 
     property int alreadyGenerated: 0
+
+    required property var block
 
     function startGenerating(filename) {
         block.createNewDataFile(filename)
@@ -140,12 +144,11 @@ BlockBase {
 
                     sourceComponent: FileDialog {
                         title: "Choose filename for training data:"
-                        folder: shortcuts.documents
-                        selectMultiple: false
-                        selectExisting: false
-                        nameFilters: "CBOR Files (*.cbor)"
+                        currentFolder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+                        fileMode: FileDialog.SaveFile
+                        nameFilters: ["CBOR Files (*.cbor)"]
                         onAccepted: {
-                            startGenerating(fileUrl)
+                            root.startGenerating(selectedFile)
                             saveDialog.active = false
                         }
                         onRejected: {

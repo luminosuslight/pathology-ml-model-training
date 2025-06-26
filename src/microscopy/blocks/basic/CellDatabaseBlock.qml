@@ -1,5 +1,7 @@
+pragma ComponentBehavior: Bound
 import QtQuick 2.12
 import QtQuick.Dialogs
+import QtCore
 import CustomElements 1.0
 import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
@@ -10,6 +12,7 @@ BlockBase {
     width: 150*dp
     height: 3*30*dp
     settingsComponent: settings
+    required property var block
 
     StretchColumn {
         anchors.fill: parent
@@ -79,12 +82,11 @@ BlockBase {
                     sourceComponent: FileDialog {
                         id: positionsImportDialog
                         title: "Select Nuclei Positions File"
-                        folder: shortcuts.documents
-                        selectMultiple: false
-                        selectExisting: true
-                        nameFilters: "CBOR Files (*.cbor)"
+                        currentFolder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+                        fileMode: FileDialog.OpenFile
+                        nameFilters: ["CBOR Files (*.cbor)"]
                         onAccepted: {
-                            selectedFile = fileUrl
+                            positionsImportDialogLoader.selectedFile = selectedFile
                             positionsImportDialogLoader.active = false
                             maskImportDialogLoader.active = true
                         }
@@ -106,12 +108,11 @@ BlockBase {
                     sourceComponent: FileDialog {
                         id: maskImportDialog
                         title: "Select Nuclei Mask File"
-                        folder: shortcuts.documents
-                        selectMultiple: false
-                        selectExisting: true
-                        nameFilters: "Nuclei Masks (*.png)"
+                        currentFolder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+                        fileMode: FileDialog.OpenFile
+                        nameFilters: ["Nuclei Masks (*.png)"]
                         onAccepted: {
-                            block.importNNResult(positionsImportDialogLoader.selectedFile, fileUrl)
+                            root.block.importNNResult(positionsImportDialogLoader.selectedFile, selectedFile)
                             maskImportDialogLoader.active = false
                         }
                         onRejected: {
@@ -140,20 +141,17 @@ BlockBase {
 
                     sourceComponent: FileDialog {
                         title: "Select Nuclei Positions File"
-                        folder: shortcuts.documents
-                        selectMultiple: false
-                        selectExisting: true
-                        nameFilters: "CBOR Files (*.cbor)"
+                        currentFolder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+                        fileMode: FileDialog.OpenFile
+                        nameFilters: ["CBOR Files (*.cbor)"]
                         onAccepted: {
-                            block.importCenters(fileUrl)
+                            root.block.importCenters(selectedFile)
                             positionsImportDialogLoader2.active = false
                         }
                         onRejected: {
                             positionsImportDialogLoader2.active = false
                         }
                         Component.onCompleted: {
-                            // don't set visible to true before component is complete
-                            // because otherwise the dialog will not be configured correctly
                             visible = true
                         }
                     }

@@ -1,5 +1,7 @@
+pragma ComponentBehavior: Bound
 import QtQuick 2.12
 import QtQuick.Dialogs
+import QtCore
 import CustomElements 1.0
 import "qrc:/core/ui/items"
 import "qrc:/core/ui/controls"
@@ -10,6 +12,7 @@ BlockBase {
     width: 180*dp
     height: 2*30*dp
     settingsComponent: settings
+    required property var block
 
     StretchColumn {
         anchors.fill: parent
@@ -54,13 +57,12 @@ BlockBase {
 
                     sourceComponent: FileDialog {
                         title: "Choose training data file:"
-                        folder: shortcuts.documents
-                        selectMultiple: false
-                        selectExisting: true
-                        nameFilters: "CBOR Files (*.cbor)"
+                        currentFolder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+                        fileMode: FileDialog.OpenFile
+                        nameFilters: ["CBOR Files (*.cbor)"]
                         onAccepted: {
-                            if (fileUrl) {
-                                block.attr("path").val = fileUrl
+                            if (selectedFile) {
+                                root.block.attr("path").val = selectedFile
                             }
                             selectDialog.active = false
                         }
