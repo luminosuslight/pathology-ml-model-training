@@ -63,3 +63,9 @@ The following screenshot shows the whole user interface. Multiple images and plo
 ## Citation
 
 Please cite this pre-print when you refer to this tool: [HistoFlow Paper](https://www.biorxiv.org/content/10.1101/2020.07.15.204891v1)
+
+## Qt 6 Porting Progress
+
+- June 2025: it at least compiles with Qt 6.9.1
+- first shaders converted to be compiled with QSB, but more to come
+- currently biggest issues: the "block" property of a QML component of a Block is undefined, therefore many things don't work, not sure why its undefined
