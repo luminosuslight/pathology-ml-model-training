@@ -338,10 +338,10 @@ Window {
                 drawerCloseAnimation.stop()
                 initialOffset = drawer.offset
             }
-            onTouchMove: {
+            onTouchMove: (touch) => {
                 drawer.offset = Math.max(0, Math.min(drawer.width / dp, initialOffset + (touch.originX - touch.x) / dp))
             }
-            onTouchUp: {
+            onTouchUp: (touch) => {
                 if (drawer.offset !== (drawer.width / dp) && drawer.offset !== 0) {
                     if (drawer.offset > initialOffset) {
                         drawerOpenAnimation.start()
