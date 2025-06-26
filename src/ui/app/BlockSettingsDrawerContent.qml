@@ -1,11 +1,12 @@
 import QtQuick 2.5
 import CustomElements 1.0
+import QtQuick.Layouts
 import "qrc:/core/ui/controls"
 import "qrc:/core/ui/items"
 
 VerticalScrollView {
     contentItem: root
-    anchors.topMargin: 10*dp
+    Layout.topMargin: 10*dp
 
     StretchColumn {
         id: root

@@ -6,7 +6,6 @@ import "qrc:/core/ui/items"
 
 
 StretchColumn {
-	anchors.fill: parent
 
     property bool showCombinations: false
 
