@@ -49,6 +49,7 @@ BlockBase {
                 model: ["Black", "White", "Gamma", "Alpha"]
 
                 StretchText {
+                    required property string modelData
                     text: modelData
                     hAlign: Text.AlignHCenter
                     font.pixelSize: 12*dp
