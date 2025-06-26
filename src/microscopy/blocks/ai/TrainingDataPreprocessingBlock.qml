@@ -1,5 +1,5 @@
 import QtQuick 2.12
-import QtQuick.Dialogs 1.2
+import QtQuick.Dialogs
 import QtQuick.Window 2.12
 import CustomElements 1.0
 import "qrc:/core/ui/items"
