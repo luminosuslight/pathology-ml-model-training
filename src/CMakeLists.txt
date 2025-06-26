@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(luminosus-minimal LANGUAGES CXX)
+project(histoflow LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -45,13 +45,13 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/microscopy/dependencies.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/qsyncable/dependencies.cmake)
 
 # --- Executable Definition ---
-qt_add_executable(luminosus-minimal
+qt_add_executable(histoflow
     ${PROJECT_HEADERS}
     ${PROJECT_SOURCES}
     ${PROJECT_RESOURCES}
 )
 
-qt6_add_shaders(luminosus-minimal "luminosus-minimal_shaders"
+qt6_add_shaders(histoflow "histoflow_shaders"
     PREFIX
         "/"
     FILES
@@ -59,10 +59,10 @@ qt6_add_shaders(luminosus-minimal "luminosus-minimal_shaders"
 )
 
 # --- Include Directories ---
-target_include_directories(luminosus-minimal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(histoflow PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # --- Link Libraries ---
-target_link_libraries(luminosus-minimal PRIVATE
+target_link_libraries(histoflow PRIVATE
     Qt6::Core
     Qt6::Quick
     Qt6::Svg
@@ -71,20 +71,20 @@ target_link_libraries(luminosus-minimal PRIVATE
 )
 
 if(LUMINOSUS_MULTIMEDIA_AVAILABLE)
-    target_link_libraries(luminosus-minimal PRIVATE Qt6::Multimedia)
+    target_link_libraries(histoflow PRIVATE Qt6::Multimedia)
 endif()
 
 if(ANDROID)
-    target_link_libraries(luminosus-minimal PRIVATE Qt6::CorePrivate)
+    target_link_libraries(histoflow PRIVATE Qt6::CorePrivate)
 endif()
 
 # --- Compile Definitions ---
-target_compile_definitions(luminosus-minimal PRIVATE THREADS_ENABLED)
+target_compile_definitions(histoflow PRIVATE THREADS_ENABLED)
 
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten") # !emscripten
-    target_compile_definitions(luminosus-minimal PRIVATE SSL_ENABLED)
+    target_compile_definitions(histoflow PRIVATE SSL_ENABLED)
 endif()
 
 if(LUMINOSUS_MULTIMEDIA_AVAILABLE)
-    target_compile_definitions(luminosus-minimal PRIVATE MULTIMEDIA_AVAILABLE)
+    target_compile_definitions(histoflow PRIVATE MULTIMEDIA_AVAILABLE)
 endif()
